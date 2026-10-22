@@ -1,9 +1,10 @@
 # Progreso
 
 ## Estado actual
-**Fase 1 casi terminada (22/10/2026).** Falta el despliegue v0.0 en Vercel: la aplicación de Vercel en GitHub aún no tiene acceso al repositorio `kartana` (TU-TURNO 1). Siguiente: desplegar, revisar la web publicada en un navegador real y pasar a la Fase 2 (kit-arquitecto).
+**Fase 1 terminada (22/10/2026).** Web v0.0 publicada en https://kartana-six.vercel.app. Siguiente: Fase 2 (kit-arquitecto: modelo de datos, rutas, maquetas y carriles) → punto de control 2 (aprobar el diseño).
 
-## Fase 1 — Cimientos · 🟡 22/10/2026
+## Fase 1 — Cimientos · ✅ 22/10/2026
+- **Despliegue v0.0:** Vercel, proyecto `kartana` (`prj_1FF6EsbKsC6n7DkIHJAi1Fo4XbCl`), funciones en fra1, enlazado a GitHub (cada push a `main` publica). Dirección: https://kartana-six.vercel.app (`kartana.vercel.app` estaba cogida). `/api/health` → `{estado: ok, bd: ok}`. Las 6 pruebas de navegador pasan contra la web publicada: sin errores de consola ni de hidratación, cabeceras de seguridad presentes.
 - Repositorio privado [Rubenpd66/kartana](https://github.com/Rubenpd66/kartana), rama `main`. GitHub CLI 2.103 instalada (permisos `repo` y `workflow`).
 - Next.js 16.4.2 + React 19.3 + Tailwind 4 + TypeScript, con Cache Components y Partial Prefetching.
 - Supabase: proyecto `kartana` (ref `iewlsyvdkxzcncrbhpyx`, eu-central-1, plan gratis). Migración `20261022153213_base_seguridad_y_salud` aplicada: RLS automática en tablas nuevas de `public` y función `salud()`. Avisos de seguridad: ninguno.

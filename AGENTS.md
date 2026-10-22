@@ -3,7 +3,7 @@
 Leída por Claude Code (vía CLAUDE.md), Antigravity, Gemini y Codex. Estado actual en `docs/PROGRESO.md`. Lo que le toca al usuario en `docs/TU-TURNO.md`. Decisiones en `docs/DECISIONES.md`; alcance en `docs/brief.md`.
 
 ## Proyecto
-- **Nombre:** Kartana · **Dominio:** pruebas en la dirección gratis de Vercel; kartana.app más adelante (v0.4).
+- **Nombre:** Kartana · **Dirección:** https://kartana-six.vercel.app (gratis de Vercel); kartana.app más adelante (v0.4), con redirección permanente desde la de Vercel.
 - **Idea:** SaaS para bares y restaurantes pequeños de España: carta digital con QR siempre al día (alérgenos, 7 idiomas) + botón y QR limpios para pedir reseñas en Google.
 - **Idiomas:** web y panel en español sin prefijo (inglés después con `/en/`). Cartas públicas en es, en, fr, de, ca, eu, gl: `/c/<local>` (es) y `/c/<local>/<xx>`. Utilidades en `src/lib/i18n/idiomas.ts`.
 - **Ingresos:** suscripción con Stripe en la v0.6, apagada por defecto (`PAGOS_ACTIVOS=false`). Todo lo que cobra o depende de terceros va detrás de un interruptor (`src/lib/config/interruptores.ts`).

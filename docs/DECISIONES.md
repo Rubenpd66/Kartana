@@ -71,6 +71,7 @@ Una línea por decisión: **qué**, alternativa descartada y por qué. (U) = la 
 - (D) **RLS automática con un event trigger** (guía oficial de Supabase) además de activarla a mano en cada migración.
 - (D) **Cron diario de Vercel a `/api/health`** para que el proyecto gratis de Supabase no se pause. Sin secreto: el endpoint no expone datos.
 - (D) **Playwright prueba el build de producción** (puerto 3100), 2 workers, móvil solo con `@movil`.
+- (D) **Dirección de pruebas: kartana-six.vercel.app** (Vercel la asigna; `kartana.vercel.app` es de otra cuenta). Funciones en Fráncfort (`fra1`), junto a Supabase.
 - (D) **@types/node 24** (Vitest 5 lo exige; coincide con Node 24 instalado).
 
 ### Forma de trabajar
