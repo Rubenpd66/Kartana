@@ -13,11 +13,7 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 
 - [x] ~~Dejarme aplicar la migración de la base de datos~~ — hecho el 23/10: `modelo_v01` aplicada.
 
-- [ ] **Dos cosas más en la sesión normal (no automática)** — **Por qué:** llevan sentencias de borrar, y Supabase solo las deja pasar si tú lo confirmas. **Pasos:** en la terminal, `claude`, y pide:
-  1. «ejecuta supabase/tests/01_rls_v01.sql en el proyecto kartana dentro de begin … rollback» → tiene que terminar con `OK: 01_rls_v01 sin fallos`.
-  2. «ejecuta la semilla supabase/semillas/demo.sql en el proyecto kartana».
-  Acepta las confirmaciones de Supabase.
-  **Devuélveme:** «hecho» (o el mensaje de error si alguno falla).
+- [x] ~~Test de RLS y semilla de la demo en la sesión normal~~ — hecho el 23/10: `01_rls_v01` sin fallos (con rollback) y carta demo cargada.
 
 ## Pronto (tarda días en estar listo)
 

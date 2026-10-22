@@ -6,7 +6,8 @@
 - Test SQL de Storage: OK. Advisors: seguridad, solo «leaked password protection» (ajuste de Auth); rendimiento, índices sin usar (base vacía) y varias políticas SELECT por tabla (diseño: una por perfil).
 - Tipos generados en `src/lib/datos/database.types.ts`. Rol admin al usuario de pruebas admin; local `e2e-prueba` (cortesía) del dueño de pruebas. El rol admin del usuario real se pone cuando entre por primera vez.
 - Lint, tipos, 444 tests unitarios y build en verde; e2e 18 de 20 (los 2 que faltan esperan a `/panel`, que crea panel-local en la ola 2).
-**Pendiente (sesión interactiva, por llevar `delete`):** test SQL `01_rls_v01` y semilla `supabase/semillas/demo.sql`. Después: lanzar la ola 2.
+- 23/10: test SQL `01_rls_v01` en verde en el proyecto remoto (dentro de `begin … rollback`; no deja datos). Semilla `supabase/semillas/demo.sql` aplicada: `/c/demo` publicado, 8 secciones, 82 platos, 1 menú, acceso de cortesía sin caducidad.
+**Siguiente:** lanzar la ola 2.
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
