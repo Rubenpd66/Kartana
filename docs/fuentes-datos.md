@@ -22,7 +22,21 @@ Todo dato, imagen o servicio de terceros, con su licencia o condiciones. Se actu
 
 ## Iconos y recursos gráficos
 - **Iconos de los 14 alérgenos:** pendiente de elegir un juego con licencia libre o dibujarlos propios (Fase 1/2). Se anotará aquí autor y licencia.
+  - *Nota del arquitecto (Fase 2, 22/10/2026):* las maquetas de `docs/diseno/` usan **marcadores provisionales** (círculos con dos letras: GL, CR, HU…). **Hace falta un juego definitivo** antes de la v0.1: el carril `contenido` los dibuja propios (SVG en línea, 24×24, un solo color) con licencia propia/CC0. Si se usara un juego ajeno, solo con licencia CC0, CC BY u OFL, anotando aquí autor, enlace y licencia. No usar juegos de licencia comercial o «solo uso personal».
 - **Fotos de la carta de ejemplo:** Wikimedia Commons con autor y licencia, o generadas con Nano Banana según `docs/estilo-imagenes.md`.
+  - *Nota (Fase 2):* la carta de demostración «Cafetería La Guagua» (`docs/datos/carta-la-guagua.md`) se publica **sin fotos de platos**: las fotos que pasó el usuario no se usan hasta saber quién las hizo y tener permiso.
+- **Tipografías en los PDF de QR (v0.1):** Figtree y Fraunces en TTF estáticos (SIL Open Font License 1.1, repositorio oficial de Google Fonts), guardadas en `src/lib/qr/fuentes/`. El carril `qr-pdf` confirma aquí la versión descargada.
+
+## Librerías con licencia a vigilar (Fase 2)
+| Librería | Uso | Licencia | Versión prevista |
+|---|---|---|---|
+| `@react-pdf/renderer` | Generar los PDF de QR en el servidor | MIT | 4.x |
+| `qrcode` (node-qrcode) | Matriz del código QR | MIT | 1.5.x |
+
+## Datos de ejemplo
+| Dato | Fuente | Condiciones |
+|---|---|---|
+| Carta de «Cafetería La Guagua» (platos y precios) | El usuario, 22/10/2026 (`docs/datos/carta-la-guagua.md`) | Se usa como carta de ejemplo con su nombre, marcada siempre como «Carta de ejemplo»; descripciones y alérgenos orientativos; sin indexar en Google (`permitir_indexar = false`). |
 
 ## Contenido del usuario
 - Textos, precios, fotos y logos de cada bar son del establecimiento. Las condiciones del servicio le dan a Kartana licencia solo para mostrarlos en su carta.

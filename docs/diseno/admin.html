@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  .barra-admin { background: #1f1a17; color: #fff; }
+  .barra-admin .contenedor { height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .barra-admin a { color: #fff; }
+  .marca { font-family: "Fraunces", serif; font-weight: 600; font-size: 1.25rem; text-decoration: none; }
+  h1 { font-size: 1.75rem; margin: 1.25rem 0 1rem; }
+  .cifras { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+  @media (min-width: 720px) { .cifras { grid-template-columns: repeat(5, 1fr); } }
+  .cifra { padding: .875rem 1rem; }
+  .cifra strong { display: block; font-family: "Fraunces", serif; font-size: 1.75rem; line-height: 1.1; }
+  .filtros { display: flex; gap: .5rem; overflow-x: auto; margin: 1.25rem 0 1rem; }
+  .filtros a { flex: none; min-height: 44px; display: inline-flex; align-items: center; padding: 0 1rem; border-radius: 999px; border: 1px solid var(--borde); background: var(--superficie); text-decoration: none; font-weight: 600; font-size: .9375rem; }
+  .filtros a[aria-current="true"] { background: var(--texto); color: #fff; border-color: var(--texto); }
+  .lista { display: grid; gap: .75rem; }
+  .local h2 { font-family: "Figtree", sans-serif; font-size: 1.125rem; font-weight: 700; }
+  .datos { display: grid; grid-template-columns: auto 1fr; gap: .125rem .75rem; font-size: .9375rem; margin: .5rem 0 .75rem; }
+  .datos dt { color: var(--texto-suave); }
+  .datos dd { margin: 0; }
+  .acciones { display: flex; flex-wrap: wrap; gap: .5rem; }
+</style>
+</head>
+<body>
+<header class="barra-admin">
+  <div class="contenedor"><span class="marca">Kartana · Admin</span><a href="#">Ir a mi panel</a></div>
+</header>
+<main class="contenedor" style="padding-bottom:3rem">
+  <p class="nota-maqueta">Maqueta · <strong>/admin</strong>. Solo lo ve el administrador (rol en <code>app_metadata</code> + correo en <code>ADMIN_EMAILS</code>); a cualquier otra persona le da «página no encontrada». En móvil, tarjetas; en escritorio pueden ir en tabla.</p>
+  <h1>Locales</h1>
+
+  <div class="cifras">
+    <div class="tarjeta cifra"><strong>7</strong><span class="suave pequeno">Locales</span></div>
+    <div class="tarjeta cifra"><strong>5</strong><span class="suave pequeno">Publicados</span></div>
+    <div class="tarjeta cifra"><strong>2</strong><span class="suave pequeno">En prueba</span></div>
+    <div class="tarjeta cifra"><strong>3</strong><span class="suave pequeno">En piloto</span></div>
+    <div class="tarjeta cifra"><strong>1</strong><span class="suave pequeno">Vencidos</span></div>
+  </div>
+
+  <nav class="filtros" aria-label="Filtrar por estado">
+    <a href="#" aria-current="true">Todos</a><a href="#">Prueba</a><a href="#">Piloto</a><a href="#">Cortesía</a><a href="#">Vencidos</a>
+  </nav>
+
+  <div class="lista">
+    <article class="tarjeta local">
+      <div class="fila entre envolver"><h2>Bar Los Arcos</h2><span class="insignia aviso">Prueba · quedan 6 días</span></div>
+      <dl class="datos">
+        <dt>Dueño</dt><dd>pepe@ejemplo.com</dd>
+        <dt>Carta</dt><dd><a href="#">/c/bar-los-arcos</a> · publicada · 42 platos</dd>
+        <dt>Alta</dt><dd>2 de noviembre de 2026</dd>
+      </dl>
+      <div class="acciones">
+        <button class="boton primario" type="button">Activar piloto 60 días</button>
+        <button class="boton secundario" type="button">Dar cortesía</button>
+        <button class="boton peligro" type="button">Quitar acceso</button>
+      </div>
+    </article>
+
+    <article class="tarjeta local">
+      <div class="fila entre envolver"><h2>Mesón El Cruce</h2><span class="insignia exito">Piloto · hasta el 10/01/2027</span></div>
+      <dl class="datos">
+        <dt>Dueño</dt><dd>meson.cruce@ejemplo.com</dd>
+        <dt>Carta</dt><dd><a href="#">/c/meson-el-cruce</a> · publicada · 61 platos</dd>
+        <dt>Alta</dt><dd>28 de octubre de 2026</dd>
+      </dl>
+      <div class="acciones">
+        <button class="boton secundario" type="button">Renovar piloto 60 días desde hoy</button>
+        <button class="boton peligro" type="button">Quitar acceso</button>
+      </div>
+    </article>
+
+    <article class="tarjeta local">
+      <div class="fila entre envolver"><h2>Cafetería La Guagua</h2><span class="insignia">Cortesía · sin fin</span></div>
+      <dl class="datos">
+        <dt>Dueño</dt><dd>(admin) · carta de ejemplo</dd>
+        <dt>Carta</dt><dd><a href="carta-publica.html">/c/demo</a> · publicada · 80 platos</dd>
+      </dl>
+    </article>
+
+    <article class="tarjeta local">
+      <div class="fila entre envolver"><h2>Taberna Sol</h2><span class="insignia peligro">Vencido el 30/11/2026</span></div>
+      <dl class="datos">
+        <dt>Dueño</dt><dd>taberna.sol@ejemplo.com</dd>
+        <dt>Carta</dt><dd>/c/taberna-sol · no se ve (acceso vencido) · 18 platos</dd>
+      </dl>
+      <div class="acciones">
+        <button class="boton primario" type="button">Activar piloto 60 días</button>
+      </div>
+    </article>
+  </div>
+</main>
+</body>
+</html>

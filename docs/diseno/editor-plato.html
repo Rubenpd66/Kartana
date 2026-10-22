@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta · Editor de plato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  body { padding-bottom: 96px; }
+  .barra-editor { background: var(--superficie); border-bottom: 1px solid var(--borde); position: sticky; top: 0; z-index: 5; }
+  .barra-editor .contenedor { height: 56px; display: flex; align-items: center; gap: .5rem; }
+  .barra-editor h1 { font-size: 1.25rem; }
+  .bloque { margin-top: 1.5rem; }
+  .bloque > h2 { font-family: "Figtree", sans-serif; font-size: 1.0625rem; font-weight: 700; margin-bottom: .5rem; }
+
+  /* Variantes de precio */
+  .variante { display: grid; grid-template-columns: 1fr 120px 48px; gap: .5rem; align-items: center; margin-bottom: .5rem; }
+  .precio-eur { position: relative; }
+  .precio-eur input { padding-right: 2rem; text-align: right; font-weight: 700; font-size: 1.125rem; }
+  .precio-eur::after { content: "€"; position: absolute; right: .875rem; top: 50%; transform: translateY(-50%); color: var(--texto-suave); }
+  .quitar { width: 48px; height: 48px; border-radius: 12px; border: 1px solid var(--borde); background: var(--superficie); color: var(--peligro); font-size: 1.25rem; cursor: pointer; }
+  .atajos { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+  .atajo { min-height: 44px; padding: 0 .875rem; border-radius: 999px; border: 1px solid var(--borde); background: var(--superficie); font: inherit; font-size: .9375rem; font-weight: 600; cursor: pointer; }
+  .atajo.activo { border-color: var(--primario); color: var(--primario); background: #fbefe9; }
+  .segun-mercado { display: flex; align-items: center; gap: .5rem; font-size: .9375rem; color: var(--texto-suave); margin-top: .25rem; }
+
+  /* Alérgenos */
+  .rejilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+  @media (min-width: 520px) { .rejilla { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .opcion { position: relative; }
+  .opcion input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .opcion span { display: flex; align-items: center; gap: .625rem; min-height: 56px; padding: .375rem .75rem; border: 2px solid var(--borde); border-radius: 14px; background: var(--superficie); font-weight: 600; font-size: .9375rem; }
+  .opcion input:checked + span { border-color: var(--primario); background: #fbefe9; color: var(--primario-hover); }
+  .opcion input:checked + span .al { color: var(--primario); }
+  .opcion input:focus-visible + span { outline: 3px solid var(--foco); outline-offset: 2px; }
+  .confirmar { display: flex; gap: .75rem; align-items: flex-start; padding: .875rem 1rem; border-radius: var(--radio); background: #f7ecd5; color: var(--aviso); margin-top: .75rem; font-weight: 600; }
+  .confirmar input { width: 24px; height: 24px; margin-top: 2px; accent-color: var(--exito); }
+  .confirmar:has(input:checked) { background: #e7f0df; color: var(--exito); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .chip { position: relative; }
+  .chip input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .chip span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; border: 1px solid var(--borde); background: var(--superficie); font-weight: 600; font-size: .9375rem; }
+  .chip input:checked + span { background: var(--texto); color: #fff; border-color: var(--texto); }
+
+  .foto { display: flex; gap: 1rem; align-items: center; }
+  .foto .hueco { width: 96px; height: 96px; border-radius: 16px; border: 2px dashed var(--borde); display: grid; place-items: center; color: var(--texto-suave); font-size: .8125rem; text-align: center; background: var(--superficie-suave); }
+
+  .guardar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--superficie); border-top: 1px solid var(--borde); padding: .75rem 0 calc(.75rem + env(safe-area-inset-bottom)); z-index: 10; }
+</style>
+</head>
+<body>
+<header class="barra-editor">
+  <div class="contenedor estrecho">
+    <a class="boton fantasma" href="panel-carta.html" aria-label="Volver a la carta">←</a>
+    <h1>Editar plato</h1>
+  </div>
+</header>
+
+<main class="contenedor estrecho">
+  <p class="nota-maqueta">Maqueta · <strong>/panel/[local]/carta/plato/[plato]</strong>. Ejemplo real: «Patatas bravas» con media ración y ración. El caso simple (un solo precio) es un único campo «Precio»; los atajos crean las variantes habituales con un toque.</p>
+
+  <form>
+    <div class="bloque pila">
+      <label class="campo"><span>Nombre del plato</span><input class="entrada" value="Patatas bravas" maxlength="80"></label>
+      <label class="campo"><span>Descripción <span class="ayuda">(opcional · 41/300)</span></span><textarea class="entrada" maxlength="300">Patatas fritas con salsa brava y alioli.</textarea></label>
+      <label class="campo"><span>Sección</span>
+        <select class="entrada"><option>Tapas y raciones</option><option>Mariscos</option><option>Pescados y cefalópodos</option><option>Cazuelas</option></select>
+      </label>
+    </div>
+
+    <section class="bloque" aria-labelledby="t-precio">
+      <h2 id="t-precio">Precio</h2>
+
+      <div class="variante">
+        <select class="entrada" aria-label="Formato de la variante 1"><option>Sin etiqueta</option><option>Tapa</option><option selected>½ ración</option><option>Ración</option><option>Ración mediana</option><option>Ración grande</option><option>Unidad</option><option>½ docena</option><option>Docena</option><option>Otra…</option></select>
+        <label class="precio-eur"><span class="sr-only">Precio de ½ ración</span><input class="entrada" inputmode="decimal" value="2,25"></label>
+        <button class="quitar" type="button" aria-label="Quitar ½ ración">×</button>
+      </div>
+      <div class="variante">
+        <select class="entrada" aria-label="Formato de la variante 2"><option>Sin etiqueta</option><option>½ ración</option><option selected>Ración</option><option>Ración mediana</option><option>Ración grande</option><option>Unidad</option><option>Otra…</option></select>
+        <label class="precio-eur"><span class="sr-only">Precio de ración</span><input class="entrada" inputmode="decimal" value="3,75"></label>
+        <button class="quitar" type="button" aria-label="Quitar ración">×</button>
+      </div>
+      <label class="segun-mercado"><input type="checkbox"> Según mercado (sin precio fijo)</label>
+
+      <p class="pequeno suave" style="margin-top:.75rem">Atajos:</p>
+      <div class="atajos">
+        <button class="atajo" type="button">Un precio</button>
+        <button class="atajo activo" type="button">½ y ración</button>
+        <button class="atajo" type="button">Mediana y grande</button>
+        <button class="atajo" type="button">Por unidad</button>
+        <button class="atajo" type="button">½ docena y docena</button>
+        <button class="atajo" type="button">+ Otra variante</button>
+      </div>
+      <p class="nota-maqueta">Con «Un precio» queda un solo campo grande «Precio» sin selector. «Otra…» abre un texto libre de hasta 30 letras (p. ej. «Para compartir»), que se traduce en la v0.2. Máximo 6 variantes.</p>
+    </section>
+
+    <section class="bloque" aria-labelledby="t-al">
+      <h2 id="t-al">Alérgenos</h2>
+      <p class="pequeno suave" style="margin-bottom:.5rem">Toca los que contiene este plato.</p>
+      <div class="rejilla">
+        <label class="opcion"><input type="checkbox" name="al" value="gluten"><span><span class="al grande">GL</span>Gluten</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="crustaceos"><span><span class="al grande">CR</span>Crustáceos</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="huevos" checked><span><span class="al grande">HU</span>Huevos</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="pescado"><span><span class="al grande">PE</span>Pescado</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="cacahuetes"><span><span class="al grande">CA</span>Cacahuetes</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="soja"><span><span class="al grande">SO</span>Soja</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="lacteos"><span><span class="al grande">LA</span>Lácteos</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="frutos_cascara"><span><span class="al grande">FC</span>Frutos de cáscara</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="apio"><span><span class="al grande">AP</span>Apio</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="mostaza"><span><span class="al grande">MO</span>Mostaza</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="sesamo"><span><span class="al grande">SE</span>Sésamo</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="sulfitos"><span><span class="al grande">SU</span>Sulfitos</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="altramuces"><span><span class="al grande">AL</span>Altramuces</span></label>
+        <label class="opcion"><input type="checkbox" name="al" value="moluscos"><span><span class="al grande">ML</span>Moluscos</span></label>
+      </div>
+      <label class="confirmar"><input type="checkbox" checked> He revisado los alérgenos de este plato</label>
+      <details style="margin-top:.75rem">
+        <summary class="boton fantasma">Puede contener trazas de… (opcional)</summary>
+        <p class="pequeno suave">La misma rejilla en pequeño.</p>
+      </details>
+    </section>
+
+    <section class="bloque" aria-labelledby="t-et">
+      <h2 id="t-et">Etiquetas</h2>
+      <div class="chips">
+        <label class="chip"><input type="checkbox"><span>Vegano</span></label>
+        <label class="chip"><input type="checkbox" checked><span>Vegetariano</span></label>
+        <label class="chip"><input type="checkbox"><span>Sin gluten</span></label>
+        <label class="chip"><input type="checkbox"><span>Sin lactosa</span></label>
+        <label class="chip"><input type="checkbox" checked><span>Picante</span></label>
+        <label class="chip"><input type="checkbox"><span>Casero</span></label>
+        <label class="chip"><input type="checkbox"><span>Recomendado</span></label>
+        <label class="chip"><input type="checkbox"><span>Nuevo</span></label>
+      </div>
+    </section>
+
+    <section class="bloque" aria-labelledby="t-foto">
+      <h2 id="t-foto">Foto <span class="suave pequeno">(opcional)</span></h2>
+      <div class="foto">
+        <div class="hueco" aria-hidden="true">Sin foto</div>
+        <div class="pila">
+          <button class="boton secundario" type="button">Hacer o elegir foto</button>
+          <p class="pequeno suave">La reducimos antes de subirla para que la carta cargue rápido.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <label class="interruptor"><input type="checkbox" checked><span class="pista"></span><span>Visible en la carta</span></label>
+    </section>
+
+    <section class="bloque">
+      <button class="boton peligro" type="button">Borrar plato</button>
+    </section>
+  </form>
+</main>
+
+<div class="guardar">
+  <div class="contenedor estrecho"><button class="boton primario grande bloque" type="button">Guardar</button></div>
+</div>
+</body>
+</html>

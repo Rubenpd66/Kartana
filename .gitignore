@@ -23,3 +23,6 @@ blob-report/
 .DS_Store
 Thumbs.db
 *.log
+
+# sesiones guardadas de las pruebas de navegador
+e2e/.auth/

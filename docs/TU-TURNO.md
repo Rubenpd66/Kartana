@@ -7,7 +7,25 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 - [x] ~~Autorizar GitHub CLI~~ (hecho el 22/10).
 - [x] ~~Dar acceso a Vercel al repositorio `kartana`~~ (hecho el 22/10; web en https://kartana-six.vercel.app).
 
-Nada urgente ahora mismo.
+- [ ] **A. Revisar las maquetas (punto de control 2)** — **Por qué:** es el aspecto que tendrán la carta, tu panel y el resto. **Pasos:** abre el Explorador de archivos, ve a `C:\Users\RUBEN\carta-qr\docs\diseno` y haz doble clic en **index.html**. Para verlo como en un móvil: en el navegador pulsa **F12** y luego **Ctrl + Mayús + M**. **Devuélveme:** «diseño aprobado» o lo que quieras cambiar.
+
+- [ ] **B. Plantillas de correo con el código de 6 cifras** — **Por qué:** sin esto, el correo de acceso llega con un enlace en vez de con el código. **Pasos:**
+  1. En [Supabase](https://supabase.com/dashboard) → proyecto **kartana** → **Authentication** → en el submenú, **Emails** (o **Email Templates**).
+  2. Pestaña **Magic Link**:
+     - **Subject:** `Tu código para entrar en Kartana`
+     - **Body** (en la vista de código; borra lo que haya y pega esto):
+       ```
+       <h2>Tu código para entrar en Kartana</h2>
+       <p>Escribe este código en la pantalla de Kartana:</p>
+       <p style="font-size:32px;font-weight:bold;letter-spacing:6px">{{ .Token }}</p>
+       <p>Caduca en 1 hora. Si no has pedido entrar, ignora este correo.</p>
+       ```
+     - Pulsa **Save changes**.
+  3. Pestaña **Confirm signup** (es la que reciben los dueños la primera vez):
+     - **Subject:** `Tu código para crear tu cuenta en Kartana`
+     - **Body:** el mismo de arriba → **Save changes**.
+  
+  **Devuélveme:** «plantillas cambiadas».
 
 ## Pronto (tarda días en estar listo)
 

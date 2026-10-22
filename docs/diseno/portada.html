@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta · Portada de venta (esbozo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  .cabecera { background: var(--superficie); border-bottom: 1px solid var(--borde); }
+  .cabecera .contenedor { height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .marca { font-family: "Fraunces", serif; font-weight: 600; font-size: 1.5rem; text-decoration: none; }
+  .heroe { padding: 3rem 0 2rem; display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 900px) { .heroe { grid-template-columns: 1.1fr .9fr; padding: 4.5rem 0 3rem; } }
+  .heroe h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); }
+  .heroe p.lead { font-size: 1.1875rem; color: var(--texto-suave); margin-top: 1rem; max-width: 34rem; }
+  .cta { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+  .demo { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end; justify-content: center; }
+  .demo .qr { width: 120px; text-align: center; font-size: .8125rem; color: var(--texto-suave); }
+  .demo .qr .cuadro { width: 120px; height: 120px; background: repeating-conic-gradient(#1f1a17 0 25%, #fff 0 50%) 0 0 / 15px 15px; border: 8px solid #fff; outline: 1px solid var(--borde); border-radius: 8px; margin-bottom: .5rem; }
+  .mini-carta { font-size: .75rem; }
+  .mini-carta .cab { background: #2f6b4f; color: #fff; padding: .75rem; }
+  .mini-carta .cab b { font-family: "Fraunces", serif; font-size: 1rem; display: block; }
+  .mini-carta .pl { padding: .5rem .75rem; border-bottom: 1px solid var(--borde); }
+  .mini-carta .pl b { display: block; font-size: .8125rem; }
+  .mini-carta .aviso-m { background: #1f1a17; color: #fff; text-align: center; padding: .375rem; font-weight: 600; }
+  section.bloque { padding: 2.5rem 0; }
+  section.bloque h2 { font-size: 1.875rem; margin-bottom: 1rem; }
+  .rejilla3 { display: grid; gap: 1rem; }
+  @media (min-width: 760px) { .rejilla3 { grid-template-columns: repeat(3, 1fr); } }
+  .rejilla3 h3 { font-size: 1.25rem; margin-bottom: .25rem; }
+  .pasos { counter-reset: paso; display: grid; gap: 1rem; }
+  @media (min-width: 760px) { .pasos { grid-template-columns: repeat(3, 1fr); } }
+  .paso::before { counter-increment: paso; content: counter(paso); display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--primario); color: #fff; font-weight: 700; margin-bottom: .5rem; }
+  .precios { display: grid; gap: 1rem; }
+  @media (min-width: 760px) { .precios { grid-template-columns: repeat(2, 1fr); max-width: 46rem; } }
+  .plan h3 { font-size: 1.375rem; }
+  .plan .importe { font-family: "Fraunces", serif; font-size: 2.25rem; font-weight: 600; }
+  .plan ul { padding-left: 1.1rem; margin: .75rem 0 1rem; }
+  .plan.destacado { border: 2px solid var(--primario); }
+  details.faq { border-bottom: 1px solid var(--borde); padding: .875rem 0; }
+  details.faq summary { font-weight: 600; cursor: pointer; min-height: 32px; }
+  footer { background: var(--superficie-suave); border-top: 1px solid var(--borde); padding: 2rem 0; font-size: .875rem; color: var(--texto-suave); margin-top: 2rem; }
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <div class="contenedor"><a class="marca" href="#">Kartana</a><a class="boton primario" href="entrar.html">Entrar</a></div>
+</header>
+<main>
+  <div class="contenedor"><p class="nota-maqueta">Esbozo de la portada de venta (llega en la v0.4, sin botón de pago). Sirve para fijar el tono y la estructura; los textos los escribirá el carril de contenido. Ancho 1120 px.</p></div>
+
+  <section class="contenedor heroe">
+    <div>
+      <span class="insignia">Para bares y restaurantes</span>
+      <h1 style="margin-top:.75rem">Tu carta con QR, siempre al día. Y más reseñas en Google.</h1>
+      <p class="lead">Cambia un precio o marca un plato como agotado desde el móvil y se ve al momento en todas las mesas. Con los 14 alérgenos, en 7 idiomas y sin que tus clientes instalen nada.</p>
+      <div class="cta">
+        <a class="boton primario grande" href="entrar.html">Pruébalo gratis 30 días</a>
+        <a class="boton secundario grande" href="carta-publica.html">Ver una carta de ejemplo</a>
+      </div>
+      <p class="pequeno suave" style="margin-top:.75rem">Sin tarjeta. Tu carta lista en 5 minutos.</p>
+    </div>
+    <div class="demo">
+      <div class="telefono" aria-hidden="true">
+        <div class="mini-carta">
+          <div class="cab"><b>Cafetería La Guagua</b>Carta de ejemplo</div>
+          <div class="pl"><b>Patatas bravas</b>½ 2,25 € · Ración 3,75 €</div>
+          <div class="pl"><b>Pulpo a la gallega</b>Mediana 10,00 € · Grande 12,00 €</div>
+          <div class="pl"><b>Gamba roja a la plancha</b>½ docena 7,00 € · Docena 14,00 €</div>
+          <div class="pl"><b>Bienmesabe</b>½ 3,50 € · Ración 5,50 €</div>
+          <div class="pl"><b>Queso frito</b>Agotado</div>
+          <div class="aviso-m">Consulte al personal sobre alérgenos</div>
+        </div>
+      </div>
+      <div class="qr"><div class="cuadro"></div>Escanéalo con tu móvil y mira la carta de ejemplo</div>
+    </div>
+  </section>
+
+  <section class="bloque" style="background:var(--superficie)">
+    <div class="contenedor">
+      <h2>Lo que te ahorra</h2>
+      <div class="rejilla3">
+        <div class="tarjeta"><h3>Cambios al instante</h3><p class="suave">Se acabó reimprimir cartas. Agotas un plato y en las mesas sale «Agotado».</p></div>
+        <div class="tarjeta"><h3>Alérgenos claros</h3><p class="suave">Los 14 de la UE con iconos y un filtro para que el cliente vea lo que puede comer.</p></div>
+        <div class="tarjeta"><h3>Más reseñas, sin trampas</h3><p class="suave">Un botón y un QR que llevan directo a Google, igual para todos los clientes.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque contenedor">
+    <h2>Así de fácil</h2>
+    <div class="pasos">
+      <div class="paso"><h3>Entra con tu correo</h3><p class="suave">Te llega un código de 6 cifras. Sin contraseñas.</p></div>
+      <div class="paso"><h3>Escribe tu carta</h3><p class="suave">Desde el móvil: platos, precios de media y ración, alérgenos.</p></div>
+      <div class="paso"><h3>Imprime tu QR</h3><p class="suave">Cartelitos de mesa, pegatinas y póster con tu logo, listos en PDF.</p></div>
+    </div>
+  </section>
+
+  <section class="bloque contenedor">
+    <h2>Precios claros</h2>
+    <div class="precios">
+      <div class="tarjeta plan">
+        <h3>Carta</h3>
+        <p><span class="importe">10 €</span> <span class="suave">/mes + IVA</span></p>
+        <ul><li>Carta con QR y cambios al instante</li><li>14 alérgenos con filtro</li><li>7 idiomas</li><li>QR en PDF</li></ul>
+      </div>
+      <div class="tarjeta plan destacado">
+        <h3>Carta + Reseñas</h3>
+        <p><span class="importe">17 €</span> <span class="suave">/mes + IVA</span></p>
+        <ul><li>Todo lo de Carta</li><li>Botón y QR de reseña en Google</li><li>Estadísticas de visitas</li></ul>
+      </div>
+    </div>
+    <p class="pequeno suave" style="margin-top:.75rem">Pago anual con 2 meses gratis. 30 días de prueba sin tarjeta.</p>
+  </section>
+
+  <section class="bloque contenedor estrecho" style="max-width:46rem">
+    <h2>Preguntas frecuentes</h2>
+    <details class="faq"><summary>¿Mis clientes tienen que instalar algo?</summary><p class="suave">No. Apuntan con la cámara al QR y se abre la carta.</p></details>
+    <details class="faq"><summary>¿Y si cambio un precio?</summary><p class="suave">Lo cambias en el móvil y se ve al momento. El QR no cambia.</p></details>
+    <details class="faq"><summary>¿Guardáis datos de mis clientes?</summary><p class="suave">No. La carta no usa cookies ni pide nada a nadie.</p></details>
+  </section>
+</main>
+<footer><div class="contenedor">Kartana · Hecho en España para bares de aquí. · Aviso legal · Privacidad · Cookies · Condiciones</div></footer>
+</body>
+</html>

@@ -27,7 +27,7 @@ export default function Inicio() {
       <p className="mt-6 max-w-xl text-lg text-texto-suave">{SITIO.descripcion}</p>
       <ul className="mt-10 grid max-w-2xl gap-4 sm:grid-cols-3">
         {[
-          ["Cambios al instante", "Agotas un plato y desaparece de todas las mesas."],
+          ["Cambios al instante", "Marcas un plato como agotado y se ve en todas las mesas."],
           ["Alérgenos claros", "Los 14 de la UE con iconos y filtro para el cliente."],
           ["Más reseñas", "Un botón limpio hacia Google, igual para todos."],
         ].map(([titulo, texto]) => (

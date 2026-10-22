@@ -74,5 +74,18 @@ Una línea por decisión: **qué**, alternativa descartada y por qué. (U) = la 
 - (D) **Dirección de pruebas: kartana-six.vercel.app** (Vercel la asigna; `kartana.vercel.app` es de otra cuenta). Funciones en Fráncfort (`fra1`), junto a Supabase.
 - (D) **@types/node 24** (Vitest 5 lo exige; coincide con Node 24 instalado).
 
+## Fase 2 · 22/10/2026 (propuestas del arquitecto, confirmadas por el director)
+- (D) **Platos agotados: se ven atenuados con «Agotado»**, no desaparecen. Así el cliente sabe que existe pero hoy no hay. Se cambia el texto de la portada.
+- (D) **Ordenar con flechas ↑↓ en la v0.1**; arrastrar más adelante. Descartado arrastrar ya: necesita librería y es peor con lector de pantalla.
+- (D) **Un local por cuenta en la v0.1** y una sola prueba gratis por persona. El modelo ya admite varios locales.
+- (D) **Variantes de precio**: 1–6 precios por plato (`media_racion`, `racion`, `racion_mediana`, `racion_grande`, `unidad`, `docena`… y `otro` con texto libre). Sin precio = «Según mercado».
+- (D) **Admin con doble llave**: rol en `app_metadata` puesto por SQL por el director + correo en `ADMIN_EMAILS`. Sin clave secreta hasta la v0.6.
+- (D) **Tests SQL**: el carril `datos` puede ejecutar `begin; …; rollback;` con `execute_sql`; `apply_migration` solo lo hace el director.
+- (D) **Pruebas de navegador con usuario de prueba y contraseña** + `/auth/e2e`, que solo existe fuera de Vercel con `E2E_ACCESO=true`.
+- (D) **Carta de demostración `demo` sin indexar** en Google: alérgenos orientativos de un bar real.
+- (D) **Estadísticas por RPC con la clave publicable**, aceptando que alguien podría inflar contadores (no expone datos).
+- (D) **PDF con `@react-pdf/renderer` 4 + `qrcode` 1.5** (MIT), QR vectorial, logos en PNG.
+- (U pendiente) **Comprar kartana.app antes de imprimir QR para los pilotos** (recomendado): se decide al cerrar la v0.1.
+
 ### Forma de trabajar
 - (U) **Solo Claude Code, plan Pro → como mucho 2–3 subagentes a la vez.**

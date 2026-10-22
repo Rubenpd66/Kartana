@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta · Carta pública</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  /* Color del local (se pone en línea en el contenedor de la carta) */
+  .carta { --marca: #2f6b4f; --sobre-marca: #ffffff; padding-bottom: 5rem; }
+
+  .banda-demo { background: #1f1a17; color: #fff; font-size: .875rem; text-align: center; padding: .5rem 1rem; }
+  .banda-demo strong { color: #ffd88a; }
+
+  .cabecera-carta { background: var(--marca); color: var(--sobre-marca); padding: 1.5rem 0 1.25rem; }
+  .logo { width: 64px; height: 64px; border-radius: 16px; background: var(--sobre-marca); color: var(--marca); display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 600; font-size: 1.5rem; flex: none; }
+  .cabecera-carta h1 { font-size: 1.75rem; }
+  .cabecera-carta p { opacity: .92; }
+  .datos-local { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+  .pastilla { display: inline-flex; align-items: center; gap: .375rem; min-height: 40px; padding: 0 .875rem; border-radius: 999px; background: rgb(255 255 255 / 16%); color: inherit; text-decoration: none; font-size: .9375rem; font-weight: 500; border: 0; font: inherit; }
+  details.horario summary { list-style: none; cursor: pointer; }
+  details.horario summary::-webkit-details-marker { display: none; }
+  details.horario[open] .lista-horario { display: block; }
+  .lista-horario { display: none; margin-top: .5rem; background: rgb(255 255 255 / 12%); border-radius: 12px; padding: .5rem .75rem; font-size: .9375rem; }
+
+  .barra { position: sticky; top: 0; z-index: 5; background: var(--fondo); border-bottom: 1px solid var(--borde); }
+  .chips { display: flex; gap: .5rem; overflow-x: auto; padding: .625rem 0; scrollbar-width: none; }
+  .chip { flex: none; min-height: 40px; display: inline-flex; align-items: center; padding: 0 .875rem; border-radius: 999px; border: 1px solid var(--borde); background: var(--superficie); text-decoration: none; font-weight: 500; font-size: .9375rem; }
+  .chip.actual { background: var(--marca); color: var(--sobre-marca); border-color: var(--marca); }
+  .herramientas { display: flex; gap: .5rem; padding-bottom: .625rem; }
+
+  .filtro { margin: 1rem 0; }
+  .filtro > summary { list-style: none; cursor: pointer; }
+  .filtro > summary::-webkit-details-marker { display: none; }
+  .panel-filtro { margin-top: .75rem; }
+  .rejilla-al { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin: .75rem 0; }
+  @media (min-width: 520px) { .rejilla-al { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .opcion-al { display: flex; align-items: center; gap: .5rem; min-height: 48px; padding: .25rem .625rem; border: 1px solid var(--borde); border-radius: 12px; background: var(--superficie); cursor: pointer; font-size: .9375rem; }
+  .opcion-al input { width: 20px; height: 20px; flex: none; accent-color: var(--marca); }
+  .opcion-al:has(input:checked) { border-color: var(--marca); background: #eaf3ee; font-weight: 600; }
+
+  .menu-dia { border: 2px solid var(--marca); }
+  .menu-dia h2 { font-size: 1.375rem; }
+  .menu-dia .precio-grande { font-family: "Fraunces", serif; font-size: 1.5rem; font-weight: 600; color: var(--marca); }
+  .grupo-menu h3 { font-family: "Figtree", sans-serif; font-size: .8125rem; text-transform: uppercase; letter-spacing: .06em; color: var(--texto-suave); margin-top: .75rem; }
+  .grupo-menu ul { margin: .25rem 0 0; padding-left: 1.1rem; }
+
+  .seccion { scroll-margin-top: 7rem; margin-top: 2rem; }
+  .seccion > h2 { font-size: 1.5rem; padding-bottom: .5rem; border-bottom: 2px solid var(--marca); }
+  .plato { padding: 1rem 0; border-bottom: 1px solid var(--borde); }
+  .plato h3 { font-size: 1.125rem; }
+  .precios { list-style: none; margin: .375rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
+  .precios li { white-space: nowrap; }
+  .precios .etiqueta { color: var(--texto-suave); font-size: .9375rem; margin-right: .25rem; }
+  .precios .importe { font-weight: 700; }
+  .desc { color: var(--texto-suave); margin-top: .25rem; font-size: 1rem; }
+  .alergenos { display: flex; flex-wrap: wrap; gap: .375rem .75rem; margin-top: .5rem; font-size: .875rem; color: var(--texto-suave); align-items: center; }
+  .alergenos .uno { display: inline-flex; align-items: center; gap: .3rem; }
+  .trazas { font-size: .8125rem; color: var(--texto-suave); margin-top: .25rem; }
+  .etiquetas { display: flex; gap: .375rem; margin-top: .5rem; }
+  .sin-info { display: none; margin-top: .5rem; font-size: .875rem; color: var(--aviso); font-weight: 600; }
+  .plato.agotado h3, .plato.agotado .precios, .plato.agotado .desc { opacity: .5; }
+  .plato.agotado h3 { text-decoration: line-through; text-decoration-thickness: 1px; }
+
+  /* === Filtro de alérgenos solo con CSS (así funcionará en la carta real, sin JavaScript) === */
+  .carta:has(#f-crustaceos:checked) .plato[data-alergenos~="crustaceos"],
+  .carta:has(#f-moluscos:checked) .plato[data-alergenos~="moluscos"],
+  .carta:has(#f-gluten:checked) .plato[data-alergenos~="gluten"],
+  .carta:has(#f-huevos:checked) .plato[data-alergenos~="huevos"],
+  .carta:has(#f-lacteos:checked) .plato[data-alergenos~="lacteos"],
+  .carta:has(#f-pescado:checked) .plato[data-alergenos~="pescado"],
+  .carta:has(#f-trazas:checked):has(#f-crustaceos:checked) .plato[data-trazas~="crustaceos"] { display: none; }
+  .carta:has(.filtro input[name="al"]:checked) .plato[data-confirmado="no"] .sin-info { display: block; }
+  .contador-filtro { display: none; }
+  .carta:has(.filtro input[name="al"]:checked) .contador-filtro { display: inline-flex; }
+
+  .resena { text-align: center; margin: 2.5rem 0 1rem; }
+  .resena a { color: var(--texto-suave); font-size: .9375rem; }
+  .pie-carta { text-align: center; font-size: .8125rem; color: var(--texto-suave); padding: 1rem 0 2rem; }
+
+  .aviso-fijo {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    background: #1f1a17; color: #fff; text-align: center; font-weight: 600; font-size: .9375rem;
+    padding: .75rem 1rem calc(.75rem + env(safe-area-inset-bottom));
+  }
+</style>
+</head>
+<body>
+<p class="nota-maqueta contenedor estrecho">Maqueta · <strong>/c/demo</strong> en un móvil. Datos: carta real de «Cafetería La Guagua» (precios reales; descripciones y alérgenos orientativos). El filtro de alérgenos funciona de verdad con solo CSS (prueba a marcar y desmarcar). Iconos de alérgenos: <strong>marcadores provisionales</strong>.</p>
+
+<div class="carta">
+  <div class="banda-demo"><strong>Carta de ejemplo</strong> · precios reales, alérgenos orientativos</div>
+
+  <header class="cabecera-carta">
+    <div class="contenedor estrecho">
+      <div class="fila">
+        <div class="logo" aria-hidden="true">LG</div>
+        <div>
+          <h1>Cafetería La Guagua</h1>
+          <p>Raciones, cazuelas y marisco de siempre</p>
+        </div>
+      </div>
+      <div class="datos-local">
+        <details class="horario">
+          <summary class="pastilla">Horario ▾</summary>
+          <div class="lista-horario">
+            <div class="fila entre"><span>L–J</span><span>8:00–16:00 · 19:00–23:30</span></div>
+            <div class="fila entre"><span>V–S</span><span>8:00–16:00 · 19:00–1:00</span></div>
+            <div class="fila entre"><span>D</span><span>Cerrado</span></div>
+          </div>
+        </details>
+        <a class="pastilla" href="#">Llamar</a>
+        <a class="pastilla" href="#">Cómo llegar</a>
+      </div>
+    </div>
+  </header>
+
+  <nav class="barra" aria-label="Secciones">
+    <div class="contenedor estrecho">
+      <div class="chips">
+        <a class="chip actual" href="#menu">Menú del día</a>
+        <a class="chip" href="#mariscos">Mariscos</a>
+        <a class="chip" href="#pescados">Pescados y cefalópodos</a>
+        <a class="chip" href="#cazuelas">Cazuelas</a>
+        <a class="chip" href="#carnes">Carnes y embutidos</a>
+        <a class="chip" href="#tapas">Tapas y raciones</a>
+        <a class="chip" href="#tierra">Especialidades de la tierra</a>
+        <a class="chip" href="#postres">Postres</a>
+        <a class="chip" href="#cafes">Cafés y bebidas</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="contenedor estrecho">
+    <form class="filtro" aria-label="Filtrar alérgenos">
+      <details open>
+        <summary class="boton secundario bloque"><span class="al" style="width:22px;height:22px">!</span> Filtrar alérgenos <span class="insignia aviso contador-filtro">Filtro activo</span></summary>
+        <div class="panel-filtro tarjeta">
+          <p><strong>Ocultar platos que contengan:</strong></p>
+          <div class="rejilla-al">
+            <label class="opcion-al"><input type="checkbox" name="al" id="f-gluten"><span class="al">GL</span>Gluten</label>
+            <label class="opcion-al"><input type="checkbox" name="al" id="f-crustaceos" checked><span class="al">CR</span>Crustáceos</label>
+            <label class="opcion-al"><input type="checkbox" name="al" id="f-huevos"><span class="al">HU</span>Huevos</label>
+            <label class="opcion-al"><input type="checkbox" name="al" id="f-pescado"><span class="al">PE</span>Pescado</label>
+            <label class="opcion-al"><input type="checkbox" name="al"><span class="al">CA</span>Cacahuetes</label>
+            <label class="opcion-al"><input type="checkbox" name="al"><span class="al">SO</span>Soja</label>
+            <label class="opcion-al"><input type="checkbox" name="al" id="f-lacteos"><span class="al">LA</span>Lácteos</label>
+            <label class="opcion-al"><input type="checkbox" name="al"><span class="al">FC</span>Frutos de cáscara</label>
+            <label class="opcion-al"><input type="checkbox" name="al"><span class="al">AP</span>Apio</label>
+            <label class="opcion-al"><input type="checkbox" name="al"><span class="al">MO</span>Mostaza</label>
+            <label class="opcion-al"><input type="checkbox" name="al"><span class="al">SE</span>Sésamo</label>
+            <label class="opcion-al"><input type="checkbox" name="al"><span class="al">SU</span>Sulfitos</label>
+            <label class="opcion-al"><input type="checkbox" name="al"><span class="al">AL</span>Altramuces</label>
+            <label class="opcion-al"><input type="checkbox" name="al" id="f-moluscos"><span class="al">ML</span>Moluscos</label>
+          </div>
+          <label class="opcion-al"><input type="checkbox" id="f-trazas">Ocultar también si «puede contener trazas»</label>
+          <div class="fila entre envolver" style="margin-top:.75rem">
+            <p class="pequeno suave">Consulte al personal sobre alérgenos.</p>
+            <button type="reset" class="boton fantasma">Quitar filtro</button>
+          </div>
+        </div>
+      </details>
+    </form>
+
+    <section id="menu" class="seccion">
+      <div class="tarjeta menu-dia">
+        <div class="fila entre">
+          <h2>Menú del día</h2>
+          <span class="precio-grande">12,50 €</span>
+        </div>
+        <p class="suave pequeno">Lunes a viernes, de 13:00 a 16:00</p>
+        <div class="grupo-menu"><h3>Primeros</h3><ul><li>Ensaladilla rusa</li><li>Patatas con ajo</li><li>Parrillada de verduras</li></ul></div>
+        <div class="grupo-menu"><h3>Segundos</h3><ul><li>Magra con tomate</li><li>Calamar a la plancha</li><li>Lomo de orza</li></ul></div>
+        <div class="grupo-menu"><h3>Postres</h3><ul><li>Pan de Calatrava</li><li>Tarta de chocolates</li><li>Fruta del tiempo</li></ul></div>
+        <p class="pequeno suave" style="margin-top:.75rem">Incluye pan, bebida y postre o café · Alérgenos de cada plato: pregunta al personal</p>
+      </div>
+    </section>
+
+    <section id="mariscos" class="seccion" aria-labelledby="t-mariscos">
+      <h2 id="t-mariscos">Mariscos</h2>
+
+      <article class="plato" data-alergenos="crustaceos" data-trazas="" data-confirmado="si">
+        <h3>Gamba roja a la plancha</h3>
+        <ul class="precios">
+          <li><span class="etiqueta">½ docena</span><span class="importe">7,00 €</span></li>
+          <li><span class="etiqueta">Docena</span><span class="importe">14,00 €</span></li>
+        </ul>
+        <p class="desc">Gamba roja a la plancha con sal gorda.</p>
+        <div class="alergenos"><span class="uno"><span class="al">CR</span>Crustáceos</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+
+      <article class="plato" data-alergenos="moluscos" data-trazas="" data-confirmado="si">
+        <h3>Zamburiñas</h3>
+        <ul class="precios"><li><span class="etiqueta">Unidad</span><span class="importe">1,50 €</span></li></ul>
+        <p class="desc">Zamburiñas a la plancha con ajo y perejil.</p>
+        <div class="alergenos"><span class="uno"><span class="al">ML</span>Moluscos</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+
+      <article class="plato" data-alergenos="crustaceos huevos" data-trazas="" data-confirmado="si">
+        <h3>Cangrejo en salsa rosa</h3>
+        <ul class="precios">
+          <li><span class="etiqueta">½ ración</span><span class="importe">2,50 €</span></li>
+          <li><span class="etiqueta">Ración</span><span class="importe">4,25 €</span></li>
+        </ul>
+        <p class="desc">Palitos de cangrejo con salsa rosa casera.</p>
+        <div class="alergenos"><span class="uno"><span class="al">CR</span>Crustáceos</span><span class="uno"><span class="al">HU</span>Huevos</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+    </section>
+
+    <section id="pescados" class="seccion" aria-labelledby="t-pescados">
+      <h2 id="t-pescados">Pescados y cefalópodos</h2>
+
+      <article class="plato" data-alergenos="moluscos" data-trazas="" data-confirmado="si">
+        <div class="fila entre" style="align-items:flex-start">
+          <div>
+            <h3>Pulpo a la gallega</h3>
+            <ul class="precios">
+              <li><span class="etiqueta">Ración mediana</span><span class="importe">10,00 €</span></li>
+              <li><span class="etiqueta">Ración grande</span><span class="importe">12,00 €</span></li>
+            </ul>
+          </div>
+          <span class="insignia">Recomendado</span>
+        </div>
+        <p class="desc">Pulpo cocido con patata, pimentón y aceite de oliva.</p>
+        <div class="alergenos"><span class="uno"><span class="al">ML</span>Moluscos</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+
+      <article class="plato" data-alergenos="moluscos gluten" data-trazas="" data-confirmado="si">
+        <h3>Calamares a la romana</h3>
+        <ul class="precios">
+          <li><span class="etiqueta">½ docena</span><span class="importe">2,40 €</span></li>
+          <li><span class="etiqueta">Docena</span><span class="importe">4,75 €</span></li>
+        </ul>
+        <p class="desc">Anillas de calamar rebozadas y fritas.</p>
+        <div class="alergenos"><span class="uno"><span class="al">ML</span>Moluscos</span><span class="uno"><span class="al">GL</span>Gluten</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+
+      <article class="plato" data-alergenos="" data-trazas="" data-confirmado="no">
+        <h3>Chipirones a la plancha</h3>
+        <ul class="precios"><li><span class="etiqueta">Ración</span><span class="importe">8,50 €</span></li></ul>
+        <p class="desc">Chipirones a la plancha con alioli.</p>
+        <div class="alergenos"><span class="insignia aviso">Alérgenos: consulte al personal</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+    </section>
+
+    <section id="tapas" class="seccion" aria-labelledby="t-tapas">
+      <h2 id="t-tapas">Tapas y raciones</h2>
+
+      <article class="plato" data-alergenos="huevos" data-trazas="" data-confirmado="si">
+        <h3>Patatas bravas</h3>
+        <ul class="precios">
+          <li><span class="etiqueta">½ ración</span><span class="importe">2,25 €</span></li>
+          <li><span class="etiqueta">Ración</span><span class="importe">3,75 €</span></li>
+        </ul>
+        <p class="desc">Patatas fritas con salsa brava y alioli.</p>
+        <div class="alergenos"><span class="uno"><span class="al">HU</span>Huevos</span></div>
+        <div class="etiquetas"><span class="insignia">Vegetariano</span><span class="insignia">Picante</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+
+      <article class="plato agotado" data-alergenos="lacteos gluten huevos" data-trazas="" data-confirmado="si">
+        <div class="fila entre"><h3>Queso frito</h3><span class="insignia peligro">Agotado</span></div>
+        <ul class="precios">
+          <li><span class="etiqueta">½ ración</span><span class="importe">4,00 €</span></li>
+          <li><span class="etiqueta">Ración</span><span class="importe">6,50 €</span></li>
+        </ul>
+        <p class="desc">Dados de queso empanados con salsa.</p>
+        <div class="alergenos"><span class="uno"><span class="al">LA</span>Lácteos</span><span class="uno"><span class="al">GL</span>Gluten</span><span class="uno"><span class="al">HU</span>Huevos</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+
+      <article class="plato" data-alergenos="gluten lacteos huevos" data-trazas="crustaceos" data-confirmado="si">
+        <h3>Croqueta de jamón y cocido</h3>
+        <ul class="precios"><li><span class="etiqueta">Unidad</span><span class="importe">1,50 €</span></li></ul>
+        <p class="desc">Croqueta casera de jamón y carne de cocido.</p>
+        <div class="alergenos"><span class="uno"><span class="al">GL</span>Gluten</span><span class="uno"><span class="al">LA</span>Lácteos</span><span class="uno"><span class="al">HU</span>Huevos</span></div>
+        <p class="trazas">Puede contener trazas de: crustáceos</p>
+        <div class="etiquetas"><span class="insignia">Casero</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+    </section>
+
+    <section id="tierra" class="seccion" aria-labelledby="t-tierra">
+      <h2 id="t-tierra">Especialidades de la tierra</h2>
+      <article class="plato" data-alergenos="pescado gluten" data-trazas="" data-confirmado="si">
+        <h3>Bienmesabe</h3>
+        <ul class="precios">
+          <li><span class="etiqueta">½ ración</span><span class="importe">3,50 €</span></li>
+          <li><span class="etiqueta">Ración</span><span class="importe">5,50 €</span></li>
+        </ul>
+        <p class="desc">Cazón en adobo, rebozado y frito, con limón.</p>
+        <div class="alergenos"><span class="uno"><span class="al">PE</span>Pescado</span><span class="uno"><span class="al">GL</span>Gluten</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+      <article class="plato" data-alergenos="pescado huevos" data-trazas="" data-confirmado="si">
+        <h3>Atascaburras</h3>
+        <ul class="precios">
+          <li><span class="etiqueta">½ ración</span><span class="importe">2,50 €</span></li>
+          <li><span class="etiqueta">Ración</span><span class="importe">4,25 €</span></li>
+        </ul>
+        <p class="desc">Puré manchego de patata y bacalao con ajo y huevo duro.</p>
+        <div class="alergenos"><span class="uno"><span class="al">PE</span>Pescado</span><span class="uno"><span class="al">HU</span>Huevos</span></div>
+        <p class="sin-info">Sin información de alérgenos: pregunta al personal</p>
+      </article>
+    </section>
+
+    <p class="nota-maqueta">… el resto de secciones (Cazuelas, Carnes y embutidos, Postres, Cafés y bebidas) siguen el mismo patrón.</p>
+
+    <div class="resena">
+      <a href="#">¿Te ha gustado? Déjanos tu opinión en Google</a>
+      <p class="nota-maqueta">Botón de reseña (v0.3): discreto, igual para todos, sin preguntas previas ni estrellas.</p>
+    </div>
+
+    <footer class="pie-carta">
+      <p>Información de alérgenos facilitada por el establecimiento.</p>
+      <p><a href="#">Carta digital con Kartana</a></p>
+    </footer>
+  </main>
+
+  <div class="aviso-fijo" role="note">Consulte al personal sobre alérgenos</div>
+</div>
+</body>
+</html>

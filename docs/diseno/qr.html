@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta · QR y PDF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  .barra-panel { background: var(--superficie); border-bottom: 1px solid var(--borde); }
+  .barra-panel .contenedor { height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .marca { font-family: "Fraunces", serif; font-weight: 600; font-size: 1.25rem; text-decoration: none; }
+  h1 { font-size: 1.625rem; margin: 1.25rem 0 .25rem; }
+  .qr-grande { display: grid; place-items: center; padding: 1.25rem; }
+  .qr-grande svg { width: 220px; height: 220px; }
+  .enlace { display: flex; gap: .5rem; align-items: center; background: var(--superficie-suave); border-radius: var(--radio); padding: .5rem .5rem .5rem 1rem; }
+  .enlace code { flex: 1; font-size: .9375rem; overflow-wrap: anywhere; }
+  .formatos { display: grid; gap: 1rem; margin-top: 1.5rem; }
+  .formato { display: grid; grid-template-columns: 88px 1fr; gap: 1rem; align-items: center; }
+  .miniatura { width: 88px; height: 112px; border-radius: 8px; border: 1px solid var(--borde); background: var(--superficie); display: grid; place-items: center; position: relative; overflow: hidden; }
+  .miniatura .q { width: 36px; height: 36px; background: repeating-conic-gradient(#1f1a17 0 25%, #fff 0 50%) 0 0 / 9px 9px; border: 3px solid #1f1a17; }
+  .miniatura.mesa { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; padding: 4px; }
+  .miniatura.mesa > div { border: 1px dashed var(--borde); display: grid; place-items: center; }
+  .miniatura.mesa .q { width: 18px; height: 18px; border-width: 2px; background-size: 5px 5px; }
+  .miniatura.pegatinas { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 4px; padding: 6px; }
+  .miniatura.pegatinas > div { border-radius: 4px; border: 1px solid var(--borde); display: grid; place-items: center; }
+  .miniatura.pegatinas .q { width: 14px; height: 14px; border-width: 2px; background-size: 4px 4px; }
+  .miniatura.poster::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 22px; background: #2f6b4f; }
+  .miniatura.poster .q { width: 48px; height: 48px; margin-top: 14px; }
+  .formato h2 { font-family: "Figtree", sans-serif; font-size: 1.0625rem; font-weight: 700; }
+</style>
+</head>
+<body>
+<header class="barra-panel">
+  <div class="contenedor estrecho"><a class="marca" href="#">Kartana</a><a class="boton fantasma" href="#">Cuenta</a></div>
+</header>
+<main class="contenedor estrecho" style="padding-bottom:3rem">
+  <p class="nota-maqueta">Maqueta · <strong>/panel/[local]/qr</strong>. El QR real se dibuja como vectores (nítido al imprimir), siempre negro sobre blanco y sin logo dentro (se lee mejor). El dibujo de abajo es ilustrativo.</p>
+
+  <h1>Tu QR</h1>
+  <p class="suave">Llévalo a las mesas: al escanearlo se abre tu carta, siempre al día.</p>
+
+  <div class="tarjeta qr-grande" style="margin-top:1rem">
+    <svg viewBox="0 0 29 29" role="img" aria-label="Código QR de la carta (ilustrativo)" shape-rendering="crispEdges">
+      <rect width="29" height="29" fill="#fff"/>
+      <g fill="#1f1a17">
+        <path d="M2 2h7v7H2zM3 3v5h5V3zM4 4h3v3H4z" fill-rule="evenodd"/>
+        <path d="M20 2h7v7h-7zM21 3v5h5V3zM22 4h3v3h-3z" fill-rule="evenodd"/>
+        <path d="M2 20h7v7H2zM3 21v5h5v-5zM4 22h3v3H4z" fill-rule="evenodd"/>
+        <path d="M11 2h1v1h-1zM13 3h2v1h-2zM11 5h1v2h-1zM14 6h2v1h-2zM12 8h1v1h-1zM16 9h2v2h-2zM11 11h3v1h-3zM2 11h2v1H2zM6 12h3v1H6zM15 12h1v3h-1zM18 13h3v1h-3zM23 11h2v2h-2zM26 14h1v2h-1zM11 14h2v2h-2zM2 15h1v2H2zM5 16h2v1H5zM9 15h1v3H9zM13 17h3v1h-3zM17 16h1v2h-1zM20 16h2v1h-2zM24 17h3v1h-3zM11 19h1v2h-1zM14 20h2v1h-2zM18 19h2v2h-2zM22 20h1v3h-1zM24 22h3v1h-3zM11 23h3v1h-3zM16 23h2v2h-2zM20 24h1v3h-1zM12 26h2v1h-2zM25 25h2v2h-2zM17 26h2v1h-2z"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="enlace" style="margin-top:1rem">
+    <code>kartana-six.vercel.app/c/demo</code>
+    <button class="boton secundario" type="button">Copiar enlace</button>
+  </div>
+  <div class="fila envolver" style="margin-top:.75rem">
+    <a class="boton secundario" href="carta-publica.html">Abrir mi carta</a>
+    <a class="boton fantasma" href="#">Descargar solo el QR (SVG)</a>
+  </div>
+  <p class="aviso atencion pequeno" style="margin-top:1rem">Consejo: prueba el QR con tu móvil antes de imprimir muchos.</p>
+
+  <div class="formatos">
+    <div class="tarjeta formato">
+      <div class="miniatura mesa" aria-hidden="true"><div><span class="q"></span></div><div><span class="q"></span></div><div><span class="q"></span></div><div><span class="q"></span></div></div>
+      <div class="pila">
+        <h2>Cartelito de mesa</h2>
+        <p class="pequeno suave">4 por hoja A4 (tamaño A6). Imprime en cartulina, recorta y dobla. Lleva tu logo.</p>
+        <a class="boton primario bloque" href="#">Descargar PDF</a>
+      </div>
+    </div>
+    <div class="tarjeta formato">
+      <div class="miniatura pegatinas" aria-hidden="true"><div><span class="q"></span></div><div><span class="q"></span></div><div><span class="q"></span></div><div><span class="q"></span></div><div><span class="q"></span></div><div><span class="q"></span></div></div>
+      <div class="pila">
+        <h2>Pegatinas</h2>
+        <p class="pequeno suave">6 por hoja A4 (8 × 8 cm). Para papel adhesivo: mesas, barra o escaparate.</p>
+        <a class="boton primario bloque" href="#">Descargar PDF</a>
+      </div>
+    </div>
+    <div class="tarjeta formato">
+      <div class="miniatura poster" aria-hidden="true"><span class="q"></span></div>
+      <div class="pila">
+        <h2>Póster</h2>
+        <p class="pequeno suave">A4 vertical con tu color y tu logo. Para la entrada o la pared.</p>
+        <a class="boton primario bloque" href="#">Descargar PDF</a>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta · Panel: carta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  body { padding-bottom: 84px; }
+  .barra-panel { background: var(--superficie); border-bottom: 1px solid var(--borde); position: sticky; top: 0; z-index: 5; }
+  .barra-panel .contenedor { height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .marca { font-family: "Fraunces", serif; font-weight: 600; font-size: 1.25rem; text-decoration: none; }
+  .titulo-local { padding: 1.25rem 0 .5rem; }
+  .titulo-local h1 { font-size: 1.625rem; }
+
+  .acciones-lista { display: flex; gap: .5rem; margin: .75rem 0 1rem; }
+
+  .seccion-panel { margin-top: 1rem; }
+  .seccion-panel > summary { list-style: none; cursor: pointer; }
+  .seccion-panel > summary::-webkit-details-marker { display: none; }
+  .cab-seccion { display: flex; align-items: center; gap: .5rem; min-height: 56px; padding: .5rem .75rem; background: var(--superficie-suave); border-radius: var(--radio); }
+  .cab-seccion h2 { font-size: 1.25rem; flex: 1; }
+  .flechas { display: none; gap: .25rem; }
+  body.ordenando .flechas { display: flex; }
+  .flecha { width: 48px; height: 48px; border-radius: 12px; border: 1px solid var(--borde); background: var(--superficie); font-size: 1.125rem; cursor: pointer; }
+
+  .plato-fila { display: flex; align-items: center; gap: .75rem; padding: .75rem .25rem; border-bottom: 1px solid var(--borde); }
+  .plato-fila .info { flex: 1; min-width: 0; text-decoration: none; color: inherit; display: block; min-height: 48px; }
+  .plato-fila .nombre { font-weight: 600; }
+  .plato-fila .precio { color: var(--texto-suave); font-size: .9375rem; }
+  .mini-al { display: flex; gap: .25rem; margin-top: .25rem; }
+  .mini-al .al { width: 22px; height: 22px; font-size: .5625rem; border-width: 1.5px; }
+
+  /* Botón agotado de un toque: casilla con aspecto de botón (en la web real, botón con useOptimistic) */
+  .agotado { position: relative; flex: none; }
+  .agotado input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .agotado span { display: inline-flex; align-items: center; justify-content: center; min-width: 112px; min-height: 48px; padding: 0 .75rem; border-radius: 999px; font-weight: 700; font-size: .9375rem; border: 2px solid var(--exito); color: var(--exito); background: #f1f7ec; }
+  .agotado span::before { content: "Disponible"; }
+  .agotado input:checked + span { border-color: var(--peligro); color: #fff; background: var(--peligro); }
+  .agotado input:checked + span::before { content: "Agotado"; }
+  .agotado input:focus-visible + span { outline: 3px solid var(--foco); outline-offset: 2px; }
+
+  .anadir { display: flex; align-items: center; justify-content: center; min-height: 52px; margin: .5rem 0 0; border: 2px dashed var(--borde); border-radius: var(--radio); color: var(--primario); font-weight: 600; text-decoration: none; }
+
+  .nav-panel { position: fixed; left: 0; right: 0; bottom: 0; background: var(--superficie); border-top: 1px solid var(--borde); padding-bottom: env(safe-area-inset-bottom); z-index: 10; }
+  .nav-panel ul { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); max-width: var(--estrecho); }
+  .nav-panel a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 64px; text-decoration: none; font-size: .75rem; font-weight: 600; color: var(--texto-suave); }
+  .nav-panel a[aria-current="page"] { color: var(--primario); }
+  .nav-panel svg { width: 24px; height: 24px; }
+</style>
+</head>
+<body>
+<header class="barra-panel">
+  <div class="contenedor estrecho">
+    <a class="marca" href="#">Kartana</a>
+    <a class="boton fantasma" href="#">Cuenta</a>
+  </div>
+</header>
+
+<main class="contenedor estrecho" id="contenido">
+  <p class="nota-maqueta">Maqueta · <strong>/panel/[local]/carta</strong>. El botón «Disponible / Agotado» cambia con un toque (pruébalo). «Ordenar» muestra las flechas ↑↓. Platos reales de la carta de ejemplo.</p>
+
+  <div class="titulo-local">
+    <div class="fila entre envolver">
+      <h1>Tu carta</h1>
+      <span class="insignia exito">Publicada</span>
+    </div>
+    <p class="suave pequeno">Cafetería La Guagua · Prueba gratis: te quedan 23 días</p>
+  </div>
+
+  <div class="acciones-lista">
+    <a class="boton secundario" href="#">Ver mi carta</a>
+    <button class="boton secundario" type="button" onclick="document.body.classList.toggle('ordenando')">Ordenar</button>
+  </div>
+
+  <details class="seccion-panel" open>
+    <summary class="cab-seccion">
+      <h2>Tapas y raciones</h2>
+      <span class="insignia">13 platos</span>
+      <span class="flechas"><button class="flecha" type="button" aria-label="Subir sección">↑</button><button class="flecha" type="button" aria-label="Bajar sección">↓</button></span>
+    </summary>
+
+    <div class="plato-fila">
+      <span class="flechas"><button class="flecha" type="button" aria-label="Subir Patatas bravas">↑</button><button class="flecha" type="button" aria-label="Bajar Patatas bravas">↓</button></span>
+      <a class="info" href="editor-plato.html">
+        <span class="nombre">Patatas bravas</span><br>
+        <span class="precio">½ 2,25 € · Ración 3,75 €</span>
+        <span class="mini-al"><span class="al" title="Huevos">HU</span></span>
+      </a>
+      <label class="agotado"><input type="checkbox" aria-label="Agotado: Patatas bravas"><span></span></label>
+    </div>
+
+    <div class="plato-fila">
+      <span class="flechas"><button class="flecha" type="button" aria-label="Subir">↑</button><button class="flecha" type="button" aria-label="Bajar">↓</button></span>
+      <a class="info" href="editor-plato.html">
+        <span class="nombre">Queso frito</span><br>
+        <span class="precio">½ 4,00 € · Ración 6,50 €</span>
+        <span class="mini-al"><span class="al">LA</span><span class="al">GL</span><span class="al">HU</span></span>
+      </a>
+      <label class="agotado"><input type="checkbox" checked aria-label="Agotado: Queso frito"><span></span></label>
+    </div>
+
+    <div class="plato-fila">
+      <span class="flechas"><button class="flecha" type="button" aria-label="Subir">↑</button><button class="flecha" type="button" aria-label="Bajar">↓</button></span>
+      <a class="info" href="editor-plato.html">
+        <span class="nombre">Chupa-chups de queso de cabra</span><br>
+        <span class="precio">Unidad 1,50 €</span>
+        <span class="mini-al"><span class="insignia aviso">Alérgenos sin revisar</span></span>
+      </a>
+      <label class="agotado"><input type="checkbox" aria-label="Agotado: Chupa-chups de queso de cabra"><span></span></label>
+    </div>
+
+    <div class="plato-fila">
+      <span class="flechas"><button class="flecha" type="button" aria-label="Subir">↑</button><button class="flecha" type="button" aria-label="Bajar">↓</button></span>
+      <a class="info" href="editor-plato.html">
+        <span class="nombre">Ensaladilla rusa</span><br>
+        <span class="precio">½ 2,80 € · Ración 4,25 €</span>
+        <span class="mini-al"><span class="al">HU</span><span class="al">PE</span></span>
+      </a>
+      <label class="agotado"><input type="checkbox" aria-label="Agotado: Ensaladilla rusa"><span></span></label>
+    </div>
+
+    <a class="anadir" href="editor-plato.html">+ Añadir plato a «Tapas y raciones»</a>
+  </details>
+
+  <details class="seccion-panel" open>
+    <summary class="cab-seccion">
+      <h2>Pescados y cefalópodos</h2>
+      <span class="insignia">12 platos</span>
+      <span class="flechas"><button class="flecha" type="button" aria-label="Subir sección">↑</button><button class="flecha" type="button" aria-label="Bajar sección">↓</button></span>
+    </summary>
+    <div class="plato-fila">
+      <span class="flechas"><button class="flecha" type="button" aria-label="Subir">↑</button><button class="flecha" type="button" aria-label="Bajar">↓</button></span>
+      <a class="info" href="editor-plato.html">
+        <span class="nombre">Pulpo a la gallega</span><br>
+        <span class="precio">Mediana 10,00 € · Grande 12,00 €</span>
+        <span class="mini-al"><span class="al">ML</span></span>
+      </a>
+      <label class="agotado"><input type="checkbox" aria-label="Agotado: Pulpo a la gallega"><span></span></label>
+    </div>
+    <div class="plato-fila">
+      <span class="flechas"><button class="flecha" type="button" aria-label="Subir">↑</button><button class="flecha" type="button" aria-label="Bajar">↓</button></span>
+      <a class="info" href="editor-plato.html">
+        <span class="nombre">Calamares a la romana</span><br>
+        <span class="precio">½ docena 2,40 € · Docena 4,75 €</span>
+        <span class="mini-al"><span class="al">ML</span><span class="al">GL</span></span>
+      </a>
+      <label class="agotado"><input type="checkbox" aria-label="Agotado: Calamares a la romana"><span></span></label>
+    </div>
+    <a class="anadir" href="editor-plato.html">+ Añadir plato a «Pescados y cefalópodos»</a>
+  </details>
+
+  <details class="seccion-panel">
+    <summary class="cab-seccion"><h2>Mariscos</h2><span class="insignia">16 platos</span></summary>
+  </details>
+  <details class="seccion-panel">
+    <summary class="cab-seccion"><h2>Postres</h2><span class="insignia aviso">Oculta</span><span class="insignia">2 platos</span></summary>
+  </details>
+
+  <a class="anadir" href="#" style="margin-top:1.25rem">+ Nueva sección</a>
+</main>
+
+<nav class="nav-panel" aria-label="Panel">
+  <ul>
+    <li><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</a></li>
+    <li><a href="#" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Carta</a></li>
+    <li><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9h16M9 3v4M15 3v4"/></svg>Menú</a></li>
+    <li><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 10l2-5h12l2 5M4 10v10h16V10M4 10h16"/><path d="M10 20v-5h4v5"/></svg>Local</a></li>
+    <li><a href="qr.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 18h2"/></svg>QR</a></li>
+  </ul>
+</nav>
+</body>
+</html>

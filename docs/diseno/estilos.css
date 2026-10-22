@@ -1,0 +1,119 @@
+/*
+ * Maquetas de Kartana · Fase 2.
+ * Tokens copiados de src/app/globals.css (mismos nombres y valores).
+ * Solo para las maquetas estáticas: la web real usa Tailwind con estos tokens.
+ */
+:root {
+  --fondo: #fbf7f1;
+  --superficie: #ffffff;
+  --superficie-suave: #f4ede3;
+  --texto: #1f1a17;
+  --texto-suave: #5f554d;
+  --borde: #e6dccf;
+  --primario: #b9461a;
+  --primario-hover: #9c3a14;
+  --sobre-primario: #ffffff;
+  --exito: #3f6b1e;
+  --aviso: #8a5a00;
+  --peligro: #b42318;
+  --foco: #1d4ed8;
+  --marca: var(--primario);
+  --sobre-marca: #ffffff;
+
+  --estrecho: 40rem; /* 640 px: panel y carta */
+  --ancho: 70rem; /* 1120 px: web de venta */
+  --radio: 14px;
+  --radio-grande: 22px;
+  --sombra: 0 1px 2px rgb(31 26 23 / 6%), 0 4px 16px rgb(31 26 23 / 6%);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 1.2; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+.contenedor { width: 100%; margin-inline: auto; padding-inline: 1rem; max-width: var(--ancho); }
+.contenedor.estrecho { max-width: var(--estrecho); }
+@media (min-width: 640px) { .contenedor { padding-inline: 1.5rem; } }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.suave { color: var(--texto-suave); }
+.pequeno { font-size: .875rem; }
+.pila > * + * { margin-top: .75rem; }
+.fila { display: flex; align-items: center; gap: .75rem; }
+.entre { justify-content: space-between; }
+.envolver { flex-wrap: wrap; }
+
+/* Nota de maqueta (no forma parte del diseño) */
+.nota-maqueta {
+  background: #fff7d6; border: 1px dashed #c9a400; color: #4a3b00;
+  font-size: .8125rem; padding: .5rem .75rem; border-radius: 10px; margin: .75rem 0;
+}
+
+/* Botones */
+.boton {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 48px; padding: 0 1.25rem; border-radius: 999px; border: 1px solid transparent;
+  font: inherit; font-weight: 600; cursor: pointer; text-decoration: none;
+}
+.boton.grande { min-height: 56px; font-size: 1.125rem; padding: 0 1.5rem; }
+.boton.primario { background: var(--primario); color: var(--sobre-primario); }
+.boton.primario:hover { background: var(--primario-hover); }
+.boton.secundario { background: var(--superficie); color: var(--texto); border-color: var(--borde); }
+.boton.fantasma { background: transparent; color: var(--texto); }
+.boton.peligro { background: var(--superficie); color: var(--peligro); border-color: currentColor; }
+.boton.bloque { width: 100%; }
+
+/* Tarjetas, insignias, avisos */
+.tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio-grande); padding: 1rem; box-shadow: var(--sombra); }
+.insignia { display: inline-flex; align-items: center; gap: .25rem; font-size: .8125rem; font-weight: 600; padding: .125rem .625rem; border-radius: 999px; background: var(--superficie-suave); color: var(--texto-suave); white-space: nowrap; }
+.insignia.exito { background: #e7f0df; color: var(--exito); }
+.insignia.aviso { background: #f7ecd5; color: var(--aviso); }
+.insignia.peligro { background: #fbe4e2; color: var(--peligro); }
+.aviso { border-radius: var(--radio); padding: .75rem 1rem; background: var(--superficie-suave); }
+.aviso.exito { background: #e7f0df; color: var(--exito); }
+.aviso.atencion { background: #f7ecd5; color: var(--aviso); }
+
+/* Campos */
+.campo { display: block; }
+.campo > span { display: block; font-weight: 600; margin-bottom: .375rem; }
+.campo .ayuda { font-weight: 400; color: var(--texto-suave); font-size: .875rem; }
+.entrada, select.entrada, textarea.entrada {
+  width: 100%; min-height: 52px; padding: .75rem 1rem; border: 1px solid var(--borde); border-radius: var(--radio);
+  background: var(--superficie); color: var(--texto); font: inherit;
+}
+textarea.entrada { min-height: 96px; resize: vertical; }
+
+/* Iconos provisionales de alérgenos (marcadores: el juego definitivo lo dibuja el carril de contenido) */
+.al {
+  display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid currentColor; font-size: .6875rem; font-weight: 700; letter-spacing: .02em; color: var(--texto-suave);
+  background: var(--superficie); flex: none;
+}
+.al.grande { width: 40px; height: 40px; font-size: .8125rem; }
+
+/* Interruptor */
+.interruptor { position: relative; display: inline-flex; align-items: center; gap: .75rem; min-height: 48px; cursor: pointer; }
+.interruptor input { position: absolute; opacity: 0; }
+.interruptor .pista { width: 52px; height: 32px; border-radius: 999px; background: var(--borde); position: relative; flex: none; }
+.interruptor .pista::after { content: ""; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 20%); transition: transform .15s; }
+.interruptor input:checked + .pista { background: var(--exito); }
+.interruptor input:checked + .pista::after { transform: translateX(20px); }
+.interruptor input:focus-visible + .pista { outline: 3px solid var(--foco); outline-offset: 2px; }
+
+/* Marco de teléfono para la portada */
+.telefono { width: 280px; border-radius: 36px; border: 10px solid #1f1a17; background: var(--fondo); overflow: hidden; box-shadow: 0 20px 50px rgb(31 26 23 / 25%); }
