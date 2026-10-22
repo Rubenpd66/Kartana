@@ -13,22 +13,7 @@ Nada urgente ahora mismo.
 
 - [x] ~~Contraseña de aplicación de Gmail~~ — hecho el 22/10: SMTP de Gmail configurado en Supabase (smtp.gmail.com:465). Se probará con el primer código de acceso.
 
-- [ ] **3. «Entrar con Google»** (proyecto `kartana` de Google Cloud ya creado el 22/10) — **Por qué:** es una de las dos formas de entrar al panel (v0.1). No necesita tarjeta. **Pasos:**
-  1. En [console.cloud.google.com](https://console.cloud.google.com), comprueba arriba a la izquierda que está seleccionado el proyecto **kartana**.
-  2. Menú ☰ → **APIs y servicios** → **Pantalla de consentimiento de OAuth** (puede llamarse **Google Auth Platform**) → **Comenzar**.
-  3. Rellena: nombre de la app `Kartana`, correo de asistencia: tu Gmail → **Siguiente**. Público: **Externo** → **Siguiente**. Correo de contacto: tu Gmail → **Siguiente**. Acepta la política → **Crear**.
-  4. En el menú de la izquierda, **Clientes** → **Crear cliente** → tipo **Aplicación web** → nombre `Kartana web`.
-     - En **Orígenes de JavaScript autorizados** añade dos: `https://kartana-six.vercel.app` y `http://localhost:3000`.
-     - En **URI de redireccionamiento autorizados** añade: `https://iewlsyvdkxzcncrbhpyx.supabase.co/auth/v1/callback`
-     - Pulsa **Crear**. Te enseña un **ID de cliente** y un **Secreto del cliente**. No cierres la ventana y **no me los pegues aquí**.
-  5. En otra pestaña, en [Supabase](https://supabase.com/dashboard) → proyecto **kartana** → **Authentication** → **Sign In / Providers** (o **Providers**) → **Google** → actívalo, pega el **ID de cliente** y el **Secreto** → **Save**.
-  6. En Supabase, **Authentication** → **URL Configuration**:
-     - **Site URL:** `https://kartana-six.vercel.app`
-     - **Redirect URLs** (botón **Add URL**, una a una): `https://kartana-six.vercel.app/**`, `http://localhost:3000/**` y `http://localhost:3100/**` → **Save**.
-  7. Vuelve a Google: menú de la izquierda **Desarrollo de la marca** (Branding). Página principal: `https://kartana-six.vercel.app`; política de privacidad: `https://kartana-six.vercel.app/legal/privacidad`; condiciones: `https://kartana-six.vercel.app/legal/condiciones` → **Guardar**.
-  8. Menú de la izquierda **Público** (Audience) → **Publicar aplicación** → **Confirmar**. Así puede entrar cualquier dueño, no solo tú. Como solo pedimos nombre y correo, Google no exige revisión.
-  
-  **Devuélveme:** «Google login configurado».
+- [x] ~~«Entrar con Google»~~ — hecho el 22/10: cliente OAuth «Kartana web» en Google Cloud, proveedor Google activo en Supabase y URLs de retorno configuradas (comprobado: redirige a Google con el cliente correcto).
 
 - [ ] **3b. Google Cloud: facturación y dos APIs** (para la v0.2 y la v0.3; puede esperar unos días) — **Por qué:** traducción de cartas y buscador de fichas de Google. Google pide tarjeta aunque a nuestro volumen sea gratis. **Pasos:**
   1. Menú ☰ → **Facturación** → **Vincular una cuenta de facturación** → crea una con tu tarjeta.
