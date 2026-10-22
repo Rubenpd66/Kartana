@@ -15,13 +15,7 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 
 ## Pronto (tarda días en estar listo)
 
-- [ ] **2. Contraseña de aplicación de Gmail (para los correos de acceso del piloto)** — **Por qué:** el dueño entra con un código que le llega por correo. Sin dominio propio, lo enviaremos desde tu Gmail. **Pasos:**
-  1. Entra en [myaccount.google.com/security](https://myaccount.google.com/security) y comprueba que la **Verificación en dos pasos** está activada (si no, actívala).
-  2. Abre [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords).
-  3. Nombre de la aplicación: `Kartana` → **Crear**.
-  4. Te enseña una contraseña de 16 letras. **No me la pegues aquí**: cuando te avise, la pegarás en Supabase (te daré la pantalla exacta).
-  
-  **Devuélveme:** «contraseña de Gmail creada».
+- [x] ~~Contraseña de aplicación de Gmail~~ — hecho el 22/10: SMTP de Gmail configurado en Supabase (smtp.gmail.com:465). Se probará con el primer código de acceso.
 
 - [ ] **3. Google Cloud: proyecto, facturación y dos APIs** — **Por qué:** «Entrar con Google», traducción de cartas (v0.2) y buscador de fichas de Google (v0.3). Google pide tarjeta aunque a nuestro volumen sea gratis. **Pasos:**
   1. Entra en [console.cloud.google.com](https://console.cloud.google.com) con tu cuenta de Google.
