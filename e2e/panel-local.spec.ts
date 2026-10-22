@@ -132,8 +132,15 @@ test.describe("panel-local", () => {
   test("un color demasiado claro no se puede guardar", async ({ page }) => {
     const inicio = await irAlInicio(page);
     await page.goto(`${inicio}/local`);
-    await page.getByLabel("O elige otro color").fill("#ffee99");
-    await expect(page.getByRole("alert").filter({ hasText: "demasiado claro" })).toBeVisible();
+    // Con el servidor cargado (suite completa) el campo puede rellenarse antes de que React lo active
+    // y el cambio se pierde: se repite hasta que la página responde.
+    const color = page.getByLabel("O elige otro color");
+    const aviso = page.getByRole("alert").filter({ hasText: "demasiado claro" });
+    await expect(async () => {
+      await color.fill("#000000");
+      await color.fill("#ffee99");
+      await expect(aviso).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
     await expect(page.getByRole("button", { name: "Guardar color" })).toBeDisabled();
   });
 
