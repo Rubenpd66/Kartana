@@ -65,7 +65,7 @@ describe("/auth/callback", () => {
 describe("/auth/salir", () => {
   it("cierra la sesión y lleva a la portada con 303", async () => {
     const r = await salir.POST(new NextRequest("http://localhost:3000/auth/salir", { method: "POST" }));
-    expect(signOut).toHaveBeenCalled();
+    expect(signOut).toHaveBeenCalledWith({ scope: "local" });
     expect(r.status).toBe(303);
     expect(r.headers.get("location")).toBe("http://localhost:3000/");
   });
