@@ -18,6 +18,13 @@ jobs:
       NEXT_PUBLIC_SITIO_URL: http://localhost:3100
       NEXT_PUBLIC_SUPABASE_URL: https://iewlsyvdkxzcncrbhpyx.supabase.co
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_NtQf6huN9R8YatNzN9uksA_cfT0wSKE
+      # Usuarios de prueba: login por /auth/e2e (solo existe con E2E_ACCESO=true y fuera de Vercel).
+      E2E_ACCESO: "true"
+      E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+      ADMIN_EMAILS: ${{ secrets.E2E_ADMIN_EMAIL }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7

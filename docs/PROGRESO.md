@@ -1,7 +1,9 @@
 # Progreso
 
 ## Estado actual
-**Fase 3 (v0.1, ola 1) en marcha (22/10/2026).** Diseño aprobado (PC2). Carriles `datos`, `contenido` y `acceso` trabajando en sus worktrees. Pendiente del usuario: plantillas de correo (TU-TURNO B).
+**Fase 3 (v0.1) · integración 1 en curso (23/10/2026).** Carriles `datos`, `acceso` y `contenido` terminados y fusionados en `main`. Lint, tipos, 444 tests unitarios y build en verde; e2e: 17 de 20 pasan (los 3 restantes esperan a la migración y a `/panel` de la ola 2).
+**Bloqueado:** aplicar la migración `modelo_v01` (y luego `imagenes_v01`) a Supabase — el servidor pide una confirmación que en esta sesión se rechaza sola (TU-TURNO).
+Después: tests SQL, advisors, tipos generados, rol de admin, local `e2e-prueba`, semilla de la demo, y lanzar la ola 2.
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
