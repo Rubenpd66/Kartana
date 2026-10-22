@@ -60,13 +60,16 @@ test.describe("con la sesión del administrador", () => {
       await expect(tarjeta.getByRole("status")).toContainText("ahora está en Piloto");
       await expect(tarjeta.getByRole("button", { name: "Renovar piloto 60 días desde hoy" })).toBeVisible();
     } finally {
-      await page.goto("/admin");
-      const t2 = page.locator("article", { hasText: "/c/e2e-prueba" });
-      const dar = t2.getByRole("button", { name: "Dar cortesía" });
+      // Se restaura desde la misma tarjeta (sin recargar: una página recargada podía mostrar aún
+      // «Cortesía», ocultar el botón y dejar el local en piloto sin que nadie se enterase).
+      const dar = tarjeta.getByRole("button", { name: "Dar cortesía" });
       if (await dar.count()) {
         await dar.click();
-        await expect(t2.getByText("Cortesía · sin fin").first()).toBeVisible();
+        await expect(tarjeta.getByRole("status")).toContainText("Cortesía");
       }
     }
+    // Y queda guardado de verdad: al recargar sigue en cortesía.
+    await page.reload();
+    await expect(page.locator("article", { hasText: "/c/e2e-prueba" }).getByText("Cortesía · sin fin").first()).toBeVisible();
   });
 });

@@ -96,9 +96,12 @@ test.describe("con la sesión del dueño de pruebas", () => {
     expect(errores).toEqual([]);
   });
 
-  test("/admin da 404 al dueño de pruebas", async ({ page }) => {
-    const r = await page.goto("/admin");
-    expect(r?.status()).toBe(404);
+  // Con Cache Components, exigirAdmin() va dentro de <Suspense>: el estado HTTP es 200 y la página
+  // «no encontrada» llega por streaming. Se comprueba lo que ve la persona (igual que e2e/admin.spec.ts).
+  test("/admin muestra «no encontrada» al dueño de pruebas", async ({ page }) => {
+    await page.goto("/admin");
+    await expect(page.getByText("404", { exact: true })).toBeVisible();
+    await expect(page).toHaveURL(/\/admin$/);
   });
 });
 
