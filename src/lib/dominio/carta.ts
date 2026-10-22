@@ -79,7 +79,10 @@ export function aMenuPublico(menu: Menu): MenuPublico {
  * Carta del panel -> carta pública (la vista previa): solo lo visible, ordenado, sin secciones vacías,
  * con URLs absolutas de logo y fotos. No modifica la entrada.
  */
-export function convertirACartaPublica(carta: CartaPanel, urlPublica: (ruta: string) => string): CartaPublica {
+export function convertirACartaPublica(
+  carta: Pick<CartaPanel, "local" | "secciones" | "menus">,
+  urlPublica: (ruta: string) => string,
+): CartaPublica {
   const secciones = carta.secciones
     .filter((s) => s.visible)
     .sort(porOrden)

@@ -311,8 +311,8 @@ create table if not exists public.platos (
   traducciones jsonb not null default '{}' check (jsonb_typeof(traducciones) = 'object'),
   creado_en timestamptz not null default now(),
   actualizado_en timestamptz not null default now(),
-  -- un plato nunca puede quedar en una sección de otro local
-  foreign key (seccion_id, local_id) references public.secciones (id, local_id) on delete cascade
+  -- un plato nunca puede quedar en una sección de otro local (nombre fijo: lo usa el embebido platos!platos_seccion_fk)
+  constraint platos_seccion_fk foreign key (seccion_id, local_id) references public.secciones (id, local_id) on delete cascade
 );
 create index if not exists platos_local_id_idx on public.platos (local_id);
 create index if not exists platos_seccion_local_orden_idx on public.platos (seccion_id, local_id, orden);
