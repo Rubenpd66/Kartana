@@ -1,7 +1,13 @@
 # Progreso
 
 ## Estado actual
-**Fase 1 terminada (22/10/2026).** Web v0.0 publicada en https://kartana-six.vercel.app. Siguiente: Fase 2 (kit-arquitecto: modelo de datos, rutas, maquetas y carriles) → punto de control 2 (aprobar el diseño).
+**Fase 2 terminada; Fase 3 (v0.1, ola 1) en marcha (22/10/2026).** Carriles `datos` y `contenido` trabajando en sus worktrees. `acceso` espera al punto de control 2 (aprobar maquetas). Pendiente del usuario: maquetas y plantillas de correo (TU-TURNO A y B).
+
+## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
+- kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
+- Maquetas en `docs/diseno/` (carta pública, panel, editor de plato, QR, admin, entrar, portada) con la carta real de «Cafetería La Guagua» (`docs/datos/carta-la-guagua.md`).
+- Requisitos añadidos por el director: precios por variante (½ / ración, mediana / grande, unidad, docena) y carta de demostración.
+- 8 decisiones confirmadas (ver DECISIONES). Preparativos: `@react-pdf/renderer` 4.9.0 y `qrcode` 1.5.4 instalados; usuarios de prueba creados y confirmados (credenciales en `.env.local` y secretos de GitHub); SMTP de Gmail comprobado (envía correos).
 
 ## Fase 1 — Cimientos · ✅ 22/10/2026
 - **Despliegue v0.0:** Vercel, proyecto `kartana` (`prj_1FF6EsbKsC6n7DkIHJAi1Fo4XbCl`), funciones en fra1, enlazado a GitHub (cada push a `main` publica). Dirección: https://kartana-six.vercel.app (`kartana.vercel.app` estaba cogida). `/api/health` → `{estado: ok, bd: ok}`. Las 6 pruebas de navegador pasan contra la web publicada: sin errores de consola ni de hidratación, cabeceras de seguridad presentes.
