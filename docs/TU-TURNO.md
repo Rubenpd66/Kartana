@@ -4,11 +4,14 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 
 ## Urgente (bloquea algo)
 
-- [ ] **1. Autorizar GitHub CLI** (ya la he instalado yo) — **Por qué:** sin ella no puedo crear el repositorio privado `kartana` ni subir el código. **Pasos:**
-  1. Abre [github.com/login/device](https://github.com/login/device) e inicia sesión si te lo pide.
-  2. Escribe el código de 8 caracteres que te he dado en el chat → **Continue** → **Authorize github**.
+- [x] ~~Autorizar GitHub CLI~~ (hecho el 22/10).
+- [ ] **1. Dar acceso a Vercel al repositorio `kartana`** — **Por qué:** sin esto Vercel no puede publicar la web. Ahora solo ve el repositorio `forja`. **Pasos:**
+  1. Abre [github.com/settings/installations](https://github.com/settings/installations).
+  2. En la fila **Vercel**, pulsa **Configure**.
+  3. Baja hasta **Repository access**. Deja marcado **Only select repositories**, pulsa **Select repositories** y elige **kartana** (sin quitar `forja`).
+  4. Pulsa **Save**. Si te pide la contraseña de GitHub, ponla.
   
-  **Devuélveme:** «autorizado».
+  **Devuélveme:** «Vercel ya ve kartana».
 
 ## Pronto (tarda días en estar listo)
 
