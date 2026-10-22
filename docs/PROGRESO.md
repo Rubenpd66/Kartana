@@ -1,7 +1,7 @@
 # Progreso
 
 ## Estado actual
-**Fase 3 (v0.1) · integración 1 en curso (23/10/2026).** Carriles `datos`, `acceso` y `contenido` terminados y fusionados en `main`. Lint, tipos, 444 tests unitarios y build en verde; e2e: 17 de 20 pasan (los 3 restantes esperan a la migración y a `/panel` de la ola 2).
+**Fase 3 (v0.1) · integración 1 en curso (23/10/2026).** Carriles `datos`, `acceso` y `contenido` terminados y fusionados en `main`. Lint, tipos, 444 tests unitarios y build en verde; e2e: 17 de 20 pasan (los 3 restantes: 2 por la precarga de `/panel`, que crea panel-local en la ola 2, y 1 por el límite de un código por minuto de Supabase).
 **Bloqueado:** aplicar la migración `modelo_v01` (y luego `imagenes_v01`) a Supabase — el servidor pide una confirmación que en esta sesión se rechaza sola (TU-TURNO).
 Después: tests SQL, advisors, tipos generados, rol de admin, local `e2e-prueba`, semilla de la demo, y lanzar la ola 2.
 
