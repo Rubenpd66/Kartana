@@ -27,6 +27,9 @@ Todo dato, imagen o servicio de terceros, con su licencia o condiciones. Se actu
   - *Nota (Fase 2):* la carta de demostración «Cafetería La Guagua» (`docs/datos/carta-la-guagua.md`) se publica **sin fotos de platos**: las fotos que pasó el usuario no se usan hasta saber quién las hizo y tener permiso.
 - **Tipografías en los PDF de QR (v0.1):** Figtree y Fraunces en TTF estáticos (SIL Open Font License 1.1, repositorio oficial de Google Fonts), guardadas en `src/lib/qr/fuentes/`. El carril `qr-pdf` confirma aquí la versión descargada.
 
+- **Iconos de los 14 alérgenos (definitivos, 22/10/2026):** dibujados por el carril `contenido` de Kartana, SVG en línea (`src/componentes/alergenos/trazos.ts`). Licencia propia, ofrecidos también como CC0. No derivan de ningún juego ajeno. Sustituyen a los marcadores provisionales de las maquetas.
+- **Diccionarios de la carta:** nombres de alérgenos según el anexo II del Reglamento (UE) 1169/2011 (es, en, fr, de); ACSA (ca); euskadi.eus y ELIKA (eu); terminología pública gallega (gl). Detalle y dudas en `docs/contenido/fuentes-diccionarios.md`. **eu y gl pendientes de revisión por un hablante nativo.**
+
 ## Librerías con licencia a vigilar (Fase 2)
 | Librería | Uso | Licencia | Versión prevista |
 |---|---|---|---|
@@ -36,7 +39,7 @@ Todo dato, imagen o servicio de terceros, con su licencia o condiciones. Se actu
 ## Datos de ejemplo
 | Dato | Fuente | Condiciones |
 |---|---|---|
-| Carta de «Cafetería La Guagua» (platos y precios) | El usuario, 22/10/2026 (`docs/datos/carta-la-guagua.md`) | Se usa como carta de ejemplo con su nombre, marcada siempre como «Carta de ejemplo»; descripciones y alérgenos orientativos; sin indexar en Google (`permitir_indexar = false`). |
+| Carta de «Cafetería La Guagua» (platos y precios) | El usuario, 22/10/2026 (`docs/datos/carta-la-guagua.md`) | Se usa como carta de ejemplo con su nombre, marcada siempre como «Carta de ejemplo»; descripciones y alérgenos orientativos; sin indexar en Google (`permitir_indexar = false`). Pertenece a la cuenta `rubenpd66+demo@gmail.com`. Platos y precios inventados para completar: ver `docs/contenido/carta-demo.md`. |
 
 ## Contenido del usuario
 - Textos, precios, fotos y logos de cada bar son del establecimiento. Las condiciones del servicio le dan a Kartana licencia solo para mostrarlos en su carta.

@@ -11,9 +11,9 @@ declare
   v_local uuid;
   v_seccion uuid;
 begin
-  select id into v_dueno from public.perfiles where correo = 'rubenpd66@gmail.com';
+  select id into v_dueno from public.perfiles where correo = 'rubenpd66+demo@gmail.com';
   if v_dueno is null then
-    raise exception 'El administrador (rubenpd66@gmail.com) debe haber entrado una vez en la web antes de ejecutar esta semilla.';
+    raise exception 'Falta la cuenta de demo (rubenpd66+demo@gmail.com) en perfiles: créala antes de ejecutar esta semilla.';
   end if;
 
   delete from public.locales where slug = 'demo';

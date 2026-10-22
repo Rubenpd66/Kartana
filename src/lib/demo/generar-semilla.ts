@@ -11,7 +11,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { CartaDemo, ItemMenuDemo, PlatoDemo } from "./carta-demo";
 
-export const CORREO_DUENO_DEMO = "rubenpd66@gmail.com";
+export const CORREO_DUENO_DEMO = "rubenpd66+demo@gmail.com";
 
 // ---------------------------------------------------------------------------
 // Escapes de SQL
@@ -84,7 +84,7 @@ export function generarSemilla(carta: CartaDemo): string {
     "begin",
     `  select id into v_dueno from public.perfiles where correo = ${sqlTexto(CORREO_DUENO_DEMO)};`,
     "  if v_dueno is null then",
-    `    raise exception ${sqlTexto(`El administrador (${CORREO_DUENO_DEMO}) debe haber entrado una vez en la web antes de ejecutar esta semilla.`)};`,
+    `    raise exception ${sqlTexto(`Falta la cuenta de demo (${CORREO_DUENO_DEMO}) en perfiles: créala antes de ejecutar esta semilla.`)};`,
     "  end if;",
     "",
     `  delete from public.locales where slug = ${sqlTexto(local.slug)};`,

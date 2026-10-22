@@ -27,9 +27,9 @@ describe("generarSemilla", () => {
     expect(sql.trimEnd().endsWith("$$;")).toBe(true);
   });
 
-  it("falla con un mensaje claro si el administrador no ha entrado nunca", () => {
-    expect(sql).toContain("select id into v_dueno from public.perfiles where correo = 'rubenpd66@gmail.com'");
-    expect(sql).toMatch(/if v_dueno is null then\s+raise exception '[^']*debe haber entrado una vez en la web/);
+  it("falla con un mensaje claro si falta la cuenta de demo", () => {
+    expect(sql).toContain("select id into v_dueno from public.perfiles where correo = 'rubenpd66+demo@gmail.com'");
+    expect(sql).toMatch(/if v_dueno is null then\s+raise exception '[^']*Falta la cuenta de demo/);
   });
 
   it("borra el local demo antes de crearlo (idempotente)", () => {
