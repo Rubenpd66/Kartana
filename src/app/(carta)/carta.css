@@ -103,13 +103,7 @@
 .carta .opcion-al input {
   accent-color: var(--marca);
 }
-/* Número de alérgenos marcados junto a «Filtrar por alérgenos» (CSS, sin JS) */
-.carta .filtro {
-  counter-reset: marcados;
-}
-.carta .filtro input[name="al"]:checked {
-  counter-increment: marcados;
-}
+/* Marca ✓ junto a «Filtrar por alérgenos» cuando hay alguna casilla marcada (la muestra la regla generada) */
 .carta .filtro-activo {
   display: none;
   min-width: 1.75rem;
@@ -123,7 +117,7 @@
   font-weight: 700;
 }
 .carta .filtro-activo::after {
-  content: counter(marcados);
+  content: "✓";
 }
 
 /* Platos */

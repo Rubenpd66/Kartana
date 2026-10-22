@@ -3,6 +3,7 @@
 import type { CartaPublica, PlatoPublico } from "@/lib/tipos/carta";
 import type { CodigoEtiqueta, DiaSemana, Precio } from "@/lib/tipos/dominio";
 import type { DiccionarioCarta } from "@/lib/tipos/i18n";
+import { etiquetaPrecio } from "./textos";
 
 const DIAS_SCHEMA: Record<DiaSemana, string> = {
   1: "https://schema.org/Monday",
@@ -52,11 +53,6 @@ export type RestauranteJsonLd = {
   openingHoursSpecification?: HorarioJsonLd[];
   hasMenu: { "@type": "Menu"; name: string; url: string; hasMenuSection: SeccionJsonLd[] };
 };
-
-function etiquetaPrecio(precio: Precio, diccionario: DiccionarioCarta): string {
-  if (precio.formato === "otro") return precio.texto ?? "";
-  return diccionario.formatos[precio.formato];
-}
 
 function ofertas(plato: PlatoPublico, diccionario: DiccionarioCarta): OfertaJsonLd[] {
   return plato.precios
