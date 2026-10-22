@@ -85,6 +85,7 @@ Una línea por decisión: **qué**, alternativa descartada y por qué. (U) = la 
 - (D) **Carta de demostración `demo` sin indexar** en Google: alérgenos orientativos de un bar real.
 - (D) **Estadísticas por RPC con la clave publicable**, aceptando que alguien podría inflar contadores (no expone datos).
 - (D) **PDF con `@react-pdf/renderer` 4 + `qrcode` 1.5** (MIT), QR vectorial, logos en PNG.
+- (D) **Freno de gasto de Google en el código**: el «límite de inversión» de Google Cloud no cubre Translation ni Places y sus cuotas diarias no se pueden editar en esta cuenta. Queda el presupuesto de 5 € con alertas por correo y un tope mensual de caracteres en la app (tabla de uso de traducción, v0.2), muy por debajo de los 500.000 gratis.
 - (U pendiente) **Comprar kartana.app antes de imprimir QR para los pilotos** (recomendado): se decide al cerrar la v0.1.
 
 ### Forma de trabajar

@@ -33,12 +33,7 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 
 - [x] ~~«Entrar con Google»~~ — hecho el 22/10: cliente OAuth «Kartana web» en Google Cloud, proveedor Google activo en Supabase y URLs de retorno configuradas (comprobado: redirige a Google con el cliente correcto).
 
-- [ ] **3b. Google Cloud: facturación y dos APIs** (para la v0.2 y la v0.3; puede esperar unos días) — **Por qué:** traducción de cartas y buscador de fichas de Google. Google pide tarjeta aunque a nuestro volumen sea gratis. **Pasos:**
-  1. Menú ☰ → **Facturación** → **Vincular una cuenta de facturación** → crea una con tu tarjeta.
-  2. Menú ☰ → **Facturación** → **Presupuestos y alertas** → **Crear presupuesto** → 5 € al mes, con aviso al 50 % y al 100 %. (Así te enteras si algo se dispara.)
-  3. Menú ☰ → **APIs y servicios** → **Biblioteca** → busca **Places API (New)** → **Habilitar**. Vuelve atrás, busca **Cloud Translation API** → **Habilitar**.
-  
-  **Devuélveme:** «facturación y APIs listas». Las claves te las pido más adelante, con instrucciones.
+- [x] ~~Google Cloud: facturación y dos APIs~~ — hecho el 22/10: cuenta de facturación vinculada, presupuesto «Kartana» de 5 € con alertas al 50 % y 100 % (el límite de gasto real no admite estas APIs), Places API (New) y Cloud Translation API habilitadas. Cuotas diarias: no editables («Ilimitado»); el límite se pone en el código.
 
 - [ ] **4. Buscar 3–5 bares para el piloto** — **Por qué:** cuanto antes los tengas, antes probamos con cartas reales. **Pasos:** habla con bares de confianza; ofrece 2 meses gratis a cambio de su opinión. Si alguno te deja usar su carta (texto y precios) como carta de ejemplo en la web, mejor todavía: pídele permiso por escrito (un WhatsApp vale).
   
