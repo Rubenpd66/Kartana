@@ -11,7 +11,8 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 
 - [x] ~~Plantillas de correo con el código de 6 cifras~~ — hechas el 22/10 (Magic Link y Confirm signup).
 
-Nada urgente ahora mismo.
+- [ ] **Dejarme aplicar la migración de la base de datos** — **Por qué:** sin ella no existen las tablas de locales, platos y menús, y no puede empezar la ola 2. Supabase pide una confirmación extra (porque el archivo contiene la palabra «delete» en permisos y en una función) y en mi sesión automática se rechaza sola. **Pasos:** abre una sesión normal de Claude Code (no automática) en esta carpeta y escribe «aplica la migración modelo_v01»; cuando Supabase pregunte, pulsa **Permitir**.
+  **Devuélveme:** «hecho».
 
 ## Pronto (tarda días en estar listo)
 
