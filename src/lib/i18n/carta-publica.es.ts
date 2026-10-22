@@ -12,6 +12,8 @@ export const cartaPublicaEs = {
     bandaSinPublicar: "Así verán tu carta (aún no está publicada)",
     bandaPublicada: "Así ven tu carta tus clientes",
     cargando: "Cargando la vista previa…",
+    vacia: "Aún no hay nada que enseñar: añade platos visibles en «Carta» y aparecerán aquí.",
+    irACarta: "Ir a la carta",
   },
 } as const;
 

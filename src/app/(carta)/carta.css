@@ -13,8 +13,8 @@
   background: var(--fondo);
 }
 
-/* Banda de la carta de ejemplo y de la vista previa */
-.carta .banda {
+/* Banda de la carta de ejemplo y de la vista previa (esta va fuera de .carta: prefijo propio) */
+.carta-banda {
   background: var(--texto);
   color: var(--superficie);
   text-align: center;
