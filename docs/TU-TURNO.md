@@ -5,13 +5,9 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 ## Urgente (bloquea algo)
 
 - [x] ~~Autorizar GitHub CLI~~ (hecho el 22/10).
-- [ ] **1. Dar acceso a Vercel al repositorio `kartana`** — **Por qué:** sin esto Vercel no puede publicar la web. Ahora solo ve el repositorio `forja`. **Pasos:**
-  1. Abre [github.com/settings/installations](https://github.com/settings/installations).
-  2. En la fila **Vercel**, pulsa **Configure**.
-  3. Baja hasta **Repository access**. Deja marcado **Only select repositories**, pulsa **Select repositories** y elige **kartana** (sin quitar `forja`).
-  4. Pulsa **Save**. Si te pide la contraseña de GitHub, ponla.
-  
-  **Devuélveme:** «Vercel ya ve kartana».
+- [x] ~~Dar acceso a Vercel al repositorio `kartana`~~ (hecho el 22/10; web en https://kartana-six.vercel.app).
+
+Nada urgente ahora mismo.
 
 ## Pronto (tarda días en estar listo)
 
