@@ -7,7 +7,7 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 - [x] ~~Autorizar GitHub CLI~~ (hecho el 22/10).
 - [x] ~~Dar acceso a Vercel al repositorio `kartana`~~ (hecho el 22/10; web en https://kartana-six.vercel.app).
 
-- [ ] **A. Revisar las maquetas (punto de control 2)** — **Por qué:** es el aspecto que tendrán la carta, tu panel y el resto. **Pasos:** abre el Explorador de archivos, ve a `C:\Users\RUBEN\carta-qr\docs\diseno` y haz doble clic en **index.html**. Para verlo como en un móvil: en el navegador pulsa **F12** y luego **Ctrl + Mayús + M**. **Devuélveme:** «diseño aprobado» o lo que quieras cambiar.
+- [x] ~~Revisar las maquetas (punto de control 2)~~ — diseño aprobado el 22/10.
 
 - [ ] **B. Plantillas de correo con el código de 6 cifras** — **Por qué:** sin esto, el correo de acceso llega con un enlace en vez de con el código. **Pasos:**
   1. En [Supabase](https://supabase.com/dashboard) → proyecto **kartana** → **Authentication** → en el submenú, **Emails** (o **Email Templates**).

@@ -1,7 +1,7 @@
 # Progreso
 
 ## Estado actual
-**Fase 2 terminada; Fase 3 (v0.1, ola 1) en marcha (22/10/2026).** Carriles `datos` y `contenido` trabajando en sus worktrees. `acceso` espera al punto de control 2 (aprobar maquetas). Pendiente del usuario: maquetas y plantillas de correo (TU-TURNO A y B).
+**Fase 3 (v0.1, ola 1) en marcha (22/10/2026).** Diseño aprobado (PC2). Carriles `datos`, `contenido` y `acceso` trabajando en sus worktrees. Pendiente del usuario: plantillas de correo (TU-TURNO B).
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
