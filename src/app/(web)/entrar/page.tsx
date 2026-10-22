@@ -1,14 +1,28 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Contenedor } from "@/componentes/Contenedor";
+import { Esqueleto } from "@/componentes/ui/Esqueleto";
+import { Tarjeta } from "@/componentes/ui/Tarjeta";
+import { validarSiguiente } from "@/lib/auth/redireccion";
+import { accesoEs as t } from "@/lib/i18n/acceso.es";
+import { FormularioEntrar } from "./FormularioEntrar";
 
-// Provisional (v0.0): la sustituye el carril de acceso con el código por correo y Google.
-export const metadata: Metadata = { title: "Entrar", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: t.metaTitulo, robots: { index: false, follow: false } };
 
-export default function Entrar() {
+export default function Entrar({ searchParams }: PageProps<"/entrar">) {
   return (
-    <Contenedor ancho="estrecho" className="py-16 text-center">
-      <h1 className="text-3xl font-semibold">Entrar en tu panel</h1>
-      <p className="mt-4 text-texto-suave">El acceso para bares estará disponible muy pronto.</p>
+    <Contenedor ancho="estrecho" className="py-8 sm:py-12">
+      <Tarjeta relleno="grande">
+        <Suspense fallback={<Esqueleto lineas={5} alto="h-12" />}>
+          <FormularioConSiguiente searchParams={searchParams} />
+        </Suspense>
+      </Tarjeta>
     </Contenedor>
   );
+}
+
+/** Lee `?siguiente=` (dato de la petición, por eso va dentro de <Suspense>) y lo valida. */
+async function FormularioConSiguiente({ searchParams }: Pick<PageProps<"/entrar">, "searchParams">) {
+  const { siguiente } = await searchParams;
+  return <FormularioEntrar siguiente={validarSiguiente(Array.isArray(siguiente) ? siguiente[0] : siguiente)} />;
 }
