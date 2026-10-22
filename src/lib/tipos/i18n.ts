@@ -43,7 +43,7 @@ export type DiccionarioCarta = {
     textoOriginal: string;
     /** «Traducción automática»: se muestra en idiomas distintos del español. */
     traduccionAutomatica: string;
-    /** Botón de reseña (v0.3): «¿Te ha gustado? Déjanos tu opinión en Google». */
+    /** Botón de reseña (v0.3): «¿Qué te ha parecido? Déjanos tu opinión en Google» (frase neutra, sin sugerir solo opiniones positivas). */
     botonResena: string;
     /** Pie: «Información de alérgenos facilitada por el establecimiento». */
     responsabilidadAlergenos: string;

@@ -83,7 +83,7 @@ export const cartaDe: DiccionarioCarta = {
     idioma: "Sprache",
     textoOriginal: "(Originaltext auf Spanisch)",
     traduccionAutomatica: "Automatische Übersetzung",
-    botonResena: "Hat es Ihnen geschmeckt? Teilen Sie Ihre Meinung auf Google",
+    botonResena: "Wie hat es Ihnen gefallen? Teilen Sie Ihre Meinung auf Google",
     responsabilidadAlergenos: "Allergeninformationen vom Betrieb bereitgestellt",
     hechoCon: "Digitale Speisekarte von Kartana",
     cartaNoDisponible: "Diese Speisekarte ist derzeit nicht verfügbar",

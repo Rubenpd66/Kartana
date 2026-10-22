@@ -83,7 +83,7 @@ export const cartaFr: DiccionarioCarta = {
     idioma: "Langue",
     textoOriginal: "(texte original en espagnol)",
     traduccionAutomatica: "Traduction automatique",
-    botonResena: "Vous avez aimé ? Donnez-nous votre avis sur Google",
+    botonResena: "Qu’en avez-vous pensé ? Donnez-nous votre avis sur Google",
     responsabilidadAlergenos: "Informations sur les allergènes fournies par l'établissement",
     hechoCon: "Carte numérique par Kartana",
     cartaNoDisponible: "Cette carte n'est pas disponible pour le moment",

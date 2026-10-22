@@ -82,7 +82,7 @@ export const cartaEu: DiccionarioCarta = {
     idioma: "Hizkuntza",
     textoOriginal: "(jatorrizko testua gaztelaniaz)",
     traduccionAutomatica: "Itzulpen automatikoa",
-    botonResena: "Gustatu zaizu? Utzi zure iritzia Google-n",
+    botonResena: "Zer iruditu zaizu? Utzi zure iritzia Google-n",
     responsabilidadAlergenos: "Alergenoei buruzko informazioa establezimenduak eman du",
     hechoCon: "Karta digitala Kartanarekin",
     cartaNoDisponible: "Karta hau ez dago eskuragarri orain",

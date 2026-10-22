@@ -26,7 +26,7 @@ Objetivo de negocio: vender pronto, puerta a puerta, un producto muy simple, bar
 
 **Reseñas (módulo 2, v0.3)**
 - El dueño busca su negocio en Google; guardamos su identificador de lugar y generamos el enlace directo para escribir una reseña.
-- Botón discreto en la carta: «¿Te ha gustado? Déjanos tu opinión en Google». Igual para todos los clientes.
+- Botón discreto en la carta: «¿Qué te ha parecido? Déjanos tu opinión en Google». Igual para todos los clientes. (Frase neutra elegida el 22/10: no sugiere que solo opinen los contentos.)
 - QR de reseña en PDF (cuenta, ticket, barra).
 
 **Estadísticas (v0.2)**

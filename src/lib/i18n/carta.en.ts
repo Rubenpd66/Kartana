@@ -83,7 +83,7 @@ export const cartaEn: DiccionarioCarta = {
     idioma: "Language",
     textoOriginal: "(original text in Spanish)",
     traduccionAutomatica: "Automatic translation",
-    botonResena: "Enjoyed it? Tell us what you think on Google",
+    botonResena: "What did you think? Share your opinion on Google",
     responsabilidadAlergenos: "Allergen information provided by the establishment",
     hechoCon: "Digital menu by Kartana",
     cartaNoDisponible: "This menu is not available right now",

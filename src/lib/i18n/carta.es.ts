@@ -82,7 +82,7 @@ export const cartaEs: DiccionarioCarta = {
     idioma: "Idioma",
     textoOriginal: "(texto original en español)",
     traduccionAutomatica: "Traducción automática",
-    botonResena: "¿Te ha gustado? Déjanos tu opinión en Google",
+    botonResena: "¿Qué te ha parecido? Déjanos tu opinión en Google",
     responsabilidadAlergenos: "Información de alérgenos facilitada por el establecimiento",
     hechoCon: "Carta digital con Kartana",
     cartaNoDisponible: "Esta carta no está disponible ahora mismo",
