@@ -78,16 +78,18 @@ export function CampoDireccion({
   const estado = useEstadoDireccion(valor, comprobar, omitir);
   useEffect(() => onEstado?.(estado), [estado, onEstado]);
   const malo = estado === "ocupado" || estado === "reservado" || estado === "formato" || estado === "error";
-  const mensaje = errorServidor ?? MENSAJES[estado];
+  const mensaje = errorServidor ?? (omitir !== undefined && valor === omitir ? panelLocalEs.local.slug.actual : MENSAJES[estado]);
 
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block font-semibold">
         {etiqueta}
       </label>
-      <p id={`${id}-ayuda`} className="-mt-1 mb-1.5 text-sm text-texto-suave">
-        {ayuda}
-      </p>
+      {ayuda ? (
+        <p id={`${id}-ayuda`} className="-mt-1 mb-1.5 text-sm text-texto-suave">
+          {ayuda}
+        </p>
+      ) : null}
       <input
         id={id}
         name="slug"
@@ -97,7 +99,7 @@ export function CampoDireccion({
         autoCapitalize="none"
         spellCheck={false}
         aria-invalid={malo || errorServidor ? true : undefined}
-        aria-describedby={`${id}-ayuda ${id}-estado`}
+        aria-describedby={ayuda ? `${id}-ayuda ${id}-estado` : `${id}-estado`}
         className={CLASES_ENTRADA}
       />
       <p className="mt-1.5 break-all text-sm text-texto-suave">

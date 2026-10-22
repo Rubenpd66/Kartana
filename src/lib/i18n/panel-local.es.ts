@@ -118,7 +118,6 @@ export const panelLocalEs = {
     logo: {
       titulo: "Logo",
       etiqueta: "Logo del bar",
-      quitar: "Quitar logo",
       guardado: "Logo guardado.",
       quitado: "Logo quitado.",
     },
@@ -152,6 +151,7 @@ export const panelLocalEs = {
       anadir: "Añadir franja",
       quitar: (dia: string, n: number) => `Quitar la franja ${n} de ${dia}`,
       maximo: "Máximo 3 franjas por día.",
+      horaIgual: "La hora de apertura y la de cierre no pueden ser iguales ni quedar vacías.",
       copiarLunes: "Copiar el lunes a todos los días laborables",
       estadoDia: (dia: string) => `${dia}: abierto`,
       vista: "Así se verá",
