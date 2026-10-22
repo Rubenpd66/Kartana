@@ -1,0 +1,2 @@
+# Archivos ignorados por git que los subagentes en worktree necesitan.
+.env.local

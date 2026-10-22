@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/*
+ * Kartana · tema claro y cálido (decisión de la Fase 0).
+ * Solo modo claro: la carta de cada bar usa su propio color de marca
+ * a través de --marca (se sobrescribe por local).
+ */
+:root {
+  --fondo: #fbf7f1;
+  --superficie: #ffffff;
+  --superficie-suave: #f4ede3;
+  --texto: #1f1a17;
+  --texto-suave: #5f554d;
+  --borde: #e6dccf;
+  --primario: #b9461a;
+  --primario-hover: #9c3a14;
+  --sobre-primario: #ffffff;
+  --exito: #3f6b1e;
+  --aviso: #8a5a00;
+  --peligro: #b42318;
+  --foco: #1d4ed8;
+  --marca: var(--primario);
+
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-fondo: var(--fondo);
+  --color-superficie: var(--superficie);
+  --color-superficie-suave: var(--superficie-suave);
+  --color-texto: var(--texto);
+  --color-texto-suave: var(--texto-suave);
+  --color-borde: var(--borde);
+  --color-primario: var(--primario);
+  --color-primario-hover: var(--primario-hover);
+  --color-sobre-primario: var(--sobre-primario);
+  --color-exito: var(--exito);
+  --color-aviso: var(--aviso);
+  --color-peligro: var(--peligro);
+  --color-foco: var(--foco);
+  --color-marca: var(--marca);
+
+  --font-sans: var(--fuente-texto), ui-sans-serif, system-ui, sans-serif;
+  --font-titulo: var(--fuente-titulo), Georgia, serif;
+
+  /* Anchos del Contenedor: estrecho (panel y carta) y ancho (web de venta). */
+  --container-estrecho: 40rem;
+  --container-ancho: 70rem;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-titulo);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
+/* Política de «reducir movimiento»: si el sistema lo pide, no hay animaciones. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
