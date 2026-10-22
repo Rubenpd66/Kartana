@@ -44,6 +44,7 @@ Next.js 16.4 (App Router, **Cache Components** y Partial Prefetching activados, 
 - **CSP mínima** en `next.config.ts` (sin nonces, para no forzar render dinámico). Si se añade un script de terceros, hay que revisarla.
 - `LayoutProps`/`PageProps` son tipos globales generados por `next typegen` (lo ejecuta `npm run typecheck`).
 - Playwright espera al servidor en `/robots.txt` y usa el puerto 3100.
+- **Aplicar migraciones** (director): con `apply_migration` del MCP de Supabase. Evita `drop … if exists` innecesarios: el servidor pide una confirmación aparte que aquí se rechaza sola. Después, renombra el archivo local al número de versión que devuelve `list_migrations`, para que coincidan.
 - Hay un `package-lock.json` suelto en `C:\Users\RUBEN`; por eso `turbopack.root` está fijado en `next.config.ts`.
 
 <!-- BEGIN:nextjs-agent-rules -->

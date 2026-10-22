@@ -31,7 +31,6 @@ $$;
 
 revoke all on function privado.rls_auto_enable() from public, anon, authenticated;
 
-drop event trigger if exists ensure_rls;
 create event trigger ensure_rls
   on ddl_command_end
   when tag in ('CREATE TABLE', 'CREATE TABLE AS', 'SELECT INTO')
