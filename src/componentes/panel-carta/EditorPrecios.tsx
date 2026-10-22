@@ -105,8 +105,9 @@ export function EditorPrecios({ inicial, errores = {} }: { inicial: Precio[]; er
         const idError = `${idBase}-error`;
         const entradaImporte = (
           <div className="relative">
+            {/* El título visible «Precio» lo pone quien usa el editor; aquí la etiqueta es para lectores de pantalla. */}
             {simple ? (
-              <label htmlFor={`${idBase}-importe`} className="mb-1.5 block font-semibold">
+              <label htmlFor={`${idBase}-importe`} className="sr-only">
                 {t.precio}
               </label>
             ) : (
