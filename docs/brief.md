@@ -15,7 +15,7 @@ Objetivo de negocio: vender pronto, puerta a puerta, un producto muy simple, bar
 
 ## Funciones
 
-### Imprescindibles (v0.1–v0.4)
+### Imprescindibles (v0.1–v0.4, y v0.6 para cobrar)
 **Carta (módulo 1)**
 - Panel del dueño, móvil primero: secciones, platos (nombre, descripción, precio, foto opcional), los 14 alérgenos de la UE con iconos, etiquetas (vegano, vegetariano, sin gluten, picante), «agotado» con un toque, orden arrastrando.
 - Menú del día con precio, días y horario; horarios del local; logo y color de marca.
@@ -32,8 +32,8 @@ Objetivo de negocio: vender pronto, puerta a puerta, un producto muy simple, bar
 **Estadísticas (v0.2)**
 - Anónimas y agregadas: visitas a la carta por día, platos más vistos, clics en «dejar reseña». Sin cookies, sin identificadores, sin datos personales.
 
-**Negocio (v0.4)**
-- Planes con Stripe: **Carta** 10 €/mes + IVA y **Carta + Reseñas** 17 €/mes + IVA. Pago anual con 2 meses gratis. Prueba de 30 días sin tarjeta. Portal de Stripe para cambiar de plan o darse de baja.
+**Negocio (v0.1 el admin con pilotos; v0.4 la página de venta; v0.6 los pagos)**
+- Planes con Stripe (v0.6, al final): **Carta** 10 €/mes + IVA y **Carta + Reseñas** 17 €/mes + IVA. Pago anual con 2 meses gratis. Prueba de 30 días sin tarjeta. Portal de Stripe para cambiar de plan o darse de baja.
 - Página de inicio que vende: carta de ejemplo que se abre con el móvil (QR en pantalla), precios claros, alta en 5 minutos.
 - Panel de administrador: lista de locales, plan, estado de pago y activar un piloto de 60 días con un botón.
 - Todo lo de cobrar, **apagado por defecto** hasta el punto de control 4 (alta fiscal).
@@ -71,5 +71,8 @@ Pedidos y pagos desde la mesa, TPV, reservas, facturación al cliente del bar, a
 | v0.1 | Panel + carta pública + alérgenos + QR en PDF + admin con pilotos | Empezar el piloto |
 | v0.2 | 7 idiomas con traducción corregible + estadísticas | Turistas y valor visible |
 | v0.3 | Reseñas: enlace, botón en la carta y QR de reseña | Segundo módulo |
-| v0.4 | Stripe (apagado) + página de venta + legal completo | Listo para cobrar tras PC4 |
+| v0.4 | Página de venta (sin pago) + legal completo + dominio propio | Vender puerta a puerta |
 | v0.5 | Reseñas en el panel + respuestas con IA | Si Google da acceso |
+| v0.6 | Stripe: planes, prueba de 30 días, portal (apagado hasta el PC4) | Cobrar, al final |
+
+> Despliegue de prueba en el dominio gratis de Vercel; kartana.app se compra más adelante (la dirección de Vercel redirigirá a él).

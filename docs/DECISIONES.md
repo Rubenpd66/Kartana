@@ -54,5 +54,11 @@ Una línea por decisión: **qué**, alternativa descartada y por qué. (U) = la 
 - (U) **Claro, cálido y muy legible**: letra grande, botones grandes, animaciones mínimas que respetan «reducir movimiento». La carta pública usa el logo y el color de cada bar (con contraste comprobado).
 - (D) **Ancho máximo: panel y carta 640 px (columna de móvil); web de venta 1120 px**, en un único `Contenedor` con dos tamaños.
 
+### Cambios del usuario tras el cuestionario (22/10/2026)
+- (U) **Despliegue de prueba con el dominio gratis de Vercel (`kartana.vercel.app` o el que asigne Vercel)**; kartana.app se compra más adelante. Al pasar al dominio propio, la dirección de Vercel **redirige para siempre** a kartana.app, así que los QR ya impresos siguen funcionando.
+- (U) **Pagos (Stripe) al final**: pasan a la última versión (v0.6). La página de venta se adelanta a la v0.4, sin botón de pago.
+- (D) **Correos de acceso sin dominio propio: SMTP de Gmail con contraseña de aplicación** durante el piloto (hasta ~500 correos al día). Resend llega con kartana.app. Descartado el correo integrado de Supabase: solo envía a los miembros del equipo de Supabase. «Entrar con Google» funciona sin dominio.
+- (D) **GitHub CLI instalada por el director con winget** (v2.103.0).
+
 ### Forma de trabajar
 - (U) **Solo Claude Code, plan Pro → como mucho 2–3 subagentes a la vez.**
