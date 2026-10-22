@@ -1,0 +1,25 @@
+# dependencias y build
+node_modules/
+.next/
+out/
+build/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# secretos
+.env*
+!.env.example
+
+# pruebas y herramientas
+test-results/
+playwright-report/
+blob-report/
+.playwright-mcp/
+.claude/worktrees/
+.vercel/
+
+# sistema
+.DS_Store
+Thumbs.db
+*.log
