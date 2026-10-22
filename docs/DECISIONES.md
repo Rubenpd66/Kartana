@@ -60,5 +60,18 @@ Una línea por decisión: **qué**, alternativa descartada y por qué. (U) = la 
 - (D) **Correos de acceso sin dominio propio: SMTP de Gmail con contraseña de aplicación** durante el piloto (hasta ~500 correos al día). Resend llega con kartana.app. Descartado el correo integrado de Supabase: solo envía a los miembros del equipo de Supabase. «Entrar con Google» funciona sin dominio.
 - (D) **GitHub CLI instalada por el director con winget** (v2.103.0).
 
+## Fase 1 · 22/10/2026
+- (D) **Next.js 16.4.2 con Cache Components y Partial Prefetching** (lo que trae `create-next-app` por defecto). Descartado desactivarlos: dan cartas estáticas con regeneración al guardar, justo lo que buscamos.
+- (D) **Tipografías: Fraunces (títulos, aire de carta de bar) y Figtree (texto, muy legible)**, servidas desde la propia web con `next/font`. Descartadas Geist (fría) e Inter (genérica).
+- (D) **Solo modo claro** (decisión del usuario «claro y cálido»). Descartado el modo oscuro automático: cambiaría el aspecto a quien tenga el móvil en oscuro.
+- (D) **CSP mínima sin nonces**. Descartada la CSP estricta con nonces: obliga a renderizar todas las páginas en cada visita y las cartas dejarían de ser estáticas.
+- (D) **El proxy solo corre en zonas con sesión** (`/panel`, `/admin`, `/entrar`, `/auth`). Así las cartas públicas no tocan cookies y se sirven desde la CDN.
+- (D) **Clave secreta de Supabase solo cuando haga falta** (webhooks, tareas programadas). El admin se reconoce por `ADMIN_EMAILS` en el servidor.
+- (D) **Migraciones en `supabase/migrations/` creadas con la CLI y aplicadas al proyecto remoto por el director**. Descartada la base de datos local: necesita Docker.
+- (D) **RLS automática con un event trigger** (guía oficial de Supabase) además de activarla a mano en cada migración.
+- (D) **Cron diario de Vercel a `/api/health`** para que el proyecto gratis de Supabase no se pause. Sin secreto: el endpoint no expone datos.
+- (D) **Playwright prueba el build de producción** (puerto 3100), 2 workers, móvil solo con `@movil`.
+- (D) **@types/node 24** (Vitest 5 lo exige; coincide con Node 24 instalado).
+
 ### Forma de trabajar
 - (U) **Solo Claude Code, plan Pro → como mucho 2–3 subagentes a la vez.**
