@@ -40,7 +40,7 @@ Nada urgente ahora mismo.
 - [ ] **4. Buscar 3–5 bares para el piloto** — **Por qué:** cuanto antes los tengas, antes probamos con cartas reales. **Pasos:** habla con bares de confianza; ofrece 2 meses gratis a cambio de su opinión. Si alguno te deja usar su carta (texto y precios) como carta de ejemplo en la web, mejor todavía: pídele permiso por escrito (un WhatsApp vale).
   
   **Devuélveme:** cuántos tienes y, si puedes, una foto o PDF de una carta real.
-  > Recibida el 22/10 la lista de platos de **Cafetería La Guagua** (guardada en `docs/datos/carta-la-guagua.md`). Falta saber si el bar da permiso para usar su nombre en la carta de demostración; mientras tanto se llamará «Bar de ejemplo».
+  > Recibidos el 22/10 los platos, los precios y fotos de **Cafetería La Guagua** (`docs/datos/carta-la-guagua.md`). La demo se llamará «Cafetería La Guagua», marcada como carta de ejemplo. Pendiente: saber si las fotos de platos son del bar (solo se publican con su permiso).
 
 - [ ] **5. Pedir acceso a la API de perfiles de empresa de Google (para la v0.5)** — **Por qué:** sin ella no podemos mostrar reseñas ni responderlas desde el panel. Es gratis pero Google tarda y puede decir que no. **Ojo:** según varias guías, Google suele pedir una **ficha de empresa verificada con más de 60 días** y una **web propia**. Mejor esperar a tener la web publicada. **Pasos (cuando te avise):**
   1. Con el proyecto `kartana` de Google Cloud seleccionado, abre el formulario de acceso de la API de Business Profile (te paso el enlace exacto entonces).
