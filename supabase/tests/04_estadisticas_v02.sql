@@ -109,6 +109,11 @@ begin
     raise exception 'FALLO: anónimo puede llamar a limpiar_estadisticas';
   exception when insufficient_privilege then null;
   end;
+  begin
+    perform 1 from public.platos_mas_vistos('bbbbbbbb-0000-4000-8000-000000000001', current_date - 30, current_date + 1);
+    raise exception 'FALLO: anónimo puede llamar a platos_mas_vistos';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 reset role;
 
@@ -147,6 +152,10 @@ begin
   if (select count(*) from public.estadisticas_dia) <> 1 or (select count(*) from public.vistas_plato_dia) <> 1 then
     raise exception 'FALLO: B no ve sus estadísticas';
   end if;
+  if not exists (select 1 from public.platos_mas_vistos('bbbbbbbb-0000-4000-8000-000000000001', current_date - 30, current_date + 1)
+                 where nombre = 'Pulpo' and vistas = 1) then
+    raise exception 'FALLO: platos_mas_vistos no devuelve el plato de B';
+  end if;
   begin
     insert into public.estadisticas_dia (local_id, dia, visitas) values ('bbbbbbbb-0000-4000-8000-000000000001', current_date - 1, 1000);
     raise exception 'FALLO: el dueño puede insertar estadísticas a mano';
@@ -176,6 +185,9 @@ do $$
 begin
   if exists (select 1 from public.estadisticas_dia) or exists (select 1 from public.vistas_plato_dia) then
     raise exception 'FALLO: A ve las estadísticas de B';
+  end if;
+  if exists (select 1 from public.platos_mas_vistos('bbbbbbbb-0000-4000-8000-000000000001', current_date - 30, current_date + 1)) then
+    raise exception 'FALLO: A ve los platos más vistos de B';
   end if;
 end $$;
 reset role;

@@ -318,6 +318,24 @@ as $$
   select privado.registrar_estadisticas_def(p_local, p_tipo, p_idioma, p_platos);
 $$;
 
+-- Platos más vistos de un rango (para el panel). Se agrega en SQL porque la API devuelve como mucho 1.000 filas
+-- (400 platos × 90 días serían muchas más). security invoker: la RLS deja ver solo lo del dueño (o al admin).
+create or replace function public.platos_mas_vistos(p_local uuid, p_desde date, p_hasta date, p_limite integer default 10)
+returns table (plato_id uuid, nombre text, vistas bigint)
+language sql
+stable
+security invoker
+set search_path = ''
+as $$
+  select v.plato_id, p.nombre, sum(v.vistas)::bigint as vistas
+    from public.vistas_plato_dia v
+    join public.platos p on p.id = v.plato_id
+   where v.local_id = p_local and v.dia between p_desde and p_hasta
+   group by v.plato_id, p.nombre
+   order by 3 desc, 2
+   limit least(greatest(coalesce(p_limite, 10), 1), 50);
+$$;
+
 -- ===========================================================================
 -- 4. Cuota de traducción (§3.3): 60.000 caracteres/día/local y 450.000/mes entre todos los locales
 -- ===========================================================================
@@ -431,6 +449,8 @@ revoke all on function public.guardar_traduccion_manual(text, uuid, text, text, 
 revoke all on function public.descartar_traduccion_manual(text, uuid, text, text) from public, anon;
 revoke all on function public.registrar_estadisticas(uuid, text, text, uuid[]) from public;
 revoke all on function public.consumir_cuota_traduccion(uuid, integer) from public, anon;
+revoke all on function public.platos_mas_vistos(uuid, date, date, integer) from public, anon;
+grant execute on function public.platos_mas_vistos(uuid, date, date, integer) to authenticated;
 grant execute on function public.guardar_traducciones_auto(text, jsonb) to authenticated;
 grant execute on function public.guardar_traduccion_manual(text, uuid, text, text, text, text) to authenticated;
 grant execute on function public.descartar_traduccion_manual(text, uuid, text, text) to authenticated;
