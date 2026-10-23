@@ -48,7 +48,7 @@ async function Contenido({ params }: Pick<PageProps<"/panel/[local]/idiomas">, "
 
   return (
     <>
-      <SelectorIdiomas key={local.idiomasActivos.join(",")} activos={local.idiomasActivos} guardar={guardarIdiomasAccion.bind(null, local.id)} />
+      <SelectorIdiomas activos={local.idiomasActivos} guardar={guardarIdiomasAccion.bind(null, local.id)} />
 
       {destinos.length === 0 ? (
         <Aviso variante="info" sinRol>
