@@ -6,6 +6,10 @@ const nextCache = vi.hoisted(() => ({ updateTag: vi.fn(), revalidateTag: vi.fn()
 vi.mock("next/cache", () => nextCache);
 const servidor = vi.hoisted(() => ({ crearClienteServidor: vi.fn(), crearClientePublico: vi.fn() }));
 vi.mock("@/lib/supabase/servidor", () => servidor);
+const nextServer = vi.hoisted(() => ({ after: vi.fn() }));
+vi.mock("next/server", () => nextServer);
+const traduccion = vi.hoisted(() => ({ traducirLocal: vi.fn() }));
+vi.mock("@/lib/traduccion/traducir-local", () => traduccion);
 
 import { ETIQUETA_LISTA_CARTAS, etiquetaCarta, etiquetaLocal, revalidarCartaFueraDeAccion, trasGuardarCarta } from "./cache";
 
@@ -13,6 +17,7 @@ const LOCAL = "3f6c1b2a-8d4e-4f1a-9b2c-0d1e2f3a4b5c";
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.unstubAllEnvs();
 });
 
 describe("etiquetas", () => {
@@ -63,5 +68,55 @@ describe("revalidarCartaFueraDeAccion", () => {
       ["cartas", { expire: 0 }],
     ]);
     expect(nextCache.updateTag).not.toHaveBeenCalled();
+  });
+});
+
+describe("trasGuardarCarta · traducción en segundo plano", () => {
+  function conLocal(idiomas: string[]) {
+    const falso = crearSupabaseFalso({ tablas: { locales: { data: { slug: "bar-pepe", idiomas_activos: idiomas } } } });
+    servidor.crearClienteServidor.mockResolvedValue(falso.cliente);
+    return falso;
+  }
+
+  it("con la traducción apagada no programa nada", async () => {
+    vi.stubEnv("TRADUCCION_ACTIVA", "false");
+    conLocal(["es", "en"]);
+    await trasGuardarCarta(LOCAL);
+    expect(nextServer.after).not.toHaveBeenCalled();
+    expect(nextCache.updateTag).toHaveBeenCalledTimes(2);
+  });
+
+  it("encendida pero sin idiomas de destino no programa nada", async () => {
+    vi.stubEnv("TRADUCCION_ACTIVA", "true");
+    conLocal(["es"]);
+    await trasGuardarCarta(LOCAL);
+    expect(nextServer.after).not.toHaveBeenCalled();
+  });
+
+  it("encendida y con idiomas, invalida y programa la traducción una sola vez", async () => {
+    vi.stubEnv("TRADUCCION_ACTIVA", "true");
+    const falso = conLocal(["es", "en", "fr"]);
+    traduccion.traducirLocal.mockResolvedValue({ ok: true, datos: { traducidos: 2, caracteres: 10, cortadoPorCuota: false } });
+    await trasGuardarCarta(LOCAL);
+    expect(nextCache.updateTag.mock.calls.map((c) => c[0])).toEqual(["carta:bar-pepe", `local:${LOCAL}`]);
+    expect(falso.llamadas.filter((l) => l.tabla === "locales")).toHaveLength(1);
+    expect(nextServer.after).toHaveBeenCalledTimes(1);
+    expect(traduccion.traducirLocal).not.toHaveBeenCalled();
+
+    const tarea = nextServer.after.mock.calls[0]![0] as () => Promise<void>;
+    await tarea();
+    expect(traduccion.traducirLocal).toHaveBeenCalledTimes(1);
+    expect(traduccion.traducirLocal).toHaveBeenCalledWith(LOCAL);
+  });
+
+  it("si la traducción en segundo plano falla, no lanza", async () => {
+    vi.stubEnv("TRADUCCION_ACTIVA", "true");
+    conLocal(["es", "de"]);
+    const consola = vi.spyOn(console, "error").mockImplementation(() => {});
+    traduccion.traducirLocal.mockRejectedValue(new Error("boom"));
+    await trasGuardarCarta(LOCAL);
+    const tarea = nextServer.after.mock.calls[0]![0] as () => Promise<void>;
+    await expect(tarea()).resolves.toBeUndefined();
+    consola.mockRestore();
   });
 });
