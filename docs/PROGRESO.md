@@ -1,18 +1,22 @@
 # Progreso
 
 ## Estado actual
-**v0.2 cerrada y publicada (23/10/2026, commit `3b279b2`)**: carta pública en 7 idiomas, panel de idiomas con traducción automática de Google **encendida y comprobada por el usuario en producción**, estadísticas anónimas. v0.1 cerrada el mismo día. CI en verde.
-**Fase 4 · v0.3 (reseñas en Google): detallando el plan** (el arquitecto escribe contratos y encargos). Antes de la ola 1 hace falta ampliar la clave de Google (TU-TURNO, punto 0b).
+**v0.2 cerrada y publicada (23/10/2026).** **v0.3 (reseñas): plan detallado y decisiones tomadas; ola 1 SIN EMPEZAR** (se pararon los agentes por el límite del plan antes de guardar nada; worktrees y ramas limpiados).
+- Plan: `docs/plan.md` (v0.3), encargos en `docs/carriles/{datos-v03,resenas,carta-publica-v03,qr-resena,qa-v03}.md`, tipos en `src/lib/tipos/resenas.ts`. Decisiones D1–D8 en `docs/DECISIONES.md` y al principio de cada encargo (mandan sobre el resto): **no se guarda el nombre de la ficha de Google**, el botón se enciende solo al conectar, la demo sin botón, menú del panel con «Más».
+- Clave de Google ampliada a Places API (comprobada). `RESENAS_API_ACTIVA=false` hasta probar el carril `resenas`. `TRADUCCION_ACTIVA=true` en Vercel.
+- `e2e-prueba` limpio (sin publicar, solo `es`, sin secciones).
+
+### Siguiente sesión
+1. Lanzar la ola 1 de la v0.3, de uno en uno: `datos-v03` (kit-datos, opus/medium, rama `carril/datos-v03`) y `resenas` (kit-modulo, opus/high, rama `carril/resenas`, `PUERTO_E2E=3102`). Recordarles que el bloque «Decisiones del usuario» del encargo manda.
+2. En cuanto entregue `datos-v03`: aplicar su migración (si lleva `delete`, en una sesión normal de `claude`), tests SQL, tipos.
+3. Integración 1: `robots.ts` con `Disallow: /r/`, navegación con «Más», `database.types.ts`. Luego ola 2 (`carta-publica-v03`, `qr-resena`) y `qa-v03`.
+4. Pendientes menores de la v0.2: `<html lang>` (H1), límite de ritmo de `POST /api/e` (H4), `pg_cron`, revisión nativa de eu/gl.
 
 ### v0.2 · ola 3 (QA) integrada (23/10/2026)
 `qa-v02` en `main` (`docs/qa/v0.2.md`): 149 e2e pasados, 943 unitarios, Lighthouse móvil `/c/demo` 93–97 y `/c/demo/de` 97 (TBT 160–180 ms, mejor que la v0.1). Sin cookies ni almacenamiento en ningún idioma.
 - **Traducción real probada con Google (clave puesta):** «Croquetas de jamón» → «Schinkenkroketten»; la corrección manual sobrevive a un cambio del español. 98 caracteres de cuota usados. **`TRADUCCION_ACTIVA=true` en Vercel desde el 23/10/2026** (desplegado con `b72bf88`); falta que el usuario lo vea en el panel de producción.
 - Pendientes de QA: (H1) `<html lang="es">` en todas las cartas; (H4) sin límite de ritmo en `POST /api/e` (conviene antes del lanzamiento); (H2) `textos.textoOriginal` sin usar; (H3) `hreflang` de 7 idiomas en el `<head>` sin probar en una carta indexable; abiertos de la v0.1: I2 (`Date.now()` en el panel), M1 (`/admin` 200).
 - Para el usuario: probar la carta desde un QR impreso (iPhone y Android); Lighthouse sobre la URL de Vercel.
-
-### Siguiente sesión
-1. v0.3: revisar lo que deje el arquitecto (`docs/carriles/` de la v0.3), lanzar la ola 1 (`datos-v03`, `resenas`), integrar, ola 2 (`carta-publica-v03`, `qr-resena`) y `qa-v03`.
-2. Pendientes menores de la v0.2: `<html lang>` (H1), límite de ritmo de `POST /api/e` (H4), `pg_cron`, revisión nativa de eu/gl.
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
