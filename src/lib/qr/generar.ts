@@ -1,13 +1,13 @@
-import { createElement } from "react";
-import { renderToBuffer } from "@react-pdf/renderer";
+import { createElement, type ReactElement } from "react";
+import { renderToBuffer, type DocumentProps } from "@react-pdf/renderer";
 import { qrEs, type TextosPdf } from "@/lib/i18n/qr.es";
 import { Mesa } from "./plantillas/Mesa";
 import { Pegatinas } from "./plantillas/Pegatinas";
 import { Poster } from "./plantillas/Poster";
+import type { FormatoQr } from "./formatos";
 import type { LogoPdf } from "./plantillas/comun";
 
-export const FORMATOS_QR = ["mesa", "pegatinas", "poster"] as const;
-export type FormatoQr = (typeof FORMATOS_QR)[number];
+export { FORMATOS_QR, type FormatoQr } from "./formatos";
 
 export type LocalParaPdf = { nombre: string; colorMarca: string };
 
@@ -31,7 +31,7 @@ export async function generarPdf({
       : formato === "pegatinas"
         ? createElement(Pegatinas, { nombre: local.nombre, url, textos })
         : createElement(Poster, { nombre: local.nombre, logo, colorMarca: local.colorMarca, url, textos });
-  return renderToBuffer(documento);
+  return renderToBuffer(documento as ReactElement<DocumentProps>);
 }
 
 /** Nombre del archivo descargado. */

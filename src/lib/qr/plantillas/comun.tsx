@@ -102,6 +102,7 @@ export function LogoONombre({
   return (
     <View style={[estilos.caja, { width: mm(anchoMm), height: mm(altoMm) }]}>
       {logo ? (
+        // eslint-disable-next-line jsx-a11y/alt-text -- <Image> de react-pdf: no es una etiqueta HTML y no admite alt
         <Image
           src={{ data: logo.datos, format: logo.formato }}
           style={{ maxWidth: mm(anchoMm), maxHeight: mm(altoMm), objectFit: "contain" }}
