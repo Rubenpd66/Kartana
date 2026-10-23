@@ -242,3 +242,41 @@ test.describe("4 · privacidad y consola de la carta en los 7 idiomas", () => {
     }
   });
 });
+
+// ---------------------------------------------------------------- 7. Móvil, movimiento y teclado
+test.describe("7 · móvil a 375 px, «reducir movimiento» y teclado en la carta", () => {
+  test.use({ viewport: { width: 375, height: 800 }, reducedMotion: "reduce", userAgent: UA_NO_BOT });
+
+  test("sin desbordamiento horizontal y sin animaciones en los 7 idiomas @movil", async ({ page }) => {
+    for (const idioma of IDIOMAS) {
+      await page.goto(rutaDemo(idioma));
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      const medidas = await page.evaluate(() => ({ ancho: document.documentElement.scrollWidth, visible: window.innerWidth }));
+      expect(medidas.ancho, `${idioma}: scrollWidth`).toBeLessThanOrEqual(medidas.visible);
+      const animadas = await page.evaluate(
+        () => document.getAnimations().filter((a) => a.playState === "running" && Number(a.effect?.getComputedTiming().duration ?? 0) > 100).length,
+      );
+      expect(animadas, `${idioma}: animaciones activas`).toBe(0);
+    }
+  });
+
+  test("el selector de idioma se maneja con el teclado y el foco se ve", async ({ page }) => {
+    await page.goto("/c/demo");
+    const resumen = page.locator(".carta-cabecera summary").first();
+    await resumen.focus();
+    await expect(resumen).toBeFocused();
+    const contorno = await resumen.evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { estilo: s.outlineStyle, ancho: parseFloat(s.outlineWidth), sombra: s.boxShadow };
+    });
+    expect((contorno.estilo !== "none" && contorno.ancho > 0) || contorno.sombra !== "none", "foco visible en el selector").toBe(true);
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("link", { name: "Deutsch" })).toBeVisible();
+    await page.keyboard.press("Tab");
+    expect(await page.evaluate(() => (document.activeElement as HTMLAnchorElement | null)?.getAttribute("hreflang"))).toBe("es");
+    await page.getByRole("link", { name: "Deutsch" }).focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/\/c\/demo\/de$/);
+    await expect(page.locator(".carta")).toHaveAttribute("lang", "de");
+  });
+});
