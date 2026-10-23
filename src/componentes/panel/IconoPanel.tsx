@@ -15,6 +15,18 @@ const TRAZOS: Record<NombreIcono, ReactNode> = {
       <path d="M4 9h16M9 3v4M15 3v4" />
     </>
   ),
+  globo: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" />
+    </>
+  ),
+  grafico: (
+    <>
+      <path d="M4 20V4M4 20h16" />
+      <path d="M8 16v-4M12 16V8M16 16v-6" />
+    </>
+  ),
   tienda: (
     <>
       <path d="M4 10l2-5h12l2 5M4 10v10h16V10M4 10h16" />

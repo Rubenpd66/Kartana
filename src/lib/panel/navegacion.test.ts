@@ -4,9 +4,9 @@ import { NAVEGACION_PANEL, pestanaActiva } from "./navegacion";
 const ID = "3f1c2d4e-0000-4000-8000-000000000001";
 
 describe("NAVEGACION_PANEL", () => {
-  it("tiene Inicio, Carta, Menú, Local y QR en ese orden", () => {
-    expect(NAVEGACION_PANEL.map((e) => e.clave)).toEqual(["inicio", "carta", "menu", "local", "qr"]);
-    expect(NAVEGACION_PANEL.map((e) => e.etiqueta)).toEqual(["Inicio", "Carta", "Menú", "Local", "QR"]);
+  it("tiene Inicio, Carta, Menú, Idiomas, Visitas, Local y QR en ese orden", () => {
+    expect(NAVEGACION_PANEL.map((e) => e.clave)).toEqual(["inicio", "carta", "menu", "idiomas", "estadisticas", "local", "qr"]);
+    expect(NAVEGACION_PANEL.map((e) => e.etiqueta)).toEqual(["Inicio", "Carta", "Menú", "Idiomas", "Visitas", "Local", "QR"]);
   });
 
   it("construye las rutas con el id del local", () => {
@@ -14,6 +14,8 @@ describe("NAVEGACION_PANEL", () => {
       `/panel/${ID}`,
       `/panel/${ID}/carta`,
       `/panel/${ID}/menu`,
+      `/panel/${ID}/idiomas`,
+      `/panel/${ID}/estadisticas`,
       `/panel/${ID}/local`,
       `/panel/${ID}/qr`,
     ]);

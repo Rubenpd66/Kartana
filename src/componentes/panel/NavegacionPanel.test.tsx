@@ -10,12 +10,12 @@ const ID = "3f1c2d4e-0000-4000-8000-000000000001";
 afterEach(cleanup);
 
 describe("NavegacionPanel", () => {
-  it("pinta las 5 pestañas con texto y enlace", () => {
+  it("pinta las 7 pestañas con texto y enlace", () => {
     ruta = `/panel/${ID}`;
     render(<NavegacionPanel localId={ID} nombreLocal="La Guagua" />);
     const nav = screen.getByRole("navigation", { name: "Panel" });
     const enlaces = within(nav).getAllByRole("link");
-    expect(enlaces.map((a) => a.textContent)).toEqual(["Inicio", "Carta", "Menú", "Local", "QR"]);
+    expect(enlaces.map((a) => a.textContent)).toEqual(["Inicio", "Carta", "Menú", "Idiomas", "Visitas", "Local", "QR"]);
     expect(enlaces[1].getAttribute("href")).toBe(`/panel/${ID}/carta`);
   });
 

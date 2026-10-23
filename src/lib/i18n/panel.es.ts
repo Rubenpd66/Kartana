@@ -10,6 +10,8 @@ export const panelEs = {
     inicio: "Inicio",
     carta: "Carta",
     menu: "Menú",
+    idiomas: "Idiomas",
+    estadisticas: "Visitas",
     local: "Local",
     qr: "QR",
   },

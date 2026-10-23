@@ -20,7 +20,7 @@ export function NavegacionPanel({ localId, nombreLocal }: { localId: string; nom
         className="fixed inset-x-0 bottom-0 z-10 border-t border-borde bg-superficie pb-[env(safe-area-inset-bottom)] lg:top-14 lg:right-auto lg:w-56 lg:border-t-0 lg:border-r lg:pb-0"
       >
         <p className="hidden truncate px-5 pt-5 pb-3 font-titulo text-lg font-semibold lg:block">{nombreLocal}</p>
-        <ul className="mx-auto grid max-w-estrecho grid-cols-5 lg:mx-0 lg:max-w-none lg:grid-cols-1 lg:gap-1 lg:px-3">
+        <ul className="mx-auto grid max-w-estrecho grid-cols-7 lg:mx-0 lg:max-w-none lg:grid-cols-1 lg:gap-1 lg:px-3">
           {NAVEGACION_PANEL.map((e) => {
             const actual = e.clave === activa;
             return (
