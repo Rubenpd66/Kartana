@@ -19,7 +19,7 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 
 - [x] ~~**0. Clave de API de Google para traducir (v0.2)**~~ — hecho el 23/10: traducción encendida y comprobada.
 
-- [ ] **0b. Ampliar la clave de Google a Places API (v0.3, reseñas)** — **Por qué:** para que el dueño busque su negocio en Google. **Pasos:** Google Cloud → proyecto `kartana` → APIs y servicios → Credenciales → abre la clave `kartana-traduccion` → en «Restricciones de API» marca también **Places API (New)** → Guardar. **Devuélveme:** «clave ampliada». Sin esto, `RESENAS_API_ACTIVA` sigue apagada y se usa «pegar enlace de Google Maps».
+- [x] ~~**0b. Ampliar la clave de Google a Places API (v0.3, reseñas)**~~ — hecho el 23/10 (comprobado con Autocomplete). — **Por qué:** para que el dueño busque su negocio en Google. **Pasos:** Google Cloud → proyecto `kartana` → APIs y servicios → Credenciales → abre la clave `kartana-traduccion` → en «Restricciones de API» marca también **Places API (New)** → Guardar. **Devuélveme:** «clave ampliada». Sin esto, `RESENAS_API_ACTIVA` sigue apagada y se usa «pegar enlace de Google Maps».
 
 - [x] (histórico) **0. Clave de API de Google para traducir (v0.2)** — **Por qué:** sin ella no se traduce la carta sola (los textos manuales sí funcionan). **Pasos:** Google Cloud → proyecto `kartana` → APIs y servicios → Credenciales → Crear credenciales → Clave de API. En «Restricciones de API» marca solo **Cloud Translation API**. Cópiala en `.env.local` como `GOOGLE_CLOUD_API_KEY=` (y luego en Vercel → Settings → Environment Variables). **Nunca la pegues en el chat.** **Devuélveme:** «clave puesta».
 
