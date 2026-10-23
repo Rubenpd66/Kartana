@@ -17,6 +17,21 @@ const LOCALE_OG: Record<IdiomaCarta, string> = {
   gl: "gl_ES",
 };
 
+/** «Carta de {nombre}» en cada idioma (para el título de la página y el JSON-LD). */
+const TITULO_CARTA: Record<IdiomaCarta, (nombre: string) => string> = {
+  es: (n) => `Carta de ${n}`,
+  en: (n) => `${n} – Menu`,
+  fr: (n) => `Carte de ${n}`,
+  de: (n) => `Speisekarte von ${n}`,
+  ca: (n) => `Carta de ${n}`,
+  eu: (n) => `${n} – Karta`,
+  gl: (n) => `Carta de ${n}`,
+};
+
+export function tituloCarta(nombre: string, idioma: IdiomaCarta): string {
+  return TITULO_CARTA[idioma](nombre);
+}
+
 function recortar(texto: string): string {
   return texto.length <= LARGO_DESCRIPCION ? texto : `${texto.slice(0, LARGO_DESCRIPCION - 1).trimEnd()}…`;
 }
@@ -36,8 +51,8 @@ export function descripcionCarta(carta: CartaPublica, idioma: IdiomaCarta = IDIO
  */
 export function metadatosCarta(carta: CartaPublica, idioma: IdiomaCarta = IDIOMA_CARTA_POR_DEFECTO): Metadata {
   const { slug, nombre } = carta.local;
-  // Sin «· Kartana»: la carta es del bar. En otros idiomas, solo el nombre (no hay «Carta de» en el diccionario).
-  const titulo = idioma === "es" ? `Carta de ${nombre}` : nombre;
+  // Sin «· Kartana»: la carta es del bar.
+  const titulo = tituloCarta(nombre, idioma);
   const descripcion = descripcionCarta(carta, idioma);
   const url = rutaCarta(slug, idioma);
   const languages: Record<string, string> = {};

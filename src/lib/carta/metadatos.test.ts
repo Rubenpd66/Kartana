@@ -50,6 +50,14 @@ describe("metadatosCarta por idioma", () => {
 });
 
 describe("metadatosCarta", () => {
+  it("el título lleva la palabra «carta» del idioma de la página", () => {
+    const c = cartaPublicaEjemplo();
+    expect(metadatosCarta(c, "en").title).toEqual({ absolute: "Cafetería La Guagua – Menu" });
+    expect(metadatosCarta(c, "fr").title).toEqual({ absolute: "Carte de Cafetería La Guagua" });
+    expect(metadatosCarta(c, "de").title).toEqual({ absolute: "Speisekarte von Cafetería La Guagua" });
+    expect(metadatosCarta(c, "ca").title).toEqual({ absolute: "Carta de Cafetería La Guagua" });
+  });
+
   it("título «Carta de {nombre}» sin la marca de Kartana", () => {
     const m = metadatosCarta(cartaPublicaEjemplo());
     expect(m.title).toEqual({ absolute: "Carta de Cafetería La Guagua" });

@@ -4,6 +4,7 @@ import { IDIOMA_CARTA_POR_DEFECTO, type IdiomaCarta } from "@/lib/i18n/idiomas";
 import type { CartaPublica, PlatoPublico } from "@/lib/tipos/carta";
 import type { CodigoEtiqueta, DiaSemana, Precio } from "@/lib/tipos/dominio";
 import type { DiccionarioCarta } from "@/lib/tipos/i18n";
+import { tituloCarta } from "./metadatos";
 import { etiquetaPrecio, textoEn } from "./textos";
 
 const DIAS_SCHEMA: Record<DiaSemana, string> = {
@@ -121,7 +122,7 @@ export function jsonLdCarta(
     ...(franjas.length > 0 ? { openingHoursSpecification: franjas } : {}),
     hasMenu: {
       "@type": "Menu",
-      name: `Carta de ${local.nombre}`,
+      name: tituloCarta(local.nombre, idioma),
       url: urlCarta,
       inLanguage: idioma,
       hasMenuSection: carta.secciones.map((s) => ({
