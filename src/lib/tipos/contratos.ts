@@ -45,6 +45,15 @@ import type {
   TextoTraducible,
   TraduccionAGuardar,
 } from "./traduccion";
+import type {
+  ConfigResenas,
+  DestinoResena,
+  DestinoResenaPublico,
+  EntradaFichaGoogle,
+  EntradaResenasActivas,
+  FichaGoogle,
+  SugerenciaLugar,
+} from "./resenas";
 
 // ===========================================================================
 // CARRIL datos · src/lib/dominio/*  (lógica pura, sin red; usable en servidor y navegador)
@@ -279,6 +288,11 @@ export type PropsCartaVista = {
   diccionario: DiccionarioCarta;
   /** "vista_previa" muestra una banda «Así verán tu carta» y no envía estadísticas. */
   modo: "publica" | "vista_previa";
+  /**
+   * v0.3: pinta el botón «dejar reseña» al final de la carta (enlace a /r/<slug>). Por defecto false.
+   * En "vista_previa" el botón se ve pero no es un enlace (el dueño no suma clics).
+   */
+  conResena?: boolean;
 };
 
 // ===========================================================================
@@ -322,3 +336,73 @@ export type PlanificarTraducciones = (textos: TextoTraducible[], idiomas: Idioma
 export type ResumirTraducciones = (textos: TextoTraducible[], idiomas: IdiomaDestino[]) => ResumenTraduccion[];
 /** src/lib/traduccion/traducir-local.ts -> `traducirLocal`. No hace nada si TRADUCCION_ACTIVA no es "true". */
 export type TraducirLocal = (localId: string) => Promise<Resultado<ResultadoTraducirLocal>>;
+
+// ===========================================================================
+// v0.3 · Reseñas (docs/arquitectura.md §3.7 y §5.7). Tipos de datos en ./resenas.
+// ===========================================================================
+
+// ---- CARRIL datos-v03 · src/lib/dominio/resenas.ts (puro, sin red; servidor y navegador) ----
+// También: `export const LIMITES_RESENAS` (satisfies LimitesResenas).
+
+/** `rutaResena`: "/r/<slug>" (relativa; los QR le anteponen urlSitio()). */
+export type RutaResena = (slug: string) => string;
+/** `urlEscribirResena`: place_id -> "https://search.google.com/local/writereview?placeid=<id codificado>"; enlace -> tal cual. */
+export type UrlEscribirResena = (destino: DestinoResena) => string;
+/** `urlFichaEnMaps`: "https://www.google.com/maps/place/?q=place_id:<id>" (para que el dueño compruebe su ficha). */
+export type UrlFichaEnMaps = (placeId: string) => string;
+/**
+ * `interpretarEnlaceGoogle`: acepta g.page/r/<código>/review, writereview?placeid=<id>, …?q=place_id:<id>
+ * o un place ID suelto. Recorta espacios; normaliza el enlace g.page (https, sin query ni barra final).
+ * Cualquier otra cosa (maps.app.goo.gl, goo.gl/maps, otras webs) -> null.
+ */
+export type InterpretarEnlaceGoogle = (texto: string) => DestinoResena | null;
+/**
+ * `contieneTextoProhibidoResena`: true si el texto sugiere incentivos o filtro de clientes
+ * (descuento, regalo, sorteo, gratis, «5 estrellas», «si te ha gustado»…) en cualquiera de los 7 idiomas.
+ * Se aplica en tests a todo texto sobre reseñas que ve el cliente del bar.
+ */
+export type ContieneTextoProhibidoResena = (texto: string) => boolean;
+
+// ---- CARRIL datos-v03 · src/lib/datos/resenas.ts (`import "server-only"`) ----
+
+/** `obtenerConfigResenas`: con la sesión del dueño (dentro de <Suspense>). null si el local no es suyo. */
+export type ObtenerConfigResenas = (localId: string) => Promise<ConfigResenas | null>;
+/**
+ * `guardarFichaGoogle`: valida (esquemaFichaGoogle), getClaims, guarda el destino (y vacía el otro tipo),
+ * `nombreFicha` y, si `activar`, resenas_activas = true. Después trasGuardarCarta(localId).
+ */
+export type GuardarFichaGoogle = (entrada: EntradaFichaGoogle) => Promise<Resultado>;
+/** `cambiarResenasActivas`: encender sin destino -> "datos_invalidos". Después trasGuardarCarta. */
+export type CambiarResenasActivas = (entrada: EntradaResenasActivas) => Promise<Resultado>;
+/** `quitarFichaGoogle`: borra destino y nombre y apaga el botón. Después trasGuardarCarta. */
+export type QuitarFichaGoogle = (localId: string) => Promise<Resultado>;
+/**
+ * `obtenerDestinoResena`: cliente público, 'use cache', cacheTag(etiquetaCarta(slug)) y cacheTag(etiquetaLocal(id)),
+ * cacheLife("hours"). Resuelve slugs antiguos. null si no existe o no se ve (no publicado o sin acceso).
+ */
+export type ObtenerDestinoResena = (slug: string) => Promise<DestinoResenaPublico | null>;
+/** `registrarClicResena`: rpc registrar_estadisticas(p_local, 'resena', 'es', '{}') con cliente público. Nunca lanza. */
+export type RegistrarClicResena = (localId: string) => Promise<void>;
+/** `consumirCuotaLugares`: rpc consumir_cuota_lugares con la sesión. false = sin cuota o no es el dueño. */
+export type ConsumirCuotaLugares = (localId: string) => Promise<boolean>;
+
+// ---- CARRIL datos-v03 · src/lib/validacion/resenas.ts (sin server-only) ----
+// `esquemaBuscarLugares` (EntradaBuscarLugares) · `esquemaElegirFicha` (EntradaElegirFicha) ·
+// `esquemaEnlaceManual` (EntradaEnlaceManual; refine con interpretarEnlaceGoogle) ·
+// `esquemaFichaGoogle` (EntradaFichaGoogle) · `esquemaResenasActivas` (EntradaResenasActivas) ·
+// `esquemaSlugRuta` (formato de slug para /r/[slug]; no rechaza los reservados como "demo").
+
+// ---- CARRIL resenas · src/lib/resenas/places.ts (`import "server-only"`; fetch a places.googleapis.com) ----
+
+/** `buscarLugares`: Autocomplete (New). No mira el interruptor ni la cuota (lo hace quien la llama). */
+export type BuscarLugares = (texto: string, sesion: string) => Promise<Resultado<SugerenciaLugar[]>>;
+/** `detallesLugar`: Place Details (New) con field mask `id,displayName` y el mismo token de sesión. */
+export type DetallesLugar = (placeId: string, sesion: string) => Promise<Resultado<FichaGoogle>>;
+
+// ---- CARRIL carta-publica-v03 · src/componentes/carta/BotonResena.tsx (componente de servidor, sin JS) ----
+
+export type PropsBotonResena = {
+  slug: string;
+  diccionario: DiccionarioCarta;
+  modo: "publica" | "vista_previa";
+};

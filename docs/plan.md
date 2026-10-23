@@ -2,7 +2,7 @@
 
 > Fase 2 · 22/10/2026. Cómo se reparte el trabajo entre agentes para que construyan **en paralelo sin pisarse**.
 > Límite: plan Pro → **como mucho 3 carriles a la vez** (olas de 2–3). Lo que más tarda va en la primera ola de cada versión.
-> Encargos detallados: `docs/carriles/<carril>.md` (v0.1 y v0.2). v0.3–v0.6 están esbozadas y se detallarán al llegar.
+> Encargos detallados: `docs/carriles/<carril>.md` (v0.1, v0.2 y v0.3). v0.4–v0.6 están esbozadas y se detallarán al llegar.
 > Propiedad de archivos: `docs/propiedad.md`. Modelo y rutas: `docs/arquitectura.md`. Contratos: `src/lib/tipos/`.
 
 ## Cómo leer este plan
@@ -18,7 +18,7 @@
 |---|---|---|---|
 | v0.1 | 3 | 9 | Empezar el piloto: panel, carta pública, alérgenos, QR en PDF, admin con pilotos |
 | v0.2 | 3 | 7 | 7 idiomas con traducción corregible y estadísticas anónimas |
-| v0.3 | 2 | 5 (esbozo) | Reseñas: ficha de Google, botón, QR de reseña |
+| v0.3 | 3 | 5 | Reseñas: ficha de Google, botón, `/r/`, QR de reseña |
 | v0.4 | 2 | 4 (esbozo) | Página de venta, legal completo, dominio propio |
 | v0.5 | 2 | 3 (esbozo, depende de Google) | Reseñas en el panel y respuestas con IA |
 | v0.6 | 3 | 5 (esbozo) | Cobrar con Stripe (apagado hasta el PC4) |
@@ -127,17 +127,75 @@ Director: `sitemap.ts` con las páginas por idioma; encender `TRADUCCION_ACTIVA`
 
 ---
 
-## v0.3 — Reseñas (esbozo)
+## v0.3 — Reseñas
 
-- **Antes**: clave de Places API (New) restringida a esa API (puede ser la misma clave de Google Cloud con dos APIs); `RESENAS_API_ACTIVA`.
-- **Ola 1**:
-  - `datos-v03` (opus/medium): `locales.google_place_id`, `google_place_nombre`, `resenas_activas`; `registrar_estadisticas` acepta `p_tipo = 'resena'`; consultas.
-  - `resenas` (opus/high): `GET /api/lugares` (Autocomplete con token de sesión, solo con sesión y por `RESENAS_API_ACTIVA`), elegir ficha y guardar `place_id` (Place Details solo con `id` y `displayName`), alternativa «pegar enlace de Google Maps», `GET /r/[slug]` que cuenta el clic y redirige 307 a `https://search.google.com/local/writereview?placeid=…`, página `/panel/[local]/resenas`.
-- **Ola 2**:
-  - `carta-publica-v03` (sonnet/medium): botón discreto al final de la carta, igual para todos, enlace a `/r/<slug>` con `rel="nofollow"`. Nada de preguntas previas ni estrellas.
-  - `qr-resena` (sonnet/medium): PDF de reseña (tarjeta para la cuenta, tira de ticket, cartel de barra) que apunta a `/r/<slug>`; textos sin incentivos.
-  - `qa-v03` (sonnet/medium): incluye una comprobación de textos «sin incentivos ni filtro».
-- Director: `robots.ts` con `Disallow: /r/`; condiciones del servicio ya prohíben el *review gating*.
+> Detallada el 23/10/2026. Modelo y seguridad: `docs/arquitectura.md` §3.7 y §5.7. Tipos: `src/lib/tipos/resenas.ts` y bloque «v0.3» de `contratos.ts` (solo añaden; no rompen nada de `main`). Propiedad: `docs/propiedad.md` → «v0.3». Maqueta: `docs/diseno/resenas.html`.
+
+**Qué se entrega**: el dueño conecta su ficha de Google (buscándola o pegando el enlace oficial «Pedir reseñas»); la carta muestra al final un botón discreto, igual para todos, que lleva a `/r/<slug>`; `/r/` cuenta un clic anónimo y redirige 307 al formulario de reseña de Google; PDF de QR de reseña (tarjetas para la cuenta, tiras para el ticket, cartel de barra); los clics aparecen en Estadísticas. Todo funciona sin la API de Google («pegar enlace»); el buscador se enciende con `RESENAS_API_ACTIVA`.
+
+**Sin dependencias nuevas** (Places se llama con `fetch`): no hay que tocar `package.json`.
+
+### Antes de la ola 1
+
+| Tarea | Quién | Bloquea |
+|---|---|---|
+| Confirmar las decisiones D1–D8 (al final de esta sección) | director | ola 1 |
+| Fusionar la rama `plan/v03` en `main` (contratos, encargos, maqueta) | director | ola 1 |
+| Ampliar la clave `kartana-traduccion` a **Places API (New)** (TU-TURNO 0b). La API ya está habilitada en el proyecto de Google Cloud | usuario | solo encender el buscador al final; **no** bloquea a los carriles (sus tests simulan Google y en CI el interruptor está apagado) |
+| Comprobar que `e2e-prueba` está como siempre (sin publicar, cortesía, sin platos) | director | e2e |
+
+### Ola 1 · datos y módulo de reseñas (2 carriles en paralelo)
+
+| Carril | Qué entrega | Depende de | Modelo / esfuerzo | Encargo |
+|---|---|---|---|---|
+| **datos-v03** | Migración (4 columnas en `locales` con CHECK y `grant` por columna, tabla `uso_lugares` con su cuota, limpieza), tests SQL, reglas puras (`interpretarEnlaceGoogle`, `urlEscribirResena`, `contieneTextoProhibidoResena`…), esquemas Zod y `src/lib/datos/resenas.ts` | v0.2 | **opus / medium** (corto; RLS y permisos por columna) | `docs/carriles/datos-v03.md` |
+| **resenas** | Cliente de Google Places, `GET /api/lugares`, `GET`/`HEAD /r/[slug]`, página `/panel/[local]/resenas` con buscador y «pegar enlace», nota en Estadísticas, e2e | contratos v0.3 (programa contra las firmas de `datos-v03` a la vez) | **opus / high** (seguridad, API externa, redirección pública) | `docs/carriles/resenas.md` |
+
+Por qué esta ola va primero: todo lo demás necesita las columnas nuevas (carta, QR) y la dirección `/r/<slug>` (a la que apuntan el botón y el QR). Lo más largo es `resenas`; `datos-v03` es corto, así que **en cuanto entregue, el director fusiona y aplica su migración** (sin esperar a `resenas`), para que `resenas` pueda correr sus pruebas de navegador contra la base de datos real antes de terminar.
+
+### Integración 1 (director)
+
+1. Fusionar `datos-v03` (en cuanto acabe): `apply_migration`, renombrar el archivo con la versión de `list_migrations`, ejecutar `supabase/tests/05_resenas_v03.sql` en transacción con `rollback`, `get_advisors` (seguridad y rendimiento) sin avisos nuevos, regenerar `src/lib/datos/database.types.ts`.
+2. Fusionar `resenas`; correr sus e2e (`e2e/resenas.spec.ts`).
+3. Cambios compartidos: `src/app/robots.ts` → añadir `"/r/"` a `disallow`; pestaña «Reseñas» en `src/lib/panel/navegacion.ts` (`/panel/<id>/resenas`) con un icono neutro (bocadillo, **no** estrella) en `IconoPanel.tsx` (ver D8); lo demás que pidan los informes.
+4. Probar en local con la clave ampliada y `RESENAS_API_ACTIVA=true`: buscar «La Guagua Las Palmas», elegir, ver que se guarda el `place_id` y sube `uso_lugares`. Si la clave aún no está ampliada, probar solo «pegar enlace».
+5. `npm run lint && npm run typecheck && npm test && npm run build && npm run test:e2e`. Comprobar por SQL que `e2e-prueba` quedó sin ficha.
+
+### Ola 2 · botón y QR (2 carriles en paralelo)
+
+| Carril | Qué entrega | Depende de | Modelo / esfuerzo | Encargo |
+|---|---|---|---|---|
+| **carta-publica-v03** | `BotonResena` al final de la carta en los 7 idiomas (enlace normal, sin JS, sin estrellas), en `/c/[slug]`, `/c/[slug]/[idioma]` y la vista previa (sin enlace) | ola 1 integrada | **sonnet / medium** | `docs/carriles/carta-publica-v03.md` |
+| **qr-resena** | PDF de reseña: 10 tarjetas para la cuenta, 8 tiras para el ticket, cartel de barra A5 ×2; SVG; sección `#resena` en `/panel/[local]/qr` | ola 1 integrada | **sonnet / high** (maquetación de PDF) | `docs/carriles/qr-resena.md` |
+
+Los dos comparten el local `e2e-prueba`: `qr-resena` no cambia su ficha ni su publicación; `carta-publica-v03` sí, y lo deja como estaba. Puertos propios: 3121 y 3122.
+
+### Integración 2 (director)
+
+Fusionar las dos ramas; e2e completos; desplegar una vista previa en Vercel; **prueba real en el móvil**: escanear el QR de reseña impreso de un local con ficha real (la del usuario o la de un bar piloto con su permiso) y comprobar que se abre el formulario de reseña de Google (iPhone y Android).
+
+### Ola 3 · pruebas (1 carril)
+
+| Carril | Qué entrega | Modelo / esfuerzo | Encargo |
+|---|---|---|---|
+| **qa-v03** | e2e del flujo completo, `/r/` (cabeceras, sin cookies, qué cuenta y qué no), `robots.txt`, privacidad de la carta con el botón, textos «sin incentivos ni filtro» en los 7 idiomas y en los PDF, Lighthouse | **sonnet / medium** | `docs/carriles/qa-v03.md` |
+
+### Cierre de la v0.3 (director)
+
+- Encender `RESENAS_API_ACTIVA=true` en Vercel (solo si la clave ya incluye Places API) y, según D7, añadir Google Places a «Quién nos ayuda» en la política de privacidad (`src/lib/legal/documentos.ts`).
+- `PROGRESO.md`; **punto de control**: el usuario conecta la ficha de un bar piloto, imprime el QR de reseña y lo prueba con su móvil.
+
+### Decisiones de la v0.3 que el director debe confirmar
+
+- **D1 · «Pegar enlace» acepta solo enlaces que llevan el identificador**: el enlace oficial `g.page/r/…/review` («Pedir reseñas» del Perfil de Empresa), un enlace `writereview?placeid=`, uno con `place_id:` o el ID suelto. Se rechazan los enlaces cortos `maps.app.goo.gl` (no llevan el ID y seguirlos obliga a pedir páginas a Google desde el servidor). El panel explica dónde sacar el enlace bueno.
+- **D2 · `google_place_nombre` y la política de caché de Google**: Google solo permite guardar sin límite el `place_id`; el resto del contenido de Places no debería guardarse. Propuesta: guardarlo como **etiqueta que el dueño confirma** (es el nombre de su propio negocio, solo se ve en su panel y se sobrescribe cada vez que elige ficha). Alternativa estricta: no guardarlo y mostrar solo «Ver mi ficha en Google Maps». Si el director prefiere la estricta, el carril `resenas` pasa siempre `nombreFicha: null` (no hace falta cambiar contratos: `nombreFicha` ya admite null).
+- **D3 · Al conectar la ficha, el botón se enciende solo** (`activar: true`), con el interruptor a la vista para apagarlo. Menos pasos para un dueño con prisa.
+- **D4 · El QR de reseña se puede descargar antes de conectar la ficha**: lleva a `/r/<slug>`, que manda a la carta mientras no haya ficha. Así lo impreso nunca se rompe.
+- **D5 · En la v0.3 no se mira el plan** (`carta` / `carta_resenas`): todos los locales están en prueba, piloto o cortesía con todo incluido. Limitar las reseñas al plan «Carta + Reseñas» llega con los pagos (v0.6).
+- **D6 · La carta de demostración (`demo`) no lleva botón de reseña**: quien la mira es un posible cliente de Kartana, no un cliente del bar, y no debe acabar opinando sobre La Guagua. La portada (v0.4) puede enseñar el botón como imagen.
+- **D7 · Privacidad**: el buscador solo envía a Google el texto que escribe el dueño (desde nuestro servidor, sin datos personales). Propuesta: mencionar Google Places en «Quién nos ayuda» cuando se encienda el interruptor, **sin** subir la versión de la política (no cambia qué datos personales tratamos), para no volver a pedir la aceptación. Si el director prefiere subirla, el panel vuelve a pedirla.
+- **D8 · Pestaña «Reseñas» en la navegación inferior**: serían 8 pestañas. Propuesta: añadirla y, si no cabe bien en 360 px, agrupar «Idiomas», «Estadísticas» y «Reseñas» en «Más» (cambio del director en `navegacion.ts`/`NavegacionPanel.tsx`).
+- **Cuota del buscador**: 50 peticiones por local y día y 4.000 al mes en total (bajo los cupos gratis de Google). Cambiarla solo exige tocar la migración y `LIMITES_RESENAS`.
 
 ## v0.4 — Vender puerta a puerta (esbozo)
 

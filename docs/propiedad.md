@@ -48,14 +48,24 @@ Ojo con las rutas: `src/app/(panel)/panel/[local]/` contiene carpetas de **vario
 
 En la v0.2 los carriles de la v0.1 que no aparecen están cerrados: sus archivos los mantiene el director o se reasignan en el plan.
 
-## v0.3 – v0.6 (esbozo; se detallará al planificar cada versión)
+## v0.3 (Reseñas) · detallada el 23/10/2026
+
+| Carril | Ola | Archivos y carpetas propios |
+|---|---|---|
+| **datos-v03** | 1 | `supabase/migrations/<nueva>_resenas_v03.sql` · `supabase/tests/05_resenas_v03.sql` · `src/lib/dominio/resenas.ts` (+ test) · `src/lib/validacion/resenas.ts` (+ test) · `src/lib/datos/resenas.ts` (+ test) · cambios en `src/lib/datos/filas.ts` y `src/lib/datos/pruebas/**` si los necesita |
+| **resenas** | 1 | `src/lib/resenas/**` · `src/app/api/lugares/**` · `src/app/r/**` · `src/app/(panel)/panel/[local]/resenas/**` · `src/componentes/resenas/**` · `src/lib/i18n/resenas.es.ts` · `public/resenas/**` (solo si la atribución de Google exige su logotipo) · `e2e/resenas.spec.ts` · **durante la v0.3 también** `src/app/(panel)/panel/[local]/estadisticas/page.tsx` y `src/lib/i18n/estadisticas.es.ts` (quitar «Llega en la próxima versión» de los clics en reseña) |
+| **carta-publica-v03** | 2 | lo mismo que `carta-publica`: `src/app/(carta)/**` · `src/app/(panel)/panel/[local]/vista-previa/**` · `src/componentes/carta/**` (añade `BotonResena.tsx`) · `src/lib/carta/**` · `src/lib/i18n/carta-publica.es.ts` · `e2e/carta-publica.spec.ts` |
+| **qr-resena** | 2 | lo mismo que `qr-pdf`: `src/app/(panel)/panel/[local]/qr/**` · `src/lib/qr/**` (añade plantillas de reseña) · `src/componentes/qr/**` · `src/lib/i18n/qr.es.ts` · `e2e/qr.spec.ts` |
+| **qa-v03** | 3 | `e2e/flujos-v03.spec.ts` · `e2e/ayudas/**` · `docs/qa/v0.3.md` |
+
+Del **director** en la v0.3 (los carriles lo piden en su informe, no lo tocan): `src/app/robots.ts` (`Disallow: /r/`), `src/lib/panel/navegacion.ts` y `src/componentes/panel/IconoPanel.tsx` (pestaña «Reseñas»), `src/lib/legal/**` (Google Places en la política de privacidad cuando se encienda `RESENAS_API_ACTIVA`), `src/lib/tipos/**`, `src/lib/datos/cache.ts`, `src/lib/datos/database.types.ts` (lo regenera tras aplicar la migración), `src/lib/i18n/carta.*.ts` (la frase `botonResena` ya existe en los 7 idiomas y no cambia), `src/lib/estadisticas/**` (los carriles solo **importan** `esBot`), `src/proxy.ts`, `next.config.ts`, `package.json` (la v0.3 no necesita dependencias nuevas: Places se llama con `fetch`).
+
+Los carriles de la v0.1 y v0.2 que no aparecen están cerrados.
+
+## v0.4 – v0.6 (esbozo; se detallará al planificar cada versión)
 
 | Versión | Carril | Archivos previstos |
 |---|---|---|
-| v0.3 | `datos-v03` | migración (`locales.google_place_id`, `google_place_nombre`, `resenas_activas`), `src/lib/datos/resenas.ts` |
-| v0.3 | `resenas` | `src/lib/resenas/**`, `src/app/api/lugares/**`, `src/app/r/**`, `src/app/(panel)/panel/[local]/resenas/**`, `src/lib/i18n/resenas.es.ts` |
-| v0.3 | `carta-publica-v03` | carpetas de `carta-publica` (botón de reseña) |
-| v0.3 | `qr-resena` | carpetas de `qr-pdf` (plantillas de reseña) |
 | v0.4 | `contenido-venta`, `portada`, `legal-v04` | `src/app/(web)/page.tsx` y `src/app/(web)/precios/**` pasan a `portada`; `src/lib/legal/**` pasa a `legal-v04` durante la versión |
 | v0.5 | `resenas-panel`, `respuestas-ia` | `src/lib/google-perfil/**`, `src/lib/respuestas/**` |
 | v0.6 | `datos-v06`, `pagos`, `panel-suscripcion`, `admin-v06` | `src/lib/pagos/**`, `src/app/api/stripe/**`, `…/suscripcion/**` |
