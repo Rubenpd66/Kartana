@@ -1,7 +1,8 @@
 import { Contenedor } from "@/componentes/Contenedor";
 import type { DiccionarioCarta } from "@/lib/tipos/i18n";
 
-export type EntradaNav = { ancla: string; nombre: string };
+/** `lang: "es"` si el nombre se muestra sin traducir. */
+export type EntradaNav = { ancla: string; nombre: string; lang?: "es" };
 
 /** Fila de chips con anclas a cada sección (desplazamiento horizontal, sin JavaScript). */
 export function NavSecciones({ entradas, diccionario }: { entradas: EntradaNav[]; diccionario: DiccionarioCarta }) {
@@ -14,6 +15,7 @@ export function NavSecciones({ entradas, diccionario }: { entradas: EntradaNav[]
             <li key={e.ancla} className="flex-none">
               <a
                 href={`#${e.ancla}`}
+                lang={e.lang}
                 className="chip inline-flex min-h-12 items-center rounded-full border border-borde bg-superficie px-4 text-[0.9375rem] font-medium whitespace-nowrap"
               >
                 {e.nombre}

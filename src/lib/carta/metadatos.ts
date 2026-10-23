@@ -1,39 +1,59 @@
 import type { Metadata } from "next";
-import { rutaCarta } from "@/lib/i18n/idiomas";
+import { elegirTexto } from "@/lib/dominio/traducir";
+import { IDIOMA_CARTA_POR_DEFECTO, rutaCarta, type IdiomaCarta } from "@/lib/i18n/idiomas";
 import type { CartaPublica } from "@/lib/tipos/carta";
-import { esIndexable } from "./indexable";
+import { esIdiomaIndexable, idiomasIndexablesCarta } from "./indexable";
 
 const LARGO_DESCRIPCION = 160;
+
+/** Locale de Open Graph de cada idioma de la carta. */
+const LOCALE_OG: Record<IdiomaCarta, string> = {
+  es: "es_ES",
+  en: "en_GB",
+  fr: "fr_FR",
+  de: "de_DE",
+  ca: "ca_ES",
+  eu: "eu_ES",
+  gl: "gl_ES",
+};
 
 function recortar(texto: string): string {
   return texto.length <= LARGO_DESCRIPCION ? texto : `${texto.slice(0, LARGO_DESCRIPCION - 1).trimEnd()}…`;
 }
 
-/** Descripción: la del local o, si no hay, los nombres de las secciones. */
-export function descripcionCarta(carta: CartaPublica): string {
-  const { nombre, descripcion } = carta.local;
-  if (descripcion?.trim()) return recortar(descripcion.trim());
-  const secciones = carta.secciones.map((s) => s.nombre).join(", ");
+/** Descripción: la del local (traducida si se puede) o, si no hay, los nombres de las secciones. */
+export function descripcionCarta(carta: CartaPublica, idioma: IdiomaCarta = IDIOMA_CARTA_POR_DEFECTO): string {
+  const { nombre, descripcion, traducciones } = carta.local;
+  if (descripcion?.trim()) return recortar(elegirTexto(descripcion.trim(), traducciones, "descripcion", idioma).texto);
+  const secciones = carta.secciones.map((s) => elegirTexto(s.nombre, s.traducciones, "nombre", idioma).texto).join(", ");
+  if (idioma !== "es") return recortar(secciones ? `${nombre}: ${secciones}.` : `${nombre}.`);
   return recortar(secciones ? `Carta de ${nombre}: ${secciones}.` : `Carta de ${nombre}.`);
 }
 
-/** Metadatos de /c/<slug>: título, descripción, canónica, robots y Open Graph. */
-export function metadatosCarta(carta: CartaPublica): Metadata {
-  const titulo = `Carta de ${carta.local.nombre}`;
-  const descripcion = descripcionCarta(carta);
-  const url = rutaCarta(carta.local.slug);
+/**
+ * Metadatos de /c/<slug> y /c/<slug>/<idioma>: título, descripción, canónica (a sí misma), `hreflang` de los
+ * idiomas indexables + x-default (la española), robots y Open Graph.
+ */
+export function metadatosCarta(carta: CartaPublica, idioma: IdiomaCarta = IDIOMA_CARTA_POR_DEFECTO): Metadata {
+  const { slug, nombre } = carta.local;
+  // Sin «· Kartana»: la carta es del bar. En otros idiomas, solo el nombre (no hay «Carta de» en el diccionario).
+  const titulo = idioma === "es" ? `Carta de ${nombre}` : nombre;
+  const descripcion = descripcionCarta(carta, idioma);
+  const url = rutaCarta(slug, idioma);
+  const languages: Record<string, string> = {};
+  for (const i of idiomasIndexablesCarta(carta)) languages[i] = rutaCarta(slug, i);
+  languages["x-default"] = rutaCarta(slug);
   return {
-    // Sin «· Kartana»: la carta es del bar.
     title: { absolute: titulo },
     description: descripcion,
-    alternates: { canonical: url },
-    robots: { index: esIndexable(carta), follow: true },
+    alternates: { canonical: url, languages },
+    robots: { index: esIdiomaIndexable(carta, idioma), follow: true },
     openGraph: {
       type: "website",
-      locale: "es_ES",
+      locale: LOCALE_OG[idioma],
       title: titulo,
       description: descripcion,
-      siteName: carta.local.nombre,
+      siteName: nombre,
       url,
       ...(carta.local.logoUrl ? { images: [{ url: carta.local.logoUrl }] } : {}),
     },

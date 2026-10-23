@@ -1,6 +1,18 @@
 import { describe, expect, it } from "vitest";
+import { cartaEn } from "@/lib/i18n/carta.en";
 import { cartaEs } from "@/lib/i18n/carta.es";
-import { enlaceMapa, enlaceTelefono, etiquetaPrecio, importePrecio, listaDatos, textoDiasMenu, textoHorarioMenu } from "./textos";
+import { traduccion } from "./pruebas/carta-ejemplo";
+import {
+  elegirEtiquetaPrecio,
+  enlaceMapa,
+  enlaceTelefono,
+  etiquetaPrecio,
+  importePrecio,
+  listaDatos,
+  textoDiasMenu,
+  textoEn,
+  textoHorarioMenu,
+} from "./textos";
 
 const sinEspaciosDuros = (s: string) => s.replace(/ /g, " ");
 
@@ -63,5 +75,31 @@ describe("listaDatos", () => {
   it("códigos separados por espacios para los atributos data-*", () => {
     expect(listaDatos(["gluten", "huevos"])).toBe("gluten huevos");
     expect(listaDatos([])).toBe("");
+  });
+});
+
+describe("textos traducidos", () => {
+  const traducciones = { en: { "precio.a.texto": traduccion("Small beer"), nombre: traduccion("Beer") } };
+
+  it("elegirEtiquetaPrecio: «otro» usa su traducción; formatos del diccionario del idioma", () => {
+    expect(elegirEtiquetaPrecio({ id: "a", formato: "otro", texto: "Caña", centimos: 180 }, cartaEn, traducciones, "en")).toEqual({
+      texto: "Small beer",
+    });
+    expect(elegirEtiquetaPrecio({ id: "b", formato: "media_racion", texto: null, centimos: 180 }, cartaEn, traducciones, "en")).toEqual({
+      texto: "Half portion",
+    });
+  });
+
+  it("«otro» sin traducción: el original marcado en español", () => {
+    expect(elegirEtiquetaPrecio({ id: "z", formato: "otro", texto: "Caña", centimos: 180 }, cartaEn, traducciones, "en")).toEqual({
+      texto: "Caña",
+      lang: "es",
+    });
+  });
+
+  it("textoEn: traducción o el original con lang «es»; en español nunca marca", () => {
+    expect(textoEn("Cerveza", traducciones, "nombre", "en")).toEqual({ texto: "Beer" });
+    expect(textoEn("Cerveza", {}, "nombre", "fr")).toEqual({ texto: "Cerveza", lang: "es" });
+    expect(textoEn("Cerveza", traducciones, "nombre", "es")).toEqual({ texto: "Cerveza" });
   });
 });

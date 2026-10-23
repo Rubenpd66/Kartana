@@ -13,7 +13,8 @@ const DEMO = "/c/demo";
 
 function vigilarErrores(page: Page) {
   const errores: string[] = [];
-  page.on("console", (m) => m.type() === "error" && errores.push(m.text()));
+  // /api/e (estadísticas) es de otro carril: hasta que esté integrado responde 404, y eso no es un error de la carta.
+  page.on("console", (m) => m.type() === "error" && !m.location().url.endsWith("/api/e") && errores.push(m.text()));
   page.on("pageerror", (e) => errores.push(e.message));
   return errores;
 }
@@ -117,6 +118,80 @@ test.describe("carta de demostración", () => {
     expect(ajenos).toEqual([]);
     // El JS es el del propio Next/React (igual en todas las páginas); la carta no añade JS propio.
     expect(pesos.jsKb).toBeLessThan(250);
+  });
+});
+
+test.describe("carta de demostración en otros idiomas", () => {
+  test.beforeEach(async ({ request }) => {
+    await saltarSinDemo(request);
+  });
+
+  test("/c/demo/en en inglés, con lang «en», selector con los 7 idiomas y hreflang @movil", async ({ page }) => {
+    const errores = vigilarErrores(page);
+    const r = await page.goto(`${DEMO}/en`);
+    expect(r?.status()).toBe(200);
+    await expect(page.locator(".carta")).toHaveAttribute("lang", "en");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Cafetería La Guagua");
+    await expect(page.getByRole("heading", { level: 2, name: "Seafood" })).toBeVisible();
+    await expect(page.locator(".aviso-fijo")).toHaveText("Please ask the staff about allergens");
+
+    // Selector: un enlace por idioma con hreflang y lang; el actual con aria-current.
+    const enlaces = page.locator(".carta-cabecera a[hreflang]");
+    await expect(enlaces).toHaveCount(7);
+    expect(await enlaces.evaluateAll((as) => as.map((a) => a.getAttribute("hreflang")))).toEqual(["es", "en", "fr", "de", "ca", "eu", "gl"]);
+    await expect(page.locator('.carta-cabecera a[aria-current="page"]')).toHaveAttribute("hreflang", "en");
+
+    // Canónica a sí misma; la demo no se indexa, así que en <head> solo va x-default (los idiomas noindex no salen).
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/c\/demo\/en$/);
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute("href", /\/c\/demo$/);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+
+    const json = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent()) ?? "");
+    expect(json.inLanguage).toBe("en");
+    expect(json.hasMenu.hasMenuSection.map((s: { name: string }) => s.name)).toContain("Seafood");
+    expect(errores).toEqual([]);
+  });
+
+  test("las 7 versiones responden 200 con su lang", async ({ request }) => {
+    for (const idioma of ["en", "fr", "de", "ca", "eu", "gl"]) {
+      const r = await request.get(`${DEMO}/${idioma}`);
+      expect(r.status(), idioma).toBe(200);
+      expect(await r.text(), idioma).toContain(`lang="${idioma}"`);
+    }
+  });
+
+  test("/c/demo/es da 404 (la española es /c/demo) y un idioma que no es de la carta también", async ({ request }) => {
+    expect((await request.get(`${DEMO}/es`)).status()).toBe(404);
+    expect((await request.get(`${DEMO}/pt`)).status()).toBe(404);
+    expect((await request.get("/c/no-existe-xyz/en")).status()).toBe(404);
+  });
+
+  test("el selector lleva del español al francés", async ({ page }) => {
+    await page.goto(DEMO);
+    await expect(page.locator(".carta")).toHaveAttribute("lang", "es");
+    await page.getByText("Idioma: Español").click();
+    const frances = page.getByRole("link", { name: "Français" });
+    await expect(frances).toBeVisible();
+    await frances.click();
+    await expect(page).toHaveURL(/\/c\/demo\/fr$/);
+    await expect(page.locator(".carta")).toHaveAttribute("lang", "fr");
+    await expect(page.getByRole("heading", { level: 2, name: "Fruits de mer" })).toBeVisible();
+  });
+
+  test("al cargar /c/demo sale un POST /api/e y sigue sin cookies ni almacenamiento @movil", async ({ page }) => {
+    const peticion = page.waitForRequest((r) => new URL(r.url()).pathname === "/api/e" && r.method() === "POST");
+    await page.goto(DEMO);
+    const enviada = await peticion;
+    // Chromium no enseña a Playwright el cuerpo de un sendBeacon con Blob: se comprueban las cabeceras
+    // (el contenido lo prueban los tests unitarios de Medidor).
+    const cabeceras = await enviada.allHeaders();
+    expect(cabeceras["content-type"]).toBe("application/json");
+    expect(Number(cabeceras["content-length"])).toBeGreaterThan(0);
+    expect(cabeceras.cookie).toBeUndefined();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    expect(await page.evaluate(() => document.cookie)).toBe("");
+    expect(await page.evaluate(() => localStorage.length + sessionStorage.length)).toBe(0);
+    expect((await page.context().cookies()).length).toBe(0);
   });
 });
 

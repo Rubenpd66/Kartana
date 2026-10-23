@@ -1,6 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { BRAVAS, GAMBA, PULPO, platoPublicoEjemplo } from "@/lib/carta/pruebas/carta-ejemplo";
+import { BRAVAS, GAMBA, PULPO, platoPublicoEjemplo, traduccion } from "@/lib/carta/pruebas/carta-ejemplo";
+import { cartaEn } from "@/lib/i18n/carta.en";
 import { cartaEs } from "@/lib/i18n/carta.es";
 import { Precios } from "./Precios";
 import { TarjetaPlato } from "./TarjetaPlato";
@@ -36,6 +37,47 @@ describe("Precios", () => {
     cleanup();
     const otro = render(<Precios diccionario={cartaEs} precios={[{ id: "a", formato: "unico", texto: null, centimos: 850 }]} />);
     expect([...otro.container.querySelectorAll("li")].map(texto)).toEqual(["8,50 €"]);
+  });
+});
+
+describe("en inglés", () => {
+  const PLATO_EN = {
+    ...BRAVAS,
+    precios: [
+      { id: "v001", formato: "media_racion" as const, texto: null, centimos: 225 },
+      { id: "v003", formato: "otro" as const, texto: "Caña", centimos: 180 },
+    ],
+    traducciones: { en: { nombre: traduccion("Spicy potatoes"), "precio.v003.texto": traduccion("Small beer") } },
+  };
+
+  it("muestra la traducción; sin traducción, el original con lang «es»", () => {
+    const { container } = render(<TarjetaPlato plato={PLATO_EN} diccionario={cartaEn} idioma="en" />);
+    const titulo = screen.getByRole("heading", { level: 3, name: "Spicy potatoes" });
+    expect(titulo.getAttribute("lang")).toBeNull();
+    const descripcion = container.querySelector(".descripcion")!;
+    expect(descripcion.textContent).toBe("Patatas fritas con salsa brava y alioli.");
+    expect(descripcion.getAttribute("lang")).toBe("es");
+  });
+
+  it("formatos del diccionario inglés, «otro» con su traducción, etiquetas y alérgenos en inglés", () => {
+    const { container } = render(<TarjetaPlato plato={PLATO_EN} diccionario={cartaEn} idioma="en" />);
+    expect([...container.querySelectorAll(".precios li")].map(texto)).toEqual(["Half portion €2.25", "Small beer €1.80"]);
+    expect(screen.getByText("Vegetarian")).toBeTruthy();
+    expect(screen.getByText("Eggs")).toBeTruthy();
+  });
+
+  it("«otro» sin traducción: original con lang «es»", () => {
+    const { container } = render(
+      <Precios precios={[{ id: "x", formato: "otro", texto: "Caña", centimos: 180 }]} diccionario={cartaEn} idioma="en" traducciones={{}} />,
+    );
+    const etiqueta = container.querySelector("li span")!;
+    expect(etiqueta.textContent?.trim()).toBe("Caña");
+    expect(etiqueta.getAttribute("lang")).toBe("es");
+  });
+
+  it("lleva data-plato-id para las estadísticas", () => {
+    const { container } = render(<TarjetaPlato plato={PLATO_EN} diccionario={cartaEn} idioma="en" />);
+    expect(container.querySelector("article")!.getAttribute("data-plato-id")).toBe(BRAVAS.id);
   });
 });
 

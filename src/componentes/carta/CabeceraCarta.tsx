@@ -1,12 +1,29 @@
 import { Contenedor } from "@/componentes/Contenedor";
 import { enlaceMapa, enlaceTelefono } from "@/lib/carta/textos";
+import { textoEn } from "@/lib/carta/textos";
+import type { IdiomaCarta } from "@/lib/i18n/idiomas";
 import type { LocalPublico } from "@/lib/tipos/carta";
+import type { ReactNode } from "react";
 import type { DiccionarioCarta } from "@/lib/tipos/i18n";
 import { HorarioLocal } from "./HorarioLocal";
 
-/** Cabecera con el color del bar: logo, nombre (el único h1), descripción, horario, teléfono y «Cómo llegar». */
-export function CabeceraCarta({ local, diccionario }: { local: LocalPublico; diccionario: DiccionarioCarta }) {
+/**
+ * Cabecera con el color del bar: logo, nombre (el único h1), descripción, horario, teléfono, «Cómo llegar»
+ * y, como `children`, el selector de idioma.
+ */
+export function CabeceraCarta({
+  local,
+  diccionario,
+  idioma = "es",
+  children,
+}: {
+  local: LocalPublico;
+  diccionario: DiccionarioCarta;
+  idioma?: IdiomaCarta;
+  children?: ReactNode;
+}) {
   const telefono = local.telefono ? enlaceTelefono(local.telefono) : null;
+  const descripcion = local.descripcion ? textoEn(local.descripcion, local.traducciones, "descripcion", idioma) : null;
   return (
     <header className="carta-cabecera py-6">
       <Contenedor ancho="estrecho">
@@ -25,10 +42,15 @@ export function CabeceraCarta({ local, diccionario }: { local: LocalPublico; dic
           ) : null}
           <div className="min-w-0">
             <h1 className="text-[1.75rem] font-semibold">{local.nombre}</h1>
-            {local.descripcion ? <p className="mt-1 opacity-90">{local.descripcion}</p> : null}
+            {descripcion ? (
+              <p lang={descripcion.lang} className="mt-1 opacity-90">
+                {descripcion.texto}
+              </p>
+            ) : null}
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-start gap-2">
+          {children}
           <HorarioLocal horarios={local.horarios} diccionario={diccionario} />
           {telefono ? (
             <a className="pastilla" href={telefono}>
