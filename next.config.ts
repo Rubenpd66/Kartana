@@ -22,6 +22,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  // Las fuentes de los PDF de QR se leen del disco: que Vercel las incluya en la función.
+  outputFileTracingIncludes: { "/panel/[local]/qr/pdf": ["./src/lib/qr/fuentes/*.ttf"] },
   turbopack: {
     // Fija la raíz al proyecto (hay un package-lock.json suelto en la carpeta de usuario).
     root: path.resolve(__dirname),

@@ -36,6 +36,14 @@ Todo dato, imagen o servicio de terceros, con su licencia o condiciones. Se actu
 | `@react-pdf/renderer` | Generar los PDF de QR en el servidor | MIT | 4.x |
 | `qrcode` (node-qrcode) | Matriz del código QR | MIT | 1.5.x |
 
+## Fuentes de los PDF de QR
+| Fuente | Origen | Licencia |
+|---|---|---|
+| Figtree 400 y 700 (The Figtree Project Authors) | https://github.com/erikdkennedy/figtree, vía https://github.com/google/fonts/tree/main/ofl/figtree | SIL OFL 1.1 (`src/lib/qr/fuentes/OFL-Figtree.txt`) |
+| Fraunces 600 (The Fraunces Project Authors) | https://github.com/undercasetype/Fraunces, vía https://github.com/google/fonts/tree/main/ofl/fraunces | SIL OFL 1.1 (`src/lib/qr/fuentes/OFL-Fraunces.txt`) |
+
+Son instancias estáticas sacadas con fonttools de las versiones variables (Fraunces con `opsz` 72, `SOFT` 0, `WONK` 0): modificación permitida por la OFL. Tras publicar, comprobar que el PDF contiene «Figtree».
+
 ## Datos de ejemplo
 | Dato | Fuente | Condiciones |
 |---|---|---|
