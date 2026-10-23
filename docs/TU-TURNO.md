@@ -17,6 +17,8 @@ Ordenado por urgencia. Marca `[x]` lo que hagas y dímelo en el chat. **Nunca pe
 
 ## Pronto (tarda días en estar listo)
 
+- [ ] **0. Clave de API de Google para traducir (v0.2)** — **Por qué:** sin ella no se traduce la carta sola (los textos manuales sí funcionan). **Pasos:** Google Cloud → proyecto `kartana` → APIs y servicios → Credenciales → Crear credenciales → Clave de API. En «Restricciones de API» marca solo **Cloud Translation API**. Cópiala en `.env.local` como `GOOGLE_CLOUD_API_KEY=` (y luego en Vercel → Settings → Environment Variables). **Nunca la pegues en el chat.** **Devuélveme:** «clave puesta».
+
 - [x] ~~Contraseña de aplicación de Gmail~~ — hecho el 22/10: SMTP de Gmail configurado en Supabase (smtp.gmail.com:465). Se probará con el primer código de acceso.
 
 - [x] ~~«Entrar con Google»~~ — hecho el 22/10: cliente OAuth «Kartana web» en Google Cloud, proveedor Google activo en Supabase y URLs de retorno configuradas (comprobado: redirige a Google con el cliente correcto).
