@@ -5,15 +5,16 @@
 **Fase 4 (v0.2 · idiomas y estadísticas): empezando la ola 1** (`datos-v02`, `traduccion`, `contenido-v02`). `pg_cron` y `pg_net` están disponibles en el proyecto. Falta `GOOGLE_CLOUD_API_KEY` (ver TU-TURNO); `TRADUCCION_ACTIVA` sigue en `false`.
 - Pendiente heredado del QA: aviso `Date.now() while prerendering` en las páginas con sesión; JS de hidratación (TBT 360–560 ms); `@axe-core/playwright` sin instalar; el PDF con fuentes en Vercel (verlo con sesión).
 
-### v0.2 · ola 2 integrada y publicada (23/10/2026)
-`estadisticas`, `panel-idiomas` y `carta-publica-v02` en `main`. Lint, tipos, 943 tests unitarios, build y e2e 120 pasados (1 saltado). La carta funciona en 7 idiomas (`/c/<local>/<xx>`, selector sin JS, `hreflang`, aviso de traducción automática, medidor anónimo `POST /api/e`); el panel tiene «Idiomas» y «Visitas».
-- Migración `idiomas_estadisticas_v02` aplicada; semilla de traducciones de la demo cargada. `TRADUCCION_ACTIVA=false` (falta `GOOGLE_CLOUD_API_KEY`, TU-TURNO punto 0).
-- Pendientes: (1) `textos.tituloCarta: "Carta de {nombre}"` en los 7 diccionarios (hoy el título en otros idiomas es solo el nombre); (2) `<html lang>` fijo en `es` (la carta lleva `lang` en su contenedor); (3) Lighthouse de rendimiento por idioma (lo hace `qa-v02`); (4) «Platos vistos» suma solo el top 10; (5) las pruebas dejaron visitas de ruido en `demo` y `e2e-prueba`; (6) `pg_cron` sin activar; (7) revisión por hablante nativo de eu y gl.
+### v0.2 · ola 3 (QA) integrada (23/10/2026)
+`qa-v02` en `main` (`docs/qa/v0.2.md`): 149 e2e pasados, 943 unitarios, Lighthouse móvil `/c/demo` 93–97 y `/c/demo/de` 97 (TBT 160–180 ms, mejor que la v0.1). Sin cookies ni almacenamiento en ningún idioma.
+- **Traducción real probada con Google (clave puesta):** «Croquetas de jamón» → «Schinkenkroketten»; la corrección manual sobrevive a un cambio del español. 98 caracteres de cuota usados. `TRADUCCION_ACTIVA` sigue en `false` en Vercel (pendiente de que el usuario lo autorice o lo encienda él).
+- Pendientes de QA: (H1) `<html lang="es">` en todas las cartas; (H4) sin límite de ritmo en `POST /api/e` (conviene antes del lanzamiento); (H2) `textos.textoOriginal` sin usar; (H3) `hreflang` de 7 idiomas en el `<head>` sin probar en una carta indexable; título «Carta de {nombre}» en los 7 diccionarios; abiertos de la v0.1: I2 (`Date.now()` en el panel), M1 (`/admin` 200).
+- Para el usuario: probar la carta desde un QR impreso (iPhone y Android); Lighthouse sobre la URL de Vercel.
 
 ### Siguiente sesión
-1. Ola 3: `qa-v02` (sonnet/medium).
-2. Con la clave de Google: probar `traducirLocal` con un local de pruebas y encender `TRADUCCION_ACTIVA` en Vercel.
-3. Cerrar la v0.2 y mirar la v0.3 en `docs/plan.md`.
+1. Encender `TRADUCCION_ACTIVA` en Vercel (y redeploy) y comprobar una traducción en producción.
+2. Cerrar la v0.2; arreglar H1, H4 y el título de la carta.
+3. Planificar la v0.3 (`docs/plan.md`).
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
