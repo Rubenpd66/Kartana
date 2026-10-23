@@ -151,6 +151,8 @@ test.describe("panel-local", () => {
     const inicio = await irAlInicio(page);
     const publicar = page.getByRole("button", { name: "Publicar mi carta" });
     const despublicar = page.getByRole("button", { name: "Despublicar", exact: true });
+    // La página llega por partes (Suspense): se espera a uno de los dos botones antes de mirar cuál es.
+    await expect(publicar.or(despublicar)).toBeVisible();
     const estabaPublicada = await despublicar.isVisible();
     try {
       if (!estabaPublicada) {
@@ -169,7 +171,8 @@ test.describe("panel-local", () => {
       await expect.poll(async () => (await page.request.get(`/c/${SLUG}`)).status()).toBe(200);
     } finally {
       await page.goto(inicio);
-      const publicadaAhora = await page.getByRole("button", { name: "Despublicar", exact: true }).isVisible();
+      await expect(publicar.or(despublicar)).toBeVisible();
+      const publicadaAhora = await despublicar.isVisible();
       if (publicadaAhora && !estabaPublicada) {
         await page.getByRole("button", { name: "Despublicar", exact: true }).click();
         await page.getByRole("button", { name: "Sí, despublicar" }).click();
