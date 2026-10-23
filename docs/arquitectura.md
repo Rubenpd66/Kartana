@@ -1,6 +1,6 @@
 # Arquitectura de Kartana
 
-> Fase 2 · 22/10/2026 · Autor: arquitecto. Fuente de verdad del modelo de datos, las rutas, los módulos y las integraciones.
+> Fase 2 · 22/10/2026 (v0.3 detallada el 23/10/2026: §3.7, §5.7) · Autor: arquitecto. Fuente de verdad del modelo de datos, las rutas, los módulos y las integraciones.
 > Los tipos TypeScript que reflejan este documento están en `src/lib/tipos/` (solo tipos y firmas). Si algo no coincide, manda este documento y se pide el cambio al director.
 
 ## 1. Resumen en dos minutos
@@ -10,6 +10,7 @@
 - **Seguridad en la base de datos (RLS)**: cada tabla tiene una política por operación. El dueño solo ve y cambia lo suyo. Un visitante anónimo solo puede **leer** las cartas publicadas con acceso activo. Nadie anónimo escribe en ninguna tabla: las estadísticas entran por una función con comprobaciones.
 - **Carta pública estática**: se genera una vez, se guarda en caché (`'use cache'` + etiqueta por local) y se regenera al momento cuando el dueño guarda. Casi sin JavaScript: el filtro de alérgenos funciona solo con CSS.
 - **Sin clave secreta de Supabase** hasta la v0.6 (webhooks de Stripe). El administrador se reconoce por un rol puesto a mano en `app_metadata` **y** por la lista `ADMIN_EMAILS` del servidor.
+- **Reseñas (v0.3)**: el local guarda **a dónde** se escribe su reseña (el `place_id` de Google o el enlace oficial `g.page/r/…/review`) y si el botón está encendido. El botón de la carta y el QR de reseña apuntan a **`/r/<slug>`**, que cuenta un clic anónimo y redirige a Google. Igual para todos, sin preguntas previas, sin estrellas, sin incentivos (§5.7).
 
 ## 2. Convenciones
 
@@ -37,7 +38,8 @@ auth.users 1─1 perfiles 1─N locales 1─1 accesos
                    │           ├─N slugs_anteriores
                    │           ├─N estadisticas_dia          (v0.2)
                    │           ├─N vistas_plato_dia ─N─1 platos (v0.2)
-                   │           └─N uso_traduccion            (v0.2)
+                   │           ├─N uso_traduccion            (v0.2)
+                   │           └─N uso_lugares               (v0.3)
                    └─N aceptaciones_legales
 storage.buckets: imagenes (público)  ->  <local_id>/logo/…png  ·  <local_id>/platos/<plato_id>/…webp
 ```
@@ -291,6 +293,52 @@ RPC públicas (invoker) de la v0.1: `activar_piloto(p_local)`, `reordenar(p_tabl
 
 - La ruta que se guarda en la base de datos se valida en servidor (Zod): debe empezar por `<local_id>/logo/` o `<local_id>/platos/<plato_id>/`.
 
+### 3.7 Reseñas (v0.3)
+
+Migración `<timestamp>_resenas_v03.sql` (carril `datos-v03`). Tipos en `src/lib/tipos/resenas.ts`.
+
+#### Columnas nuevas en `locales`
+| Columna | Tipo | Reglas |
+|---|---|---|
+| `google_place_id` | text null | `~ '^[A-Za-z0-9_-]{10,300}$'`. El identificador de la ficha en Google. Google permite **guardarlo sin límite de tiempo** (es la única excepción a su política de caché). |
+| `google_place_nombre` | text null | 1–120. **Etiqueta para el panel**: el nombre que el dueño confirmó al elegir su ficha («Cafetería La Guagua · Las Palmas»). Solo lo ve el dueño (no se concede a `anon`). Solo puede tener valor si `google_place_id` lo tiene (CHECK). Ver la duda D2 del plan sobre la política de caché de Google. |
+| `google_enlace_resena` | text null | `~ '^https://g\.page/r/[A-Za-z0-9_-]{6,100}/review$'`. Alternativa sin la API de Google: el enlace oficial «Pedir reseñas» que Google da al dueño en su Perfil de Empresa. |
+| `resenas_activas` | boolean not null default false | Enciende el botón de la carta. |
+
+CHECKs de tabla:
+- `num_nonnulls(google_place_id, google_enlace_resena) <= 1` — un solo destino a la vez (al guardar uno se borra el otro).
+- `google_place_nombre is null or google_place_id is not null`.
+- `not resenas_activas or num_nonnulls(google_place_id, google_enlace_resena) = 1` — no se puede encender el botón sin destino.
+
+**Destino de la reseña** (`DestinoResena`, el mismo cálculo en SQL y en `urlEscribirResena()` de `src/lib/dominio/resenas.ts`):
+- con `google_place_id` → `https://search.google.com/local/writereview?placeid=<place_id>` (formato de Google decidido en la Fase 0);
+- con `google_enlace_resena` → ese enlace tal cual.
+
+Permisos por columna (añadir a los `grant` existentes; **sin ellos la carta y `/r/` dejan de ver el dato**):
+- `anon`: `grant select (google_place_id, google_enlace_resena, resenas_activas) on public.locales to anon;` — son datos públicos de Google; `google_place_nombre` **no**.
+- `authenticated` (dueño, RLS de UPDATE ya existente): `grant update (google_place_id, google_place_nombre, google_enlace_resena, resenas_activas) on public.locales to authenticated;`. `select` ya está concedido para toda la tabla.
+- Las políticas RLS de `locales` no cambian: el anónimo solo lee filas de cartas visibles; el dueño solo actualiza las suyas.
+
+#### `uso_lugares` — freno de gasto del buscador de Google (como `uso_traduccion`)
+| Columna | Tipo | Reglas |
+|---|---|---|
+| `local_id` | uuid not null | `references locales(id) on delete cascade` |
+| `dia` | date not null | hora de Madrid |
+| `peticiones` | integer not null default 0 | `>= 0` |
+| | | PK `(local_id, dia)` |
+
+RLS: SELECT dueño (`privado.es_dueno_de(local_id)`) · SELECT admin · **sin INSERT/UPDATE/DELETE** para nadie. Se escribe solo con:
+
+`public.consumir_cuota_lugares(p_local uuid) returns boolean` (invoker, `grant execute … to authenticated`, revocado a `anon` y `public`) → `privado.consumir_cuota_lugares_def(p_local)` (definer, `set search_path = ''`): exige `privado.es_dueno_de(p_local)`; como mucho **50 peticiones por local y día** y **4.000 al mes entre todos los locales** (bajo los cupos gratis mensuales de Places API: 10.000 de Autocomplete y 5.000 de Place Details Pro); bloqueo de fila (`for update`) para que dos peticiones a la vez no se pasen; si cabe, suma 1 y devuelve true; si no, false. Cada llamada a Google (una búsqueda o un detalle) gasta 1.
+
+`privado.limpiar_estadisticas()` (v0.2) se amplía con `create or replace` para borrar también filas de `uso_lugares` de más de 400 días.
+
+#### Clics en «dejar reseña»
+Sin tablas nuevas: `public.registrar_estadisticas(p_local, 'resena', 'es', '{}')` ya existe desde la v0.2 y suma `clics_resena + 1` en `estadisticas_dia` (solo si el local es visible). Lo llama `registrarClicResena()` desde `GET /r/[slug]` (§5.7). El canal `POST /api/e` **no** acepta `resena` (su esquema Zod solo admite `visita|vistas`).
+
+#### Lectura pública del destino
+No hay función nueva: `obtenerDestinoResena(slug)` (`src/lib/datos/resenas.ts`, `'use cache'`, cliente público) lee `id, slug, resenas_activas, google_place_id, google_enlace_resena` de `locales` por `slug` (la RLS solo deja ver cartas publicadas con acceso) y, si no la encuentra, busca el slug en `slugs_anteriores` (los QR impresos con una dirección vieja siguen funcionando). Etiquetas: `carta:<slug>` y `local:<id>`; `cacheLife("hours")`. Como `trasGuardarCarta` invalida esas etiquetas, encender o cambiar la ficha se nota al momento.
+
 ## 4. Rutas
 
 ### 4.1 Mapa
@@ -301,7 +349,7 @@ RPC públicas (invoker) de la v0.1: `activar_piloto(p_local)`, `reordenar(p_tabl
 | `/legal/*` | pública | sí | v0.0 | director |
 | `/c/[slug]` | pública, estática con caché | **sí, si** publicada + `permitir_indexar` + ≥ 5 platos visibles; si no, `noindex` | v0.1 | `carta-publica` |
 | `/c/[slug]/[idioma]` | pública, estática | sí si el idioma está activo y ≥ 90 % de los nombres de plato están traducidos; si no, `noindex` | v0.2 | `carta-publica` |
-| `/r/[slug]` | route handler GET → 307 a Google | no (`X-Robots-Tag: noindex`, `rel="nofollow"`) | v0.3 | `resenas` |
+| `/r/[slug]` | route handler `GET` (y `HEAD`): cuenta un clic anónimo y redirige **307** a Google; si el botón está apagado o el local no se ve, 307 a `/c/<slug>` sin contar | no (`X-Robots-Tag: noindex, nofollow`, `Disallow: /r/`, enlaces con `rel="nofollow"`) | v0.3 | `resenas` |
 | `/entrar` | pública | no | v0.1 | `acceso` |
 | `/auth/callback` | route handler (Google) | no | v0.1 | `acceso` |
 | `/auth/salir` | route handler POST | no | v0.1 | `acceso` |
@@ -319,15 +367,16 @@ RPC públicas (invoker) de la v0.1: `activar_piloto(p_local)`, `reordenar(p_tabl
 | `/panel/[local]/qr` + `/panel/[local]/qr/pdf` (GET) | privada: QR y PDF | no | v0.1 | `qr-pdf` |
 | `/panel/[local]/idiomas`, `/panel/[local]/idiomas/[idioma]` | privada | no | v0.2 | `panel-idiomas` |
 | `/panel/[local]/estadisticas` | privada | no | v0.2 | `estadisticas` |
-| `/panel/[local]/resenas` | privada | no | v0.3 | `resenas` |
+| `/panel/[local]/resenas` | privada: conectar la ficha de Google (buscar o pegar enlace), encender el botón, reglas, clics | no | v0.3 | `resenas` |
+| `/panel/[local]/qr?…` + `/panel/[local]/qr/pdf?tipo=resena&formato=tarjetas\|tiras\|cartel` + `/panel/[local]/qr/svg?tipo=resena` | privada: QR de reseña en PDF y SVG | no | v0.3 | `qr-resena` |
 | `/panel/[local]/suscripcion` | privada | no | v0.6 | `pagos` |
 | `/admin` | privada, solo admin (si no, 404) | no | v0.1 | `admin` |
 | `/api/health` | GET | no | v0.0 | director |
 | `/api/e` | POST estadísticas | no | v0.2 | `estadisticas` |
-| `/api/lugares` | GET buscador de fichas de Google (con sesión) | no | v0.3 | `resenas` |
+| `/api/lugares` | `GET ?local=<uuid>&q=<texto>&sesion=<uuid>`: buscador de fichas de Google (con sesión, dueño del local, `RESENAS_API_ACTIVA`, cuota) | no | v0.3 | `resenas` |
 | `/api/stripe/webhook` | POST | no | v0.6 | `pagos` |
 
-`[local]` es el **uuid** del local (estable aunque cambie el slug). Todas las páginas privadas llevan `robots: { index: false, follow: false }` y están en `Disallow` de `robots.txt` (`/panel`, `/admin`, `/entrar`, `/auth`, `/api`; el director añade `/r/` en la v0.3).
+`[local]` es el **uuid** del local (estable aunque cambie el slug). Todas las páginas privadas llevan `robots: { index: false, follow: false }` y están en `Disallow` de `robots.txt` (`/panel`, `/admin`, `/entrar`, `/auth`, `/api` y, desde la v0.3, `/r/`; lo añade el director en `src/app/robots.ts`). El proxy **no** corre en `/r/` ni en `/api/lugares` (su `matcher` no cambia): `/r/` no toca cookies y `/api/lugares` lee la sesión con `crearClienteServidor()` + `getClaims()` sin refrescarla.
 
 ### 4.2 Grupos de rutas y layouts
 
@@ -353,6 +402,7 @@ src/app/
   - Al guardar en el panel: `trasGuardarCarta(localId)` → `updateTag("carta:<slug>")` y `updateTag("local:<id>")` (solo en acciones de servidor). En route handlers o `after()`: `revalidateTag(tag, { expire: 0 })`.
   - Caducidad por tiempo: con `cacheLife("hours")`, cuando vence una prueba la carta deja de verse como mucho en ~1 hora. Cuando el admin activa un piloto se invalida la etiqueta al momento.
 - **Panel y admin**: páginas dinámicas. Toda lectura de sesión (`crearClienteServidor()`, `getClaims()`) va **dentro de `<Suspense>`**, nunca en el nivel superior de un layout. `obtenerUsuario()` usa `React.cache` para leer la sesión una vez por petición.
+- **Reseñas (v0.3)**: la carta llama además a `obtenerDestinoResena(slug)` (cacheada con las mismas etiquetas) para saber si pinta el botón; `GET /r/[slug]` es dinámico (lee cabeceras de la petición), usa esa misma función cacheada para no consultar la base de datos en cada clic, y cuenta el clic con `after()` para no hacer esperar la redirección.
 - **Acciones de servidor**: cada una valida con Zod, vuelve a comprobar al usuario (`getClaims()`), escribe con la sesión del usuario (RLS) y llama a `trasGuardarCarta` si cambia algo público. Nunca confía en un `localId` del formulario sin que la RLS lo respalde.
 
 ### 4.4 Slugs
@@ -392,12 +442,46 @@ src/app/
 2. `POST /api/e` (route handler): rechaza cuerpos > 4 KB, valida con Zod, ignora agentes de bots conocidos, **no registra IP ni cabeceras**, y llama a `rpc("registrar_estadisticas", …)` con `crearClientePublico()`. Responde 204 siempre (no da pistas).
 3. `public.registrar_estadisticas(p_local uuid, p_tipo text, p_idioma text, p_platos uuid[])` es `security invoker` y solo llama a `privado.registrar_estadisticas_def(...)` (`security definer`), que comprueba: local visible, `p_tipo in ('visita','vistas')`, idioma válido, `cardinality(p_platos) <= 100` y que cada plato es de ese local; después hace `insert … on conflict do update set visitas = visitas + 1` (o `vistas + 1`).
 4. **No hay ninguna política INSERT/UPDATE** en las tablas de estadísticas: no se puede escribir en ellas directamente. La función RPC se puede llamar con la clave publicable igual que el route handler: el riesgo es que alguien infle contadores de un local, nunca leer ni tocar otros datos. Se acepta (son cifras orientativas).
-5. Los clics en reseña (v0.3) se cuentan en `GET /r/[slug]`, que llama a la misma función con `p_tipo = 'resena'` y redirige a Google.
+5. Los clics en reseña (v0.3) se cuentan en `GET /r/[slug]`, que llama a la misma función con `p_tipo = 'resena'` (vía `registrarClicResena`, nunca vía `/api/e`) y redirige a Google. Detalle en §5.7.
 
 ### 5.5 Qué páginas nunca cargan terceros
 - **Ninguna página** carga scripts de terceros en la v0.1–v0.5: ni analítica, ni fuentes externas, ni Google. «Entrar con Google» es una redirección, no un script.
 - Las **cartas públicas** no ponen cookies (el proxy no corre en `/c/`), no usan `localStorage`/`sessionStorage` y solo hacen peticiones a la propia web (`/api/e`) y al bucket de imágenes de Supabase.
 - Stripe (v0.6) solo con redirección a Stripe Checkout y al portal; nada de Stripe.js en el panel.
+- **Google Places (v0.3)**: solo el **servidor** habla con `places.googleapis.com`. El panel nunca carga el script de Google Maps ni sus widgets: el buscador es un componente propio que llama a `/api/lugares` (misma web). La carta y `/r/` no llaman a Google: `/r/` solo responde con una redirección y es el móvil del cliente quien abre Google. La CSP no cambia.
+
+### 5.7 Reseñas (v0.3)
+
+**Reglas de producto** (`docs/brief.md` → «Reglas de reseñas»; se comprueban en tests y en QA):
+1. **Igual para todos.** El botón de la carta y el QR de reseña llevan **directo** a Google. Nada de preguntas previas, estrellas, caras, «¿te ha gustado?», ni mostrarlo solo a algunos clientes (por idioma, por visitas, por hora…). El dueño **no** puede cambiar el texto del botón ni condicionarlo: solo encenderlo o apagarlo.
+2. **Sin incentivos.** Ningún texto del producto, la carta o los carteles ofrece o sugiere descuentos, regalos, sorteos, invitaciones ni nada a cambio de una reseña. Lista de patrones prohibidos en `contieneTextoProhibidoResena()` (`src/lib/dominio/resenas.ts`), aplicada en tests a todos los textos que ve el cliente del bar (`botonResena` de los 7 diccionarios de la carta y textos de los PDF de reseña). Los textos del panel que **explican** las reglas al dueño quedan fuera de esa comprobación (dicen «no ofrezcas descuentos…»).
+3. **Sin guiones.** No se pide mencionar a empleados ni contenido concreto.
+4. **Kartana nunca escribe ni publica reseñas.** No hay ningún campo para escribir una reseña en la web.
+5. Sin iconos de estrellas en el botón ni en los carteles (podrían leerse como «solo si es de 5»). Icono neutro (bocadillo de conversación) o ninguno.
+
+**`GET /r/[slug]`** (`src/app/r/[slug]/route.ts`, carril `resenas`):
+1. Valida `slug` con Zod (formato de slug). Si no encaja → 404 sin cuerpo útil.
+2. `obtenerDestinoResena(slug)`. Si es null (no existe o no se ve) o `destino` es null (botón apagado) → **307 a `/c/<slug actual o pedido>`**, sin contar. Así un QR de reseña impreso nunca deja al cliente en una página rota.
+3. Si hay destino: respuesta **307** con `Location: urlEscribirResena(destino)` y, **después** de responder (`after()`), `registrarClicResena(localId)` — salvo que la petición sea `HEAD`, una precarga (`Sec-Purpose`/`Purpose: prefetch`, `Next-Router-Prefetch`) o de un bot (`esBot()` de `src/lib/estadisticas/bots.ts`, que ya ignora los previsualizadores de enlaces como `facebookexternalhit`/WhatsApp si están en la lista).
+4. Cabeceras siempre: `Cache-Control: no-store`, `X-Robots-Tag: noindex, nofollow`, `Referrer-Policy: no-referrer` (Google no sabe desde qué carta llega el cliente). **Nunca** `Set-Cookie`.
+5. No lee, guarda ni registra IP, `user-agent` (más allá de decidir si es bot), `referer`, idioma ni parámetros: **solo suma 1** al contador del día. Ignora cualquier `?query`.
+6. Los enlaces hacia `/r/` son `<a href>` normales con `rel="nofollow"` — **nunca** `next/link` (su precarga contaría clics falsos).
+
+**`GET /api/lugares?local=&q=&sesion=`** (`src/app/api/lugares/route.ts`, carril `resenas`):
+1. Si `RESENAS_API_ACTIVA` no es `"true"` → **404** `{ "error": "servicio_apagado" }` (el panel usa entonces solo «pegar enlace»).
+2. Zod: `local` uuid, `q` 3–100 caracteres tras `trim`, `sesion` uuid v4 (token de sesión de Autocomplete que genera el navegador del dueño con `crypto.randomUUID()`). Si falla → 400 `datos_invalidos`.
+3. Sesión con `crearClienteServidor()` + `getClaims()` → sin usuario: **401** (el panel dice «vuelve a cargar la página»: el proxy no corre en `/api`).
+4. `consumirCuotaLugares(local)` (también prueba que es el dueño: si no, la RPC devuelve false) → false: **429** `cuota_agotada`.
+5. `buscarLugares(q, sesion)` (`src/lib/resenas/places.ts`, `server-only`): `POST https://places.googleapis.com/v1/places:autocomplete` con cabeceras `X-Goog-Api-Key: GOOGLE_CLOUD_API_KEY` y `X-Goog-FieldMask: suggestions.placePrediction.placeId,suggestions.placePrediction.structuredFormat`; cuerpo `{ input, sessionToken, includedRegionCodes: ["es"], languageCode: "es" }`; tiempo máximo 5 s; `cache: "no-store"`. Devuelve como mucho 5 `{ placeId, nombre, direccion }`.
+6. Respuesta 200 `{ sugerencias }` con `Cache-Control: no-store, private`. Nunca registra `q` en los logs; errores de Google → 502 `error_servidor` sin el mensaje técnico.
+
+**Elegir la ficha** (acción de servidor de la página `/panel/[local]/resenas`): Zod (`localId`, `placeId`, `sesion`) → `getClaims()` → interruptor → cuota → `detallesLugar(placeId, sesion)`: `GET https://places.googleapis.com/v1/places/<placeId>?sessionToken=<sesion>&languageCode=es` con `X-Goog-FieldMask: id,displayName` (cierra la sesión de Autocomplete y confirma que la ficha existe) → `guardarFichaGoogle({ destino: { tipo: "place_id", placeId: <id devuelto por Google> }, nombreFicha: displayName.text, activar: true })`.
+
+**Pegar enlace (sin la API de Google)**: siempre disponible, también con `RESENAS_API_ACTIVA=false`. `interpretarEnlaceGoogle(texto)` acepta: (a) el enlace oficial `https://g.page/r/<código>/review` (se normaliza sin parámetros ni barra final), (b) un enlace `https://search.google.com/local/writereview?placeid=<id>`, (c) un enlace con `place_id:<id>` (`https://www.google.com/maps/place/?q=place_id:<id>`), (d) un place ID suelto (el que da el «Buscador de ID de sitio» de Google). Rechaza todo lo demás, incluidos `maps.app.goo.gl/…` y `goo.gl/maps/…` (no llevan el identificador; el panel explica dónde encontrar el enlace bueno). No se hace ninguna petición a Google para comprobarlo: el panel ofrece «Probar el enlace», que abre el destino directamente (sin pasar por `/r/`, para no contar clics del dueño).
+
+**Clave de Google**: la misma `GOOGLE_CLOUD_API_KEY` de la traducción, restringida en Google Cloud a **Cloud Translation API** y **Places API (New)**. Solo se lee en el servidor (`src/lib/resenas/places.ts` y `src/lib/traduccion/*`), nunca con prefijo `NEXT_PUBLIC_`. Sin la clave o con el interruptor apagado, todo lo de reseñas funciona con «pegar enlace».
+
+**Atribución de Google**: las sugerencias de Places mostradas sin mapa deben llevar la atribución de Google según su política vigente (el carril la comprueba en `https://developers.google.com/maps/documentation/places/web-service/policies`). Si hace falta el logotipo, se sirve desde la propia web (`public/resenas/`), nunca desde Google.
 
 ### 5.6 Pruebas de navegador con sesión (sin clave secreta)
 - El director crea en Supabase un **usuario de prueba con contraseña** (Authentication → Users → Add user, con «Auto Confirm») y otro **admin de prueba** (con el rol por SQL). Contraseñas largas aleatorias en `.env.local` y en los secretos de GitHub: `E2E_EMAIL`, `E2E_PASSWORD`, `E2E_ADMIN_EMAIL`, `E2E_ADMIN_PASSWORD`.
@@ -419,7 +503,10 @@ src/app/
 | Admin | Lista de locales, piloto de 60 días | `src/app/(admin)/` | `admin` |
 | Traducción (v0.2) | Google Translate, huellas, planificación, cuota | `src/lib/traduccion/` | `traduccion` |
 | Estadísticas (v0.2) | `/api/e`, página del panel | `src/app/api/e/`, `…/estadisticas/` | `estadisticas` |
-| Reseñas (v0.3) | Ficha de Google, `/r/`, botón, QR de reseña | `src/lib/resenas/` | `resenas` |
+| Reseñas: datos (v0.3) | Columnas de reseñas, cuota del buscador, destino público, reglas puras (enlaces de Google, textos prohibidos) | `supabase/`, `src/lib/datos/resenas.ts`, `src/lib/dominio/resenas.ts`, `src/lib/validacion/resenas.ts` | `datos-v03` |
+| Reseñas (v0.3) | Cliente de Places, `/api/lugares`, `/r/[slug]`, página `/panel/[local]/resenas` | `src/lib/resenas/`, `src/app/api/lugares/`, `src/app/r/`, `…/resenas/` | `resenas` |
+| Botón de reseña en la carta (v0.3) | `BotonResena` al final de la carta, igual para todos | `src/componentes/carta/` | `carta-publica-v03` |
+| QR de reseña (v0.3) | PDF de tarjetas para la cuenta, tiras para el ticket y cartel de barra; SVG | `src/lib/qr/`, `…/qr/` | `qr-resena` |
 | Pagos (v0.6) | Stripe | `src/lib/pagos/` | `pagos` |
 
 Textos: un diccionario por módulo en `src/lib/i18n/<modulo>.<idioma>.ts` (el panel solo en español por ahora). La carta pública usa `carta.<xx>.ts` en los 7 idiomas.
@@ -433,7 +520,7 @@ Textos: un diccionario por módulo en `src/lib/i18n/<modulo>.<idioma>.ts` (el pa
 | Google OAuth | Entrar con Google | Gratis | Solo redirección |
 | Vercel Hobby | Web | Uso no comercial: pasar a Pro antes de cobrar (v0.4 en producción) | — |
 | Google Cloud Translation v2 (NMT básico) | Traducir cartas (v0.2) | 500.000 caracteres/mes gratis; luego 20 $/millón | `TRADUCCION_ACTIVA`; solo lo que cambia (huellas); cuota 60.000/día/local y 450.000/mes global; clave solo en servidor (`GOOGLE_CLOUD_API_KEY`), restringida a la API de Translation |
-| Google Places API (New) | Buscar la ficha y su `place_id` (v0.3) | Cupos gratis mensuales; Autocomplete con token de sesión + Place Details solo con el campo `id`/`displayName` | `RESENAS_API_ACTIVA`; route handler con sesión; máximo 10 búsquedas/minuto por usuario (contador en memoria, orientativo) |
+| Google Places API (New) | Buscar la ficha y su `place_id` (v0.3) | Cupos gratis mensuales (Autocomplete 10.000; Place Details Pro 5.000). Autocomplete con token de sesión; Place Details con `id,displayName` cierra la sesión | `RESENAS_API_ACTIVA`; solo servidor; route handler con sesión y dueño; **cuota en base de datos** (`uso_lugares`: 50/local/día, 4.000/mes en total); mínimo 3 letras y espera de 350 ms al teclear; presupuesto de 5 € con alertas. Alternativa sin Google: pegar el enlace |
 | Google Business Profile API | Reseñas en el panel (v0.5) | Requiere aprobación de Google | Interruptor; OAuth por dueño |
 | Stripe | Suscripciones (v0.6) | 1,5 % + 0,25 € por cobro | `PAGOS_ACTIVOS`; clave secreta solo en servidor; webhook firmado |
 | `@react-pdf/renderer` 4.x + `qrcode` 1.5.x | PDF de QR (v0.1) | Librerías locales, sin red | Solo servidor (route handler `runtime = "nodejs"`) |
@@ -446,3 +533,7 @@ Textos: un diccionario por módulo en `src/lib/i18n/<modulo>.<idioma>.ts` (el pa
 4. **Fotos huérfanas**: si falla el borrado en el bucket tras borrar un plato, queda el archivo. Aceptable; limpieza manual ocasional.
 5. **Contadores inflables**: aceptado (§5.4).
 6. **Columnas nuevas y permisos por columna**: olvidar el `grant` hace que la carta deje de mostrar ese dato. Los tests SQL del carril de datos lo comprueban.
+7. **Enlace `writereview?placeid=`**: es el formato que usa Google, pero no está documentado como API estable; hay informes de errores puntuales. Mitigación: el dueño puede usar en su lugar el enlace oficial `g.page/r/…/review` de su Perfil de Empresa, y como todos los QR apuntan a `/r/<slug>`, cambiar el destino no obliga a reimprimir nada.
+8. **`place_id` caducado**: Google recomienda refrescar los `place_id` de más de 12 meses (pueden cambiar). En la v0.3 no se refrescan solos; si un dueño avisa de que el enlace falla, vuelve a elegir su ficha. Refresco automático (Place Details con solo `id`, gratis) anotado para más adelante.
+9. **Clics inflables** en `/r/`: igual que las visitas (§5.4), aceptado: son cifras orientativas y no dan acceso a nada.
+10. **Política de caché de Google** sobre `google_place_nombre`: ver duda D2 del plan.
