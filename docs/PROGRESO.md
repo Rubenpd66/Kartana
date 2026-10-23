@@ -1,19 +1,18 @@
 # Progreso
 
 ## Estado actual
-**Fase 3 (v0.1) · ola 2 integrada (23/10/2026).** En `main`: datos, acceso, contenido, panel-local, panel-carta, carta-publica y admin (adelantado de la ola 3). Falta la ola 3: `qr-pdf` y `qa-v01`; después, el cierre de la v0.1.
-- Base de datos: `modelo_v01` (20261022231431) e `imagenes_v01` (20261022231619) aplicadas; tests SQL `01_rls_v01` y `02_storage_v01` OK; carta demo cargada (`/c/demo`, 82 platos, cortesía, sin indexar). Tipos en `src/lib/datos/database.types.ts`.
-- Usuarios de prueba: admin con rol; dueño con el local `e2e-prueba` (cortesía, sin publicar). El rol admin del usuario real, cuando entre por primera vez.
-- Lint, tipos, 666 tests unitarios y build en verde; e2e 56/56 (dos pasadas seguidas).
-- Integración 2: `sitemap.ts` con `listarCartasIndexables()`; la vista previa vacía enseña también la cabecera del local; Playwright con **un solo worker** (varias pruebas cambian `e2e-prueba` y en paralelo se pisaban); pruebas que esperan a la página por partes (Suspense) antes de leer su estado.
-- Pendiente de revisar: aviso del servidor «unstable value Date.now() while prerendering» en las páginas con sesión (viene de la lectura de sesión de Supabase; no rompe nada). `/admin` a un no admin responde 200 con la página «no encontrada» (no 404), por Cache Components.
-- **Publicado el 23/10/2026** (commit `10a563b`) en https://kartana-six.vercel.app. Comprobado en producción: `/c/demo` 200 sin `Set-Cookie` y con CSP; `/c/no-existe` 404; `/entrar` 200; `/api/health` → `{estado: ok, bd: ok}`; sitemap 200. El CI de ese commit (con los usuarios de prueba por primera vez) estaba en marcha al guardar: revisarlo al volver (`gh run list`).
+**Fase 3 (v0.1) · ola 3 integrada (23/10/2026).** En `main` están todos los carriles de la v0.1, incluidos `qr-pdf` (pantalla `/panel/<local>/qr`, PDF de mesa, pegatinas y póster, SVG suelto) y `qa-v01` (informe en `docs/qa/v0.1.md`). Falta el cierre de la v0.1: arreglos del QA, publicar y pruebas en móvil real.
+- Lint, tipos, 696 tests unitarios y build en verde; e2e 102 pasados, 1 saltado.
+- `e2e-prueba` devuelto a «sin publicar» tras la ola 3 (algún agente lo dejó publicado). Rol admin puesto a `rubenpd66@gmail.com`.
+- Fuentes de los PDF (Figtree, Fraunces, OFL) en `docs/fuentes-datos.md`; `next.config.ts` las incluye en la función de Vercel. **Tras publicar, comprobar que el PDF lleva «Figtree».**
+- Pendiente del QA: (I1) contraste de la insignia «Sin revisar» en `/panel/<id>/menu/nuevo`; (I2) aviso `Date.now() while prerendering` en las páginas con sesión; (M2) zonas táctiles pequeñas en el pie; (M4) el e2e `carta-publica.spec.ts:141` depende de que `e2e-prueba` esté sin publicar; JS de hidratación (TBT 360–560 ms). Lighthouse móvil: rendimiento 84–91, accesibilidad 100.
+- Sin instalar aún `@axe-core/playwright` (el QA usa `axe-core` a mano).
 
 ### Siguiente sesión
-1. Revisar el CI del commit `10a563b`; si falla, mirar los e2e con sesión en GitHub Actions (secretos E2E_*, `E2E_ACCESO=true`).
-2. El usuario prueba en su móvil el panel y `/c/demo`. Al entrar por primera vez con su correo, ponerle el rol admin por SQL (`docs/arquitectura.md` §5.2).
-3. Lanzar la ola 3: `qr-pdf` (sonnet/high) y `qa-v01` (sonnet/medium), cada uno con su puerto `PUERTO_E2E` y en su worktree.
-4. Cierre de la v0.1 (ver `docs/plan.md`).
+1. Arreglar I1, M2 y revisar I2 (ver arriba).
+2. Publicar (push a `main`) y comprobar en Vercel el PDF con fuentes y `/c/demo`.
+3. El usuario imprime un PDF y prueba el QR con dos móviles (iPhone y Android).
+4. Cierre de la v0.1 (ver `docs/plan.md`) y empezar la v0.2.
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
