@@ -1,4 +1,4 @@
-// Generado con generate_typescript_types (MCP de Supabase) el 23/10/2026, tras modelo_v01 e imagenes_v01.
+// Generado con generate_typescript_types (MCP de Supabase) el 23/10/2026, tras modelo_v01, imagenes_v01 e idiomas_estadisticas_v02.
 // No editar a mano: volver a generar después de cada migración.
 
 export type Json =
@@ -90,6 +90,38 @@ export type Database = {
             columns: ["usuario_id"]
             isOneToOne: false
             referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      estadisticas_dia: {
+        Row: {
+          clics_resena: number
+          dia: string
+          local_id: string
+          visitas: number
+          visitas_por_idioma: Json
+        }
+        Insert: {
+          clics_resena?: number
+          dia: string
+          local_id: string
+          visitas?: number
+          visitas_por_idioma?: Json
+        }
+        Update: {
+          clics_resena?: number
+          dia?: string
+          local_id?: string
+          visitas?: number
+          visitas_por_idioma?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estadisticas_dia_local_id_fkey"
+            columns: ["local_id"]
+            isOneToOne: false
+            referencedRelation: "locales"
             referencedColumns: ["id"]
           },
         ]
@@ -393,6 +425,68 @@ export type Database = {
           },
         ]
       }
+      uso_traduccion: {
+        Row: {
+          caracteres: number
+          dia: string
+          local_id: string
+        }
+        Insert: {
+          caracteres?: number
+          dia: string
+          local_id: string
+        }
+        Update: {
+          caracteres?: number
+          dia?: string
+          local_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "uso_traduccion_local_id_fkey"
+            columns: ["local_id"]
+            isOneToOne: false
+            referencedRelation: "locales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vistas_plato_dia: {
+        Row: {
+          dia: string
+          local_id: string
+          plato_id: string
+          vistas: number
+        }
+        Insert: {
+          dia: string
+          local_id: string
+          plato_id: string
+          vistas?: number
+        }
+        Update: {
+          dia?: string
+          local_id?: string
+          plato_id?: string
+          vistas?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vistas_plato_dia_local_id_fkey"
+            columns: ["local_id"]
+            isOneToOne: false
+            referencedRelation: "locales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vistas_plato_dia_plato_id_fkey"
+            columns: ["plato_id"]
+            isOneToOne: false
+            referencedRelation: "platos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -433,6 +527,56 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      consumir_cuota_traduccion: {
+        Args: { p_caracteres: number; p_local: string }
+        Returns: boolean
+      }
+      descartar_traduccion_manual: {
+        Args: {
+          p_campo: string
+          p_fila: string
+          p_idioma: string
+          p_tabla: string
+        }
+        Returns: boolean
+      }
+      guardar_traduccion_manual: {
+        Args: {
+          p_campo: string
+          p_fila: string
+          p_huella: string
+          p_idioma: string
+          p_tabla: string
+          p_texto: string
+        }
+        Returns: boolean
+      }
+      guardar_traducciones_auto: {
+        Args: { p_lote: Json; p_tabla: string }
+        Returns: number
+      }
+      platos_mas_vistos: {
+        Args: {
+          p_desde: string
+          p_hasta: string
+          p_limite?: number
+          p_local: string
+        }
+        Returns: {
+          nombre: string
+          plato_id: string
+          vistas: number
+        }[]
+      }
+      registrar_estadisticas: {
+        Args: {
+          p_idioma: string
+          p_local: string
+          p_platos: string[]
+          p_tipo: string
+        }
+        Returns: undefined
       }
       reordenar: { Args: { p_ids: string[]; p_tabla: string }; Returns: number }
       salud: { Args: never; Returns: string }
