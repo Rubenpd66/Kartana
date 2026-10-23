@@ -18,10 +18,10 @@ export function Pie() {
           <span className="font-titulo font-semibold text-texto">{SITIO.nombre}</span> · {t.pie.hecho}
         </p>
         <nav aria-label={t.pie.legal}>
-          <ul className="flex flex-wrap gap-x-4 gap-y-2">
+          <ul className="flex flex-wrap gap-x-2 gap-y-1">
             {enlacesLegales.map((e) => (
               <li key={e.href}>
-                <Link href={e.href} className="underline-offset-4 hover:underline">
+                <Link href={e.href} className="inline-flex min-h-12 items-center px-2 underline-offset-4 hover:underline">
                   {e.texto}
                 </Link>
               </li>

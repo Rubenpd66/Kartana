@@ -4,9 +4,9 @@ export type VarianteInsignia = "neutra" | "exito" | "aviso" | "peligro";
 
 const ESTILOS: Record<VarianteInsignia, string> = {
   neutra: "bg-superficie-suave text-texto-suave",
-  exito: "bg-exito/10 text-exito",
-  aviso: "bg-aviso/10 text-aviso",
-  peligro: "bg-peligro/10 text-peligro",
+  exito: "border border-exito/40 bg-superficie text-exito",
+  aviso: "border border-aviso/40 bg-superficie text-aviso",
+  peligro: "border border-peligro/40 bg-superficie text-peligro",
 };
 
 /**
