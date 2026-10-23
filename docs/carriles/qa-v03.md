@@ -59,7 +59,7 @@ Fuente: `docs/brief.md` → «Reglas de reseñas» (política de Google y ley es
 
 - Repositorio: `C:\Users\RUBEN\carta-qr` (git, rama `main`). Web de pruebas: https://kartana-six.vercel.app
 - Stack: **Next.js 16.4** (App Router, **Cache Components**), React 19.3, TypeScript, Tailwind 4, Zod 4, Supabase, Vercel, Playwright. Versiones exactas en `package.json`.
-- Documentos de referencia: `docs/arquitectura.md` (§3.7 y §5.7 son la v0.3), `docs/propiedad.md`, `docs/qa/v0.2.md` (formato del informe anterior), `e2e/ayudas/**` (utilidades ya hechas: `SLUG_E2E`, `clienteDueno`, `idLocalDePruebas`, `asegurarPublicado`, `restaurarPublicado`, `vigilarErrores`, `UA_NO_BOT`, `comprobarAlmacenamientoVacio`, `vigilarSalientes`).
+- Documentos de referencia: `docs/arquitectura.md` (§3.7 y §5.7 son la v0.3), `docs/propiedad.md`, `docs/qa/v0.2.md` (formato del informe anterior), `e2e/ayudas/**` (utilidades ya hechas: `SLUG_E2E`, `clienteDueno`, `idLocalDePruebas`, `asegurarPublicado`, `restaurarPublicado`, `publicarPorPanel`, `restaurarPublicacionPorPanel` (usa estas dos: publicar por el panel invalida la caché de la carta y de `/r/`), `vigilarErrores`, `UA_NO_BOT`, `comprobarAlmacenamientoVacio`, `vigilarSalientes`).
 
 ## Reglas técnicas obligatorias
 

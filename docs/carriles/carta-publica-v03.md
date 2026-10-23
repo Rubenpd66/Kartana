@@ -45,7 +45,7 @@ Los mismos que el carril `carta-publica` de la v0.1 y la v0.2:
 2. `CartaVista` con `conResena`. Test: false/ausente → sin botón; true → botón presente, después de la última sección y antes del pie; con carta vacía también sale.
 3. Páginas públicas y vista previa. Test de la lógica si la extraes a `src/lib/carta/` (p. ej. `mostrarBotonResena(destino)`).
 4. Pruebas de navegador (amplía `e2e/carta-publica.spec.ts`; sesión `e2e/.auth/dueno.json`, local `e2e-prueba`; ver «Forma de trabajar»):
-   - Prepara por el **panel**: publica el local (ayudas de `e2e/ayudas/`) y en `/panel/<id>/resenas` pega `ChIJN1t_tDeuEmsRUsoyG83frY4` (queda conectado y encendido).
+   - Prepara por el **panel**: publica el local con `publicarPorPanel` (`e2e/ayudas/publicar.ts`; no publiques escribiendo en la base de datos: la caché no se invalidaría) y en `/panel/<id>/resenas` pega `ChIJN1t_tDeuEmsRUsoyG83frY4` (queda conectado y encendido).
    - `/c/e2e-prueba` muestra el botón al final con `href="/r/e2e-prueba"` y `rel="nofollow"`.
    - Clic en el botón con `page.route("https://search.google.com/**", r => r.fulfill({ status: 200, body: "ok" }))` (**nunca** se llega a Google de verdad): la página acaba en `https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4`.
    - `@movil`: el botón mide al menos 48 px de alto y no tapa el aviso fijo de alérgenos; la carta sigue sin cookies ni almacenamiento (`comprobarAlmacenamientoVacio` de `e2e/ayudas/v02.ts`).

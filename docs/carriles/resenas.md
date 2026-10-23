@@ -80,7 +80,7 @@ Orden de comprobaciones (cada una con su test): interruptor apagado → **404** 
 9. Pruebas de navegador `e2e/resenas.spec.ts` (sesión `e2e/.auth/dueno.json`, local `e2e-prueba`; ver «Forma de trabajar»). **Nunca llaman a Google**: en CI `RESENAS_API_ACTIVA` está apagada. Con la migración de `datos-v03` aplicada (pídesela al director si aún no lo está):
    - La página `/panel/<id>/resenas` carga y muestra «pegar enlace» (interruptor apagado).
    - Pegar `https://maps.app.goo.gl/abc` → error visible; pegar `ChIJN1t_tDeuEmsRUsoyG83frY4` (ID de ejemplo de la documentación de Google) → «conectado» y botón encendido.
-   - Con el local publicado (`asegurarPublicado`/`restaurarPublicado` de `e2e/ayudas/datos.ts`): `request.get("/r/e2e-prueba", { maxRedirects: 0 })` → 307, `location` = `https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4`, `cache-control` con `no-store`, `x-robots-tag` con `noindex`, **sin** `set-cookie`. `HEAD` → 307.
+   - Con el local publicado **por el panel** (`publicarPorPanel`/`restaurarPublicacionPorPanel` de `e2e/ayudas/publicar.ts`; publicar escribiendo directamente en la base de datos deja la caché de `/r/` y de la carta sin invalidar): `request.get("/r/e2e-prueba", { maxRedirects: 0 })` → 307, `location` = `https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4`, `cache-control` con `no-store`, `x-robots-tag` con `noindex`, **sin** `set-cookie`. `HEAD` → 307.
    - Con el user-agent no bot de `e2e/ayudas/v02.ts` (`UA_NO_BOT`), un `GET /r/e2e-prueba` sube los clics del día en `/panel/<id>/estadisticas` (`expect.poll`).
    - Apagar el botón en el panel → `/r/e2e-prueba` → 307 a `/c/e2e-prueba`.
    - `/r/esto-no-existe-xyz` → 307 a `/c/esto-no-existe-xyz`; `/r/Mal_Slug` → 404.
