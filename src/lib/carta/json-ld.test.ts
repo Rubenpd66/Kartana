@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { cartaEn } from "@/lib/i18n/carta.en";
 import { cartaEs } from "@/lib/i18n/carta.es";
 import { jsonLdCarta, serializarJsonLd } from "./json-ld";
-import { BRAVAS, cartaPublicaEjemplo, platoPublicoEjemplo } from "./pruebas/carta-ejemplo";
+import { BRAVAS, cartaPublicaEjemplo, platoPublicoEjemplo, traduccion } from "./pruebas/carta-ejemplo";
 
 const URL_CARTA = "https://kartana.test/c/la-guagua";
 
@@ -94,6 +95,27 @@ describe("jsonLdCarta", () => {
     expect(otra).not.toHaveProperty("openingHoursSpecification");
     expect(otra).not.toHaveProperty("image");
     expect(BRAVAS.nombre).toBe("Patatas bravas");
+  });
+});
+
+describe("jsonLdCarta en otro idioma", () => {
+  it("inLanguage del idioma y textos traducidos (o el original si no hay)", () => {
+    const carta = cartaPublicaEjemplo({ local: { traducciones: { en: { descripcion: traduccion("Seafood and tapas") } } } });
+    carta.secciones[1].traducciones = { en: { nombre: traduccion("Tapas and portions") } };
+    carta.secciones[1].platos = [{ ...BRAVAS, traducciones: { en: { nombre: traduccion("Spicy potatoes") } } }];
+    const en = jsonLdCarta(carta, cartaEn, "https://kartana.test/c/la-guagua/en", "en");
+    expect(en.inLanguage).toBe("en");
+    expect(en.hasMenu.inLanguage).toBe("en");
+    expect(en.description).toBe("Seafood and tapas");
+    expect(en.hasMenu.hasMenuSection.map((s) => s.name)).toEqual(["Mariscos", "Tapas and portions"]);
+    const bravas = en.hasMenu.hasMenuSection[1].hasMenuItem[0];
+    expect(bravas.name).toBe("Spicy potatoes");
+    expect(bravas.description).toBe("Patatas fritas con salsa brava y alioli.");
+    expect(bravas.offers?.[0].name).toBe("Half portion");
+  });
+
+  it("en español, inLanguage «es»", () => {
+    expect(jsonLdCarta(cartaPublicaEjemplo(), cartaEs, URL_CARTA).inLanguage).toBe("es");
   });
 });
 

@@ -1,9 +1,10 @@
 // Datos estructurados (schema.org) de la carta pública para Google: Restaurant -> Menu -> MenuSection -> MenuItem.
 
+import { IDIOMA_CARTA_POR_DEFECTO, type IdiomaCarta } from "@/lib/i18n/idiomas";
 import type { CartaPublica, PlatoPublico } from "@/lib/tipos/carta";
 import type { CodigoEtiqueta, DiaSemana, Precio } from "@/lib/tipos/dominio";
 import type { DiccionarioCarta } from "@/lib/tipos/i18n";
-import { etiquetaPrecio } from "./textos";
+import { etiquetaPrecio, textoEn } from "./textos";
 
 const DIAS_SCHEMA: Record<DiaSemana, string> = {
   1: "https://schema.org/Monday",
@@ -45,20 +46,21 @@ export type RestauranteJsonLd = {
   "@context": "https://schema.org";
   "@type": "Restaurant";
   name: string;
+  inLanguage: IdiomaCarta;
   url: string;
   description?: string;
   address?: string;
   telephone?: string;
   image?: string;
   openingHoursSpecification?: HorarioJsonLd[];
-  hasMenu: { "@type": "Menu"; name: string; url: string; hasMenuSection: SeccionJsonLd[] };
+  hasMenu: { "@type": "Menu"; name: string; url: string; inLanguage: IdiomaCarta; hasMenuSection: SeccionJsonLd[] };
 };
 
-function ofertas(plato: PlatoPublico, diccionario: DiccionarioCarta): OfertaJsonLd[] {
+function ofertas(plato: PlatoPublico, diccionario: DiccionarioCarta, idioma: IdiomaCarta): OfertaJsonLd[] {
   return plato.precios
     .filter((p): p is Precio & { centimos: number } => p.centimos !== null)
     .map((p) => {
-      const nombre = etiquetaPrecio(p, diccionario);
+      const nombre = etiquetaPrecio(p, diccionario, plato.traducciones, idioma);
       return {
         "@type": "Offer" as const,
         ...(nombre ? { name: nombre } : {}),
@@ -69,13 +71,13 @@ function ofertas(plato: PlatoPublico, diccionario: DiccionarioCarta): OfertaJson
     });
 }
 
-function platoJsonLd(plato: PlatoPublico, diccionario: DiccionarioCarta): PlatoJsonLd {
-  const lista = ofertas(plato, diccionario);
+function platoJsonLd(plato: PlatoPublico, diccionario: DiccionarioCarta, idioma: IdiomaCarta): PlatoJsonLd {
+  const lista = ofertas(plato, diccionario, idioma);
   const dietas = plato.etiquetas.flatMap((e) => (DIETAS[e] ? [DIETAS[e]] : []));
   return {
     "@type": "MenuItem",
-    name: plato.nombre,
-    ...(plato.descripcion ? { description: plato.descripcion } : {}),
+    name: textoEn(plato.nombre, plato.traducciones, "nombre", idioma).texto,
+    ...(plato.descripcion ? { description: textoEn(plato.descripcion, plato.traducciones, "descripcion", idioma).texto } : {}),
     ...(lista.length > 0 ? { offers: lista } : {}),
     ...(dietas.length > 0 ? { suitableForDiet: dietas } : {}),
   };
@@ -97,16 +99,22 @@ function horarios(carta: CartaPublica): HorarioJsonLd[] {
   return [...grupos.values()];
 }
 
-/** Objeto JSON-LD del restaurante y su carta. `urlCarta` es la dirección absoluta de la página. */
-export function jsonLdCarta(carta: CartaPublica, diccionario: DiccionarioCarta, urlCarta: string): RestauranteJsonLd {
+/** Objeto JSON-LD del restaurante y su carta en un idioma. `urlCarta` es la dirección absoluta de la página. */
+export function jsonLdCarta(
+  carta: CartaPublica,
+  diccionario: DiccionarioCarta,
+  urlCarta: string,
+  idioma: IdiomaCarta = IDIOMA_CARTA_POR_DEFECTO,
+): RestauranteJsonLd {
   const { local } = carta;
   const franjas = horarios(carta);
   return {
     "@context": "https://schema.org",
     "@type": "Restaurant",
     name: local.nombre,
+    inLanguage: idioma,
     url: urlCarta,
-    ...(local.descripcion ? { description: local.descripcion } : {}),
+    ...(local.descripcion ? { description: textoEn(local.descripcion, local.traducciones, "descripcion", idioma).texto } : {}),
     ...(local.direccion ? { address: local.direccion } : {}),
     ...(local.telefono ? { telephone: local.telefono } : {}),
     ...(local.logoUrl ? { image: local.logoUrl } : {}),
@@ -115,11 +123,12 @@ export function jsonLdCarta(carta: CartaPublica, diccionario: DiccionarioCarta, 
       "@type": "Menu",
       name: `Carta de ${local.nombre}`,
       url: urlCarta,
+      inLanguage: idioma,
       hasMenuSection: carta.secciones.map((s) => ({
         "@type": "MenuSection" as const,
-        name: s.nombre,
-        ...(s.descripcion ? { description: s.descripcion } : {}),
-        hasMenuItem: s.platos.map((p) => platoJsonLd(p, diccionario)),
+        name: textoEn(s.nombre, s.traducciones, "nombre", idioma).texto,
+        ...(s.descripcion ? { description: textoEn(s.descripcion, s.traducciones, "descripcion", idioma).texto } : {}),
+        hasMenuItem: s.platos.map((p) => platoJsonLd(p, diccionario, idioma)),
       })),
     },
   };

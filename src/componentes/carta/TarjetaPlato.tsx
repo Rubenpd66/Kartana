@@ -1,5 +1,6 @@
 import { Insignia } from "@/componentes/ui/Insignia";
-import { listaDatos } from "@/lib/carta/textos";
+import { listaDatos, textoEn } from "@/lib/carta/textos";
+import type { IdiomaCarta } from "@/lib/i18n/idiomas";
 import type { PlatoPublico } from "@/lib/tipos/carta";
 import type { DiccionarioCarta } from "@/lib/tipos/i18n";
 import { ListaAlergenos } from "./ListaAlergenos";
@@ -10,20 +11,31 @@ import { Precios } from "./Precios";
  * data-alergenos y data-trazas con los códigos separados por espacios, data-confirmado "si" | "no".
  * Pocos nodos a propósito: una carta tiene cientos de platos.
  */
-export function TarjetaPlato({ plato, diccionario }: { plato: PlatoPublico; diccionario: DiccionarioCarta }) {
+export function TarjetaPlato({
+  plato,
+  diccionario,
+  idioma = "es",
+}: {
+  plato: PlatoPublico;
+  diccionario: DiccionarioCarta;
+  idioma?: IdiomaCarta;
+}) {
   const { textos } = diccionario;
   const idTitulo = `plato-${plato.id}`;
+  const nombre = textoEn(plato.nombre, plato.traducciones, "nombre", idioma);
+  const descripcion = plato.descripcion ? textoEn(plato.descripcion, plato.traducciones, "descripcion", idioma) : null;
   return (
     <article
       aria-labelledby={idTitulo}
       className={`plato flex items-start gap-3 border-b border-borde py-4 ${plato.agotado ? "agotado" : ""}`.trim()}
+      data-plato-id={plato.id}
       data-alergenos={listaDatos(plato.alergenos)}
       data-trazas={listaDatos(plato.trazas)}
       data-confirmado={plato.alergenosConfirmados ? "si" : "no"}
     >
       <div className="min-w-0 flex-1 space-y-1">
         <h3 id={idTitulo} className="text-lg font-semibold">
-          {plato.nombre}
+          <span lang={nombre.lang}>{nombre.texto}</span>
           {plato.agotado ? (
             <>
               {" "}
@@ -33,8 +45,12 @@ export function TarjetaPlato({ plato, diccionario }: { plato: PlatoPublico; dicc
             </>
           ) : null}
         </h3>
-        <Precios precios={plato.precios} diccionario={diccionario} />
-        {plato.descripcion ? <p className="descripcion text-base text-texto-suave">{plato.descripcion}</p> : null}
+        <Precios precios={plato.precios} diccionario={diccionario} idioma={idioma} traducciones={plato.traducciones} />
+        {descripcion ? (
+          <p lang={descripcion.lang} className="descripcion text-base text-texto-suave">
+            {descripcion.texto}
+          </p>
+        ) : null}
         {plato.alergenos.length > 0 ? (
           <ListaAlergenos alergenos={plato.alergenos} diccionario={diccionario} />
         ) : plato.alergenosConfirmados ? (

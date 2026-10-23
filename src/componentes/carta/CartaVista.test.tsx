@@ -2,8 +2,9 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { cartaDemoPublica, cartaPublicaEjemplo } from "@/lib/carta/pruebas/carta-ejemplo";
+import { cartaDemoPublica, cartaPublicaEjemplo, traduccion } from "@/lib/carta/pruebas/carta-ejemplo";
 import { ALERGENOS } from "@/lib/dominio/alergenos";
+import { cartaEn } from "@/lib/i18n/carta.en";
 import { cartaEs } from "@/lib/i18n/carta.es";
 import { CartaVista } from "./CartaVista";
 
@@ -92,6 +93,54 @@ describe("CartaVista con una carta normal", () => {
   it("marca el modo para los estilos de la vista previa", () => {
     const { container } = render(<CartaVista carta={cartaPublicaEjemplo()} idioma="es" diccionario={cartaEs} modo="vista_previa" />);
     expect(container.querySelector(".carta")!.getAttribute("data-modo")).toBe("vista_previa");
+  });
+});
+
+describe("CartaVista en inglés", () => {
+  function cartaEnIngles() {
+    const carta = cartaPublicaEjemplo({
+      local: { idiomasActivos: ["es", "en"], traducciones: { en: { descripcion: traduccion("Seafood and tapas") } } },
+      menus: [
+        {
+          id: "m",
+          nombre: "Menú del día",
+          precioCentimos: 1250,
+          dias: [1, 2, 3, 4, 5],
+          horaInicio: "13:00",
+          horaFin: "16:00",
+          grupos: [{ id: "g1", titulo: "Primeros", items: [{ id: "i1", nombre: "Sopa castellana", alergenos: [], alergenosConfirmados: true }] }],
+          notas: "Incluye pan",
+          orden: 0,
+          traducciones: { en: { nombre: traduccion("Set menu"), "grupo.g1.titulo": traduccion("Starters") } },
+        },
+      ],
+    });
+    carta.secciones[0].traducciones = { en: { nombre: traduccion("Seafood") } };
+    return carta;
+  }
+
+  it("contenedor con lang «en» y textos traducidos o marcados en español", () => {
+    const { container } = render(<CartaVista carta={cartaEnIngles()} idioma="en" diccionario={cartaEn} modo="publica" />);
+    expect(container.querySelector(".carta")!.getAttribute("lang")).toBe("en");
+    expect(screen.getByText("Seafood and tapas").getAttribute("lang")).toBeNull();
+    expect(screen.getByRole("heading", { level: 2, name: "Seafood" }).getAttribute("lang")).toBeNull();
+    expect(screen.getByRole("heading", { level: 2, name: "Tapas y raciones" }).getAttribute("lang")).toBe("es");
+    const menu = screen.getByRole("region", { name: "Set menu" });
+    expect(texto(menu)).toContain("Monday to Friday, from 13:00 to 16:00");
+    expect(within(menu).getByRole("heading", { level: 3, name: "Starters" })).toBeTruthy();
+    expect(within(menu).getByText("Sopa castellana").getAttribute("lang")).toBe("es");
+    expect(within(menu).getByText("Incluye pan").getAttribute("lang")).toBe("es");
+  });
+
+  it("navegación con los nombres traducidos", () => {
+    render(<CartaVista carta={cartaEnIngles()} idioma="en" diccionario={cartaEn} modo="publica" />);
+    const nav = screen.getByRole("navigation", { name: cartaEn.textos.secciones });
+    const nombres = within(nav).getAllByRole("link").map((a) => [a.textContent, a.getAttribute("lang")]);
+    expect(nombres).toEqual([
+      ["Set menu", null],
+      ["Seafood", null],
+      ["Tapas y raciones", "es"],
+    ]);
   });
 });
 

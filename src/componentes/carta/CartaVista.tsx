@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { Contenedor } from "@/componentes/Contenedor";
+import { textoEn, type TextoElegido } from "@/lib/carta/textos";
 import { colorTextoSobre } from "@/lib/dominio/contraste";
 import { SLUG_DEMO } from "@/lib/dominio/slugs";
 import type { PropsCartaVista } from "@/lib/tipos/contratos";
@@ -9,7 +10,7 @@ import { CabeceraCarta } from "./CabeceraCarta";
 import { FiltroAlergenos } from "./FiltroAlergenos";
 import { SpriteAlergenos } from "./IconosCarta";
 import { anclaMenu, MenuDelDia } from "./MenuDelDia";
-import { NavSecciones } from "./NavSecciones";
+import { NavSecciones, type EntradaNav } from "./NavSecciones";
 import { PieCarta } from "./PieCarta";
 import { anclaSeccion, SeccionCarta } from "./SeccionCarta";
 
@@ -20,9 +21,10 @@ import { anclaSeccion, SeccionCarta } from "./SeccionCarta";
 export function CartaVista({ carta, idioma, diccionario, modo }: PropsCartaVista) {
   const { local, secciones, menus } = carta;
   const colores = { "--marca": local.colorMarca, "--sobre-marca": colorTextoSobre(local.colorMarca) } as CSSProperties;
+  const entrada = (ancla: string, { texto, lang }: TextoElegido): EntradaNav => ({ ancla, nombre: texto, lang });
   const entradas = [
-    ...menus.map((m) => ({ ancla: anclaMenu(m.id), nombre: m.nombre })),
-    ...secciones.map((s) => ({ ancla: anclaSeccion(s.id), nombre: s.nombre })),
+    ...menus.map((m) => entrada(anclaMenu(m.id), textoEn(m.nombre, m.traducciones, "nombre", idioma))),
+    ...secciones.map((s) => entrada(anclaSeccion(s.id), textoEn(s.nombre, s.traducciones, "nombre", idioma))),
   ];
   const vacia = secciones.length === 0 && menus.length === 0;
 
@@ -30,7 +32,7 @@ export function CartaVista({ carta, idioma, diccionario, modo }: PropsCartaVista
     <div className="carta" style={colores} lang={idioma} data-modo={modo}>
       <SpriteAlergenos />
       {local.slug === SLUG_DEMO ? <BandaDemo>{diccionario.textos.avisoDemo}</BandaDemo> : null}
-      <CabeceraCarta local={local} diccionario={diccionario} />
+      <CabeceraCarta local={local} diccionario={diccionario} idioma={idioma} />
       <NavSecciones entradas={entradas} diccionario={diccionario} />
       <Contenedor ancho="estrecho" className="pb-4">
         {vacia ? (
@@ -39,10 +41,10 @@ export function CartaVista({ carta, idioma, diccionario, modo }: PropsCartaVista
           <>
             {secciones.length > 0 ? <FiltroAlergenos diccionario={diccionario} /> : null}
             {menus.map((menu) => (
-              <MenuDelDia key={menu.id} menu={menu} diccionario={diccionario} />
+              <MenuDelDia key={menu.id} menu={menu} diccionario={diccionario} idioma={idioma} />
             ))}
             {secciones.map((seccion) => (
-              <SeccionCarta key={seccion.id} seccion={seccion} diccionario={diccionario} />
+              <SeccionCarta key={seccion.id} seccion={seccion} diccionario={diccionario} idioma={idioma} />
             ))}
           </>
         )}

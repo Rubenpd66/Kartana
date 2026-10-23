@@ -1,14 +1,48 @@
 // Textos calculados de la carta pública (lógica pura, sin React).
 
 import { formatearPrecio } from "@/lib/dominio/precios";
+import { elegirTexto } from "@/lib/dominio/traducir";
+import type { IdiomaCarta } from "@/lib/i18n/idiomas";
 import type { MenuPublico } from "@/lib/tipos/carta";
-import type { DiaSemana, Precio } from "@/lib/tipos/dominio";
+import type { CampoTraduciblePlato, DiaSemana, Precio, Traducciones } from "@/lib/tipos/dominio";
 import type { DiccionarioCarta } from "@/lib/tipos/i18n";
 
-/** Etiqueta de una variante: «½ ración», «Docena»…; vacía con "unico"; el texto del dueño con "otro". */
-export function etiquetaPrecio(precio: Precio, diccionario: DiccionarioCarta): string {
-  if (precio.formato === "otro") return precio.texto ?? "";
-  return diccionario.formatos[precio.formato];
+/** Un texto ya elegido para un idioma. `lang: "es"` cuando se muestra el original español en otro idioma. */
+export type TextoElegido = { texto: string; lang?: "es" };
+
+/** `elegirTexto` en la forma que usan los componentes: `<p lang={t.lang}>{t.texto}</p>`. */
+export function textoEn<C extends string>(
+  original: string,
+  traducciones: Traducciones<C>,
+  campo: C,
+  idioma: IdiomaCarta,
+): TextoElegido {
+  const { texto, esOriginal } = elegirTexto(original, traducciones, campo, idioma);
+  return esOriginal ? { texto, lang: "es" } : { texto };
+}
+
+/**
+ * Etiqueta de una variante en un idioma: «Half portion», «Dozen»… del diccionario; vacía con "unico";
+ * con "otro", la traducción de `precio.<id>.texto` (o el texto del dueño, marcado en español).
+ */
+export function elegirEtiquetaPrecio(
+  precio: Precio,
+  diccionario: DiccionarioCarta,
+  traducciones: Traducciones<CampoTraduciblePlato>,
+  idioma: IdiomaCarta,
+): TextoElegido {
+  if (precio.formato !== "otro") return { texto: diccionario.formatos[precio.formato] };
+  return textoEn(precio.texto ?? "", traducciones, `precio.${precio.id}.texto`, idioma);
+}
+
+/** Etiqueta de una variante en español (o en el idioma dado): solo el texto. */
+export function etiquetaPrecio(
+  precio: Precio,
+  diccionario: DiccionarioCarta,
+  traducciones: Traducciones<CampoTraduciblePlato> = {},
+  idioma: IdiomaCarta = "es",
+): string {
+  return elegirEtiquetaPrecio(precio, diccionario, traducciones, idioma).texto;
 }
 
 /** «3,75 €» o «Según mercado» si no hay precio. */
