@@ -41,6 +41,7 @@ export async function guardarIdiomasAccion(localId: string, _previo: EstadoFormu
 
 export async function traducirAhoraAccion(
   localId: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- lo exige la firma de useActionState
   _previo: EstadoFormulario<ResultadoTraducirLocal>,
 ): Promise<EstadoFormulario<ResultadoTraducirLocal>> {
   if (!esquemaId.safeParse(localId).success) return { ok: false, error: "datos_invalidos" };

@@ -57,10 +57,12 @@ export function CampoTraduccion({
   const area = useRef<HTMLTextAreaElement>(null);
 
   // Cuando el servidor manda datos nuevos (tras refrescar), se queda con ellos.
-  useEffect(() => {
+  const [previo, setPrevio] = useState({ estado, traduccion });
+  if (previo.estado !== estado || previo.traduccion !== traduccion) {
+    setPrevio({ estado, traduccion });
     setMostrado(estado);
     setValor(traduccion);
-  }, [estado, traduccion]);
+  }
 
   // El área de texto crece con lo que se escribe.
   useEffect(() => {

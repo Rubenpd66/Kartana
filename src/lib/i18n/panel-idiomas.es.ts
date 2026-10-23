@@ -48,7 +48,7 @@ export const panelIdiomasEs = {
     sinIdiomas: "Activa algún idioma además del español para empezar a traducir.",
   },
   textos: {
-    metaTitulo: (nombre: string) => `Textos en ${nombre}`,
+    metaTitulo: "Revisar textos",
     titulo: (nombre: string) => `Textos en ${nombre}`,
     volver: "Volver a idiomas",
     intro: "Debajo de cada texto en español puedes escribir tu propia traducción. Lo que corrijas tú no se vuelve a cambiar solo.",
