@@ -2,6 +2,12 @@
 
 > Agente recomendado: `kit-modulo` · modelo **sonnet**, esfuerzo **medium**.
 
+
+> **Decisiones del usuario (23/10/2026), mandan sobre el resto de este documento:**
+> - **D2: no se guarda el nombre de la ficha de Google.** No existe `google_place_nombre` ni `nombreFicha` (ni columna, ni CHECK, ni grant, ni campo en tipos, esquemas o límites). El panel enseña «Ficha de Google conectada» y un enlace «Comprobar en Google Maps» (`https://www.google.com/maps/place/?q=place_id:<placeId>`). El nombre de Place Details solo se muestra en el momento de elegir y no se guarda.
+> - D1: se rechazan los enlaces cortos `maps.app.goo.gl`. D3: al conectar la ficha, el botón se enciende solo. D4: el QR de reseña se puede descargar antes de conectar la ficha. D5: sin mirar el plan contratado. D6: la carta `demo` no lleva botón de reseña. D7: Places en la política de privacidad sin subir versión.
+> - D8: la navegación del panel pasa a **Inicio, Carta, Menú, QR y «Más»** (en «Más»: Idiomas, Reseñas, Visitas, Local). La hace el director en la integración 1.
+
 ## Objetivo
 
 Poner en la carta pública el **botón discreto de reseña**, al final de la carta, **igual para todos** los clientes y en su idioma: «¿Qué te ha parecido? Déjanos tu opinión en Google». Es un enlace normal a `/r/<slug>` (que cuenta el clic y lleva a Google). Sin preguntas previas, sin estrellas, sin ventanas emergentes y **sin JavaScript nuevo**.

@@ -127,6 +127,12 @@ Director: `sitemap.ts` con las páginas por idioma; encender `TRADUCCION_ACTIVA`
 
 ---
 
+
+> **Decisiones del usuario (23/10/2026), mandan sobre la v0.3 de este documento:**
+> - **D2: no se guarda el nombre de la ficha de Google.** No existe `google_place_nombre` ni `nombreFicha` (ni columna, ni CHECK, ni grant, ni campo en tipos, esquemas o límites). El panel enseña «Ficha de Google conectada» y un enlace «Comprobar en Google Maps» (`https://www.google.com/maps/place/?q=place_id:<placeId>`). El nombre de Place Details solo se muestra en el momento de elegir y no se guarda.
+> - D1: se rechazan los enlaces cortos `maps.app.goo.gl`. D3: al conectar la ficha, el botón se enciende solo. D4: el QR de reseña se puede descargar antes de conectar la ficha. D5: sin mirar el plan contratado. D6: la carta `demo` no lleva botón de reseña. D7: Places en la política de privacidad sin subir versión.
+> - D8: la navegación del panel pasa a **Inicio, Carta, Menú, QR y «Más»** (en «Más»: Idiomas, Reseñas, Visitas, Local). La hace el director en la integración 1.
+
 ## v0.3 — Reseñas
 
 > Detallada el 23/10/2026. Modelo y seguridad: `docs/arquitectura.md` §3.7 y §5.7. Tipos: `src/lib/tipos/resenas.ts` y bloque «v0.3» de `contratos.ts` (solo añaden; no rompen nada de `main`). Propiedad: `docs/propiedad.md` → «v0.3». Maqueta: `docs/diseno/resenas.html`.

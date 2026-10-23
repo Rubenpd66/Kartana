@@ -92,3 +92,10 @@ Una línea por decisión: **qué**, alternativa descartada y por qué. (U) = la 
 
 ### Forma de trabajar
 - (U) **Solo Claude Code, plan Pro → como mucho 2–3 subagentes a la vez.**
+
+## v0.3 · Reseñas (23/10/2026, decididas por el usuario)
+- **D2:** no se guarda el nombre de la ficha de Google (la política de Google solo permite guardar el `place_id`). El panel enseña «Ficha de Google conectada» y un enlace para comprobarla en Maps.
+- **D3:** al conectar la ficha, el botón de reseña de la carta se enciende solo (el dueño puede apagarlo).
+- **D6:** la carta `demo` no lleva botón de reseña.
+- **D8:** navegación del panel: Inicio, Carta, Menú, QR y «Más» (Idiomas, Reseñas, Visitas, Local).
+- Técnicas, tal como las propuso el arquitecto: D1 (rechazar `maps.app.goo.gl`), D4 (QR de reseña descargable antes de conectar la ficha), D5 (sin mirar el plan contratado hasta la v0.6), D7 (mencionar Google Places en privacidad sin subir versión).

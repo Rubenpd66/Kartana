@@ -369,12 +369,12 @@ export type ContieneTextoProhibidoResena = (texto: string) => boolean;
 export type ObtenerConfigResenas = (localId: string) => Promise<ConfigResenas | null>;
 /**
  * `guardarFichaGoogle`: valida (esquemaFichaGoogle), getClaims, guarda el destino (y vacía el otro tipo),
- * `nombreFicha` y, si `activar`, resenas_activas = true. Después trasGuardarCarta(localId).
+ * y, si `activar`, resenas_activas = true (el nombre de la ficha no se guarda: decisión D2). Después trasGuardarCarta(localId).
  */
 export type GuardarFichaGoogle = (entrada: EntradaFichaGoogle) => Promise<Resultado>;
 /** `cambiarResenasActivas`: encender sin destino -> "datos_invalidos". Después trasGuardarCarta. */
 export type CambiarResenasActivas = (entrada: EntradaResenasActivas) => Promise<Resultado>;
-/** `quitarFichaGoogle`: borra destino y nombre y apaga el botón. Después trasGuardarCarta. */
+/** `quitarFichaGoogle`: borra el destino y apaga el botón. Después trasGuardarCarta. */
 export type QuitarFichaGoogle = (localId: string) => Promise<Resultado>;
 /**
  * `obtenerDestinoResena`: cliente público, 'use cache', cacheTag(etiquetaCarta(slug)) y cacheTag(etiquetaLocal(id)),

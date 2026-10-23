@@ -19,9 +19,9 @@ export type ConfigResenas = {
   /** Botón encendido en la carta. Solo puede ser true si hay destino. */
   activas: boolean;
   destino: DestinoResena | null;
-  /** Etiqueta que el dueño confirmó al elegir su ficha con el buscador. null con «pegar enlace». Solo para el panel. */
-  nombreFicha: string | null;
 };
+// D2 (decidido 23/10/2026): el nombre de la ficha de Google NO se guarda (la política de Google solo permite
+// guardar el place_id). El panel enseña «Ficha de Google conectada» y un enlace para comprobarla en Maps.
 
 /**
  * Lo que necesitan la carta pública y GET /r/[slug] (cliente público, cacheado).
@@ -83,8 +83,6 @@ export type EntradaEnlaceManual = {
 export type EntradaFichaGoogle = {
   localId: string;
   destino: DestinoResena;
-  /** Con destino "enlace" siempre null. */
-  nombreFicha: string | null;
   /** Encender el botón a la vez (por defecto en la interfaz: sí). */
   activar: boolean;
 };
@@ -100,7 +98,6 @@ export type EntradaResenasActivas = {
 
 /** src/lib/dominio/resenas.ts -> `export const LIMITES_RESENAS` (mismos números que los CHECK y las funciones SQL). */
 export type LimitesResenas = {
-  nombreFicha: number; // 120
   enlaceManual: number; // 500 (lo que se acepta pegar antes de interpretarlo)
   busquedaMin: number; // 3
   busquedaMax: number; // 100
