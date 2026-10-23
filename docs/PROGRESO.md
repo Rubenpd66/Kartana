@@ -1,9 +1,8 @@
 # Progreso
 
 ## Estado actual
-**v0.1 cerrada y publicada (23/10/2026, commit `ef3021f`); v0.2 ola 2 publicada** en https://kartana-six.vercel.app. CI en verde; 696 tests unitarios y 102 e2e; QR y PDF probados por el usuario («todo bien»). Informe en `docs/qa/v0.1.md`.
-**Fase 4 (v0.2 · idiomas y estadísticas): empezando la ola 1** (`datos-v02`, `traduccion`, `contenido-v02`). `pg_cron` y `pg_net` están disponibles en el proyecto. Falta `GOOGLE_CLOUD_API_KEY` (ver TU-TURNO); `TRADUCCION_ACTIVA` sigue en `false`.
-- Pendiente heredado del QA: aviso `Date.now() while prerendering` en las páginas con sesión; JS de hidratación (TBT 360–560 ms); `@axe-core/playwright` sin instalar; el PDF con fuentes en Vercel (verlo con sesión).
+**v0.2 cerrada y publicada (23/10/2026, commit `3b279b2`)**: carta pública en 7 idiomas, panel de idiomas con traducción automática de Google **encendida y comprobada por el usuario en producción**, estadísticas anónimas. v0.1 cerrada el mismo día. CI en verde.
+**Fase 4 · v0.3 (reseñas en Google): detallando el plan** (el arquitecto escribe contratos y encargos). Antes de la ola 1 hace falta ampliar la clave de Google (TU-TURNO, punto 0b).
 
 ### v0.2 · ola 3 (QA) integrada (23/10/2026)
 `qa-v02` en `main` (`docs/qa/v0.2.md`): 149 e2e pasados, 943 unitarios, Lighthouse móvil `/c/demo` 93–97 y `/c/demo/de` 97 (TBT 160–180 ms, mejor que la v0.1). Sin cookies ni almacenamiento en ningún idioma.
@@ -12,9 +11,8 @@
 - Para el usuario: probar la carta desde un QR impreso (iPhone y Android); Lighthouse sobre la URL de Vercel.
 
 ### Siguiente sesión
-1. Comprobar una traducción en producción (panel → Idiomas → «Traducir lo que falta»).
-2. Cerrar la v0.2; arreglar H1 (`<html lang>`, exige layouts raíz por grupo) y H4 (límite de ritmo de `POST /api/e`, regla del firewall de Vercel).
-3. Planificar la v0.3 (`docs/plan.md`).
+1. v0.3: revisar lo que deje el arquitecto (`docs/carriles/` de la v0.3), lanzar la ola 1 (`datos-v03`, `resenas`), integrar, ola 2 (`carta-publica-v03`, `qr-resena`) y `qa-v03`.
+2. Pendientes menores de la v0.2: `<html lang>` (H1), límite de ritmo de `POST /api/e` (H4), `pg_cron`, revisión nativa de eu/gl.
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
