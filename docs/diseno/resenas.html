@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maqueta · Reseñas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<style>
+  .barra-panel { background: var(--superficie); border-bottom: 1px solid var(--borde); }
+  .barra-panel .contenedor { height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .marca { font-family: "Fraunces", serif; font-weight: 600; font-size: 1.25rem; text-decoration: none; }
+  h1 { font-size: 1.625rem; margin: 1.25rem 0 .25rem; }
+  h2 { font-size: 1.25rem; }
+  .estado { font-family: "Figtree", sans-serif; font-size: .8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--texto-suave); margin: 2rem 0 .5rem; }
+  .resultados { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; gap: .5rem; }
+  .resultados button { width: 100%; text-align: left; min-height: 64px; padding: .625rem 1rem; border-radius: var(--radio); border: 1px solid var(--borde); background: var(--superficie); font: inherit; cursor: pointer; }
+  .resultados button:hover { border-color: var(--primario); }
+  .resultados strong { display: block; }
+  .resultados span { color: var(--texto-suave); font-size: .9375rem; }
+  .atribucion { font-size: .8125rem; color: var(--texto-suave); text-align: right; margin-top: .375rem; }
+  details > summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; font-weight: 600; }
+  ol.pasos { padding-left: 1.25rem; margin: .25rem 0 .75rem; }
+  .muestra { display: grid; place-items: center; padding: 1rem; border-radius: var(--radio); background: var(--fondo); border: 1px dashed var(--borde); }
+  .boton-resena { display: inline-flex; align-items: center; gap: .5rem; min-height: 48px; padding: 0 1.25rem; border-radius: 999px; border: 1px solid var(--borde); background: var(--superficie); color: var(--texto); font-weight: 500; }
+  .boton-resena svg { width: 20px; height: 20px; flex: none; }
+  .cifra { font-family: "Fraunces", serif; font-size: 2rem; line-height: 1; }
+  ul.reglas { padding-left: 1.1rem; margin: .5rem 0 0; }
+  ul.reglas li + li { margin-top: .25rem; }
+</style>
+</head>
+<body>
+<header class="barra-panel">
+  <div class="contenedor estrecho"><a class="marca" href="#">Kartana</a><a class="boton fantasma" href="#">Cuenta</a></div>
+</header>
+<main class="contenedor estrecho" style="padding-bottom:3rem">
+  <p class="nota-maqueta">Maqueta · <strong>/panel/[local]/resenas</strong> (v0.3). Se muestran los dos estados de la página, uno debajo del otro. Sin estrellas en ningún sitio: el botón y el QR son iguales para todos y van directos a Google.</p>
+
+  <h1>Más reseñas en Google</h1>
+  <p class="suave">Conecta tu ficha de Google y tus clientes podrán dejar su opinión desde la carta o desde un QR, en un toque.</p>
+
+  <!-- ============ Estado 1: sin ficha ============ -->
+  <p class="estado">Estado 1 · Aún sin ficha (buscador encendido)</p>
+  <section class="tarjeta pila">
+    <h2>Busca tu negocio</h2>
+    <label class="campo">
+      <span>Nombre del bar y ciudad</span>
+      <input class="entrada" type="search" value="Cafetería La Guagua" autocomplete="off">
+    </label>
+    <p class="pequeno suave" aria-live="polite">3 resultados</p>
+    <ul class="resultados">
+      <li><button type="button"><strong>Cafetería La Guagua</strong><span>Calle Mayor de Triana, Las Palmas de Gran Canaria</span></button></li>
+      <li><button type="button"><strong>La Guagua Bar</strong><span>Avenida Mesa y López, Las Palmas de Gran Canaria</span></button></li>
+      <li><button type="button"><strong>Guagua Café</strong><span>Santa Cruz de Tenerife</span></button></li>
+    </ul>
+    <p class="atribucion">Resultados de Google Maps</p>
+    <p class="nota-maqueta">La atribución exacta (texto o logotipo servido desde nuestra web) la fija el carril según la política vigente de Google. Al tocar un resultado se guarda la ficha y se enciende el botón.</p>
+
+    <details>
+      <summary>¿No aparece tu negocio? Pega el enlace</summary>
+      <ol class="pasos pequeno">
+        <li>Abre tu Perfil de Empresa en Google (busca tu negocio en Google con tu cuenta).</li>
+        <li>Toca «Pedir reseñas» y después «Copiar enlace».</li>
+        <li>Pégalo aquí. También vale el ID de sitio de Google.</li>
+      </ol>
+      <label class="campo">
+        <span>Enlace de reseñas de Google</span>
+        <input class="entrada" type="url" placeholder="https://g.page/r/…/review">
+      </label>
+      <button class="boton primario bloque" type="button" style="margin-top:.75rem">Guardar enlace</button>
+    </details>
+  </section>
+  <p class="nota-maqueta">Con el buscador apagado (<code>RESENAS_API_ACTIVA=false</code>) solo se ve el bloque «Pega el enlace», abierto.</p>
+
+  <!-- ============ Estado 2: con ficha ============ -->
+  <p class="estado">Estado 2 · Ficha conectada</p>
+  <section class="tarjeta pila">
+    <div class="fila entre envolver">
+      <h2>Cafetería La Guagua</h2>
+      <span class="insignia exito">Conectada</span>
+    </div>
+    <p class="nota-maqueta">Solo se guarda el ID de la ficha y su nombre (no la dirección). Si se conectó con «pegar enlace», el título es «Enlace de reseñas guardado» y no sale «Ver mi ficha».</p>
+    <div class="fila envolver">
+      <a class="boton secundario" href="#">Ver mi ficha en Google Maps</a>
+      <a class="boton secundario" href="#">Probar el enlace</a>
+    </div>
+    <label class="interruptor">
+      <input type="checkbox" checked>
+      <span class="pista" aria-hidden="true"></span>
+      <span>Mostrar el botón en mi carta</span>
+    </label>
+    <div class="muestra">
+      <span class="boton-resena">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" stroke-linejoin="round"/></svg>
+        ¿Qué te ha parecido? Déjanos tu opinión en Google
+      </span>
+    </div>
+    <p class="pequeno suave">Sale al final de tu carta, igual para todos tus clientes y en su idioma.</p>
+    <div class="fila envolver">
+      <a class="boton fantasma" href="#">Cambiar de ficha</a>
+      <a class="boton peligro" href="#">Quitar</a>
+    </div>
+  </section>
+
+  <section class="tarjeta pila" style="margin-top:1rem">
+    <p class="cifra">12</p>
+    <p class="suave">Veces que se abrió el enlace de reseñas en los últimos 30 días. <a href="#">Ver estadísticas</a></p>
+    <a class="boton primario bloque" href="qr.html">Imprimir el QR de reseñas</a>
+  </section>
+
+  <!-- ============ Siempre ============ -->
+  <section class="aviso" style="margin-top:1rem">
+    <h2 style="font-size:1.0625rem; font-family:'Figtree',sans-serif; font-weight:700">Las reglas de Google (y de la ley)</h2>
+    <ul class="reglas pequeno">
+      <li>Pide opinión a todos tus clientes por igual.</li>
+      <li>No ofrezcas nada a cambio: ni descuentos, ni invitaciones, ni sorteos.</li>
+      <li>No pidas que mencionen a nadie ni qué tienen que escribir.</li>
+      <li>Kartana nunca escribe reseñas por ti. <a href="#">Condiciones del servicio</a></li>
+    </ul>
+  </section>
+  <p class="nota-maqueta">Este recuadro explica lo prohibido <strong>al dueño</strong>; ningún cliente del bar lo ve. Los textos que sí ven los clientes (botón y carteles) se comprueban con <code>contieneTextoProhibidoResena()</code>.</p>
+</main>
+</body>
+</html>
