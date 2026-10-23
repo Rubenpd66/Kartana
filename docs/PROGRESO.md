@@ -7,13 +7,13 @@
 
 ### v0.2 · ola 3 (QA) integrada (23/10/2026)
 `qa-v02` en `main` (`docs/qa/v0.2.md`): 149 e2e pasados, 943 unitarios, Lighthouse móvil `/c/demo` 93–97 y `/c/demo/de` 97 (TBT 160–180 ms, mejor que la v0.1). Sin cookies ni almacenamiento en ningún idioma.
-- **Traducción real probada con Google (clave puesta):** «Croquetas de jamón» → «Schinkenkroketten»; la corrección manual sobrevive a un cambio del español. 98 caracteres de cuota usados. `TRADUCCION_ACTIVA` sigue en `false` en Vercel (pendiente de que el usuario lo autorice o lo encienda él).
-- Pendientes de QA: (H1) `<html lang="es">` en todas las cartas; (H4) sin límite de ritmo en `POST /api/e` (conviene antes del lanzamiento); (H2) `textos.textoOriginal` sin usar; (H3) `hreflang` de 7 idiomas en el `<head>` sin probar en una carta indexable; título «Carta de {nombre}» en los 7 diccionarios; abiertos de la v0.1: I2 (`Date.now()` en el panel), M1 (`/admin` 200).
+- **Traducción real probada con Google (clave puesta):** «Croquetas de jamón» → «Schinkenkroketten»; la corrección manual sobrevive a un cambio del español. 98 caracteres de cuota usados. **`TRADUCCION_ACTIVA=true` en Vercel desde el 23/10/2026** (desplegado con `b72bf88`); falta que el usuario lo vea en el panel de producción.
+- Pendientes de QA: (H1) `<html lang="es">` en todas las cartas; (H4) sin límite de ritmo en `POST /api/e` (conviene antes del lanzamiento); (H2) `textos.textoOriginal` sin usar; (H3) `hreflang` de 7 idiomas en el `<head>` sin probar en una carta indexable; abiertos de la v0.1: I2 (`Date.now()` en el panel), M1 (`/admin` 200).
 - Para el usuario: probar la carta desde un QR impreso (iPhone y Android); Lighthouse sobre la URL de Vercel.
 
 ### Siguiente sesión
-1. Encender `TRADUCCION_ACTIVA` en Vercel (y redeploy) y comprobar una traducción en producción.
-2. Cerrar la v0.2; arreglar H1, H4 y el título de la carta.
+1. Comprobar una traducción en producción (panel → Idiomas → «Traducir lo que falta»).
+2. Cerrar la v0.2; arreglar H1 (`<html lang>`, exige layouts raíz por grupo) y H4 (límite de ritmo de `POST /api/e`, regla del firewall de Vercel).
 3. Planificar la v0.3 (`docs/plan.md`).
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
