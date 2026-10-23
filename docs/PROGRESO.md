@@ -1,19 +1,19 @@
 # Progreso
 
 ## Estado actual
-**v0.1 cerrada y publicada (23/10/2026, commit `ef3021f`)** en https://kartana-six.vercel.app. CI en verde; 696 tests unitarios y 102 e2e; QR y PDF probados por el usuario («todo bien»). Informe en `docs/qa/v0.1.md`.
+**v0.1 cerrada y publicada (23/10/2026, commit `ef3021f`); v0.2 ola 2 publicada** en https://kartana-six.vercel.app. CI en verde; 696 tests unitarios y 102 e2e; QR y PDF probados por el usuario («todo bien»). Informe en `docs/qa/v0.1.md`.
 **Fase 4 (v0.2 · idiomas y estadísticas): empezando la ola 1** (`datos-v02`, `traduccion`, `contenido-v02`). `pg_cron` y `pg_net` están disponibles en el proyecto. Falta `GOOGLE_CLOUD_API_KEY` (ver TU-TURNO); `TRADUCCION_ACTIVA` sigue en `false`.
 - Pendiente heredado del QA: aviso `Date.now() while prerendering` en las páginas con sesión; JS de hidratación (TBT 360–560 ms); `@axe-core/playwright` sin instalar; el PDF con fuentes en Vercel (verlo con sesión).
 
-### v0.2 · ola 1 integrada y migración aplicada (23/10/2026, sin publicar)
-`datos-v02`, `traduccion` y `contenido-v02` en `main`; migración `idiomas_estadisticas_v02` aplicada (tablas con RLS, 6 funciones públicas y 3 privadas), semilla de traducciones de la demo cargada (82 platos, 7 idiomas), advisors sin avisos nuevos. Pestañas «Idiomas» y «Visitas» en la navegación del panel: **no publicar hasta que la ola 2 cree sus páginas** (ahora dan 404 y dos e2e de «consola limpia» fallan por eso).
-- `pg_cron` **no está activado**: la limpieza diaria de estadísticas (>400 días) no está programada. Activarlo cuando haga falta.
-- Hay dos migraciones remotas (`…124512` y `…124551_completa`); en local solo existe la segunda.
-- Sigue sin `GOOGLE_CLOUD_API_KEY` (TU-TURNO, punto 0): `TRADUCCION_ACTIVA=false`.
+### v0.2 · ola 2 integrada y publicada (23/10/2026)
+`estadisticas`, `panel-idiomas` y `carta-publica-v02` en `main`. Lint, tipos, 943 tests unitarios, build y e2e 120 pasados (1 saltado). La carta funciona en 7 idiomas (`/c/<local>/<xx>`, selector sin JS, `hreflang`, aviso de traducción automática, medidor anónimo `POST /api/e`); el panel tiene «Idiomas» y «Visitas».
+- Migración `idiomas_estadisticas_v02` aplicada; semilla de traducciones de la demo cargada. `TRADUCCION_ACTIVA=false` (falta `GOOGLE_CLOUD_API_KEY`, TU-TURNO punto 0).
+- Pendientes: (1) `textos.tituloCarta: "Carta de {nombre}"` en los 7 diccionarios (hoy el título en otros idiomas es solo el nombre); (2) `<html lang>` fijo en `es` (la carta lleva `lang` en su contenedor); (3) Lighthouse de rendimiento por idioma (lo hace `qa-v02`); (4) «Platos vistos» suma solo el top 10; (5) las pruebas dejaron visitas de ruido en `demo` y `e2e-prueba`; (6) `pg_cron` sin activar; (7) revisión por hablante nativo de eu y gl.
 
 ### Siguiente sesión
-1. Ola 2 de la v0.2: `carta-publica-v02`, `estadisticas`, `panel-idiomas`; integrarla, e2e completos y publicar.
-2. Ola 3: `qa-v02`. Probar `traducirLocal` con la clave de Google y encender `TRADUCCION_ACTIVA`.
+1. Ola 3: `qa-v02` (sonnet/medium).
+2. Con la clave de Google: probar `traducirLocal` con un local de pruebas y encender `TRADUCCION_ACTIVA` en Vercel.
+3. Cerrar la v0.2 y mirar la v0.3 en `docs/plan.md`.
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
