@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { Contenedor } from "@/componentes/Contenedor";
+import { mostrarAvisoTraduccion } from "@/lib/carta/aviso-traduccion";
 import { textoEn, type TextoElegido } from "@/lib/carta/textos";
 import { colorTextoSobre } from "@/lib/dominio/contraste";
 import { SLUG_DEMO } from "@/lib/dominio/slugs";
@@ -13,6 +14,7 @@ import { anclaMenu, MenuDelDia } from "./MenuDelDia";
 import { NavSecciones, type EntradaNav } from "./NavSecciones";
 import { PieCarta } from "./PieCarta";
 import { anclaSeccion, SeccionCarta } from "./SeccionCarta";
+import { SelectorIdioma } from "./SelectorIdioma";
 
 /**
  * La carta tal como la ve el cliente del bar. Componente de servidor, sin datos propios ni JavaScript:
@@ -32,7 +34,18 @@ export function CartaVista({ carta, idioma, diccionario, modo }: PropsCartaVista
     <div className="carta" style={colores} lang={idioma} data-modo={modo}>
       <SpriteAlergenos />
       {local.slug === SLUG_DEMO ? <BandaDemo>{diccionario.textos.avisoDemo}</BandaDemo> : null}
-      <CabeceraCarta local={local} diccionario={diccionario} idioma={idioma} />
+      <CabeceraCarta local={local} diccionario={diccionario} idioma={idioma}>
+        <SelectorIdioma
+          slug={local.slug}
+          idiomasActivos={local.idiomasActivos}
+          idioma={idioma}
+          diccionario={diccionario}
+          modo={modo}
+        />
+        {mostrarAvisoTraduccion(carta, idioma) ? (
+          <p className="inline-flex min-h-12 items-center text-[0.8125rem] opacity-90">{diccionario.textos.traduccionAutomatica}</p>
+        ) : null}
+      </CabeceraCarta>
       <NavSecciones entradas={entradas} diccionario={diccionario} />
       <Contenedor ancho="estrecho" className="pb-4">
         {vacia ? (

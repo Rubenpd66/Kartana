@@ -132,6 +132,21 @@ describe("CartaVista en inglés", () => {
     expect(within(menu).getByText("Incluye pan").getAttribute("lang")).toBe("es");
   });
 
+  it("selector de idioma y aviso «Automatic translation» si hay textos automáticos", () => {
+    render(<CartaVista carta={cartaEnIngles()} idioma="en" diccionario={cartaEn} modo="publica" />);
+    expect(screen.getByRole("link", { name: "English" }).getAttribute("aria-current")).toBe("page");
+    expect(screen.getByRole("link", { name: "Español" }).getAttribute("href")).toBe("/c/la-guagua");
+    expect(screen.getByText(cartaEn.textos.traduccionAutomatica)).toBeTruthy();
+  });
+
+  it("sin aviso en español ni con un solo idioma (y sin selector)", () => {
+    render(<CartaVista carta={cartaEnIngles()} idioma="es" diccionario={cartaEs} modo="publica" />);
+    expect(screen.queryByText(cartaEs.textos.traduccionAutomatica)).toBeNull();
+    cleanup();
+    render(<CartaVista carta={cartaPublicaEjemplo()} idioma="es" diccionario={cartaEs} modo="publica" />);
+    expect(screen.queryByRole("link", { name: "English" })).toBeNull();
+  });
+
   it("navegación con los nombres traducidos", () => {
     render(<CartaVista carta={cartaEnIngles()} idioma="en" diccionario={cartaEn} modo="publica" />);
     const nav = screen.getByRole("navigation", { name: cartaEn.textos.secciones });

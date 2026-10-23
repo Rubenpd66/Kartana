@@ -43,21 +43,38 @@
   text-decoration: none;
   cursor: pointer;
 }
-.carta .horario > summary {
+/* Desplegables de la cabecera: horario e idioma (<details>, sin JavaScript) */
+.carta :is(.horario, .desplegable) > summary {
   list-style: none;
 }
-.carta .horario > summary::-webkit-details-marker {
+.carta :is(.horario, .desplegable) > summary::-webkit-details-marker {
   display: none;
 }
-.carta .horario > summary::after {
+.carta :is(.horario, .desplegable) > summary::after {
   content: "▾";
   transition: transform 0.15s ease;
 }
-.carta .horario[open] > summary::after {
+.carta :is(.horario, .desplegable)[open] > summary::after {
   transform: rotate(180deg);
 }
-.carta .lista-horario {
+@media (prefers-reduced-motion: reduce) {
+  .carta :is(.horario, .desplegable) > summary::after {
+    transition: none;
+  }
+}
+.carta :is(.lista-horario, .lista-desplegable) {
   background: color-mix(in srgb, var(--sobre-marca) 12%, transparent);
+}
+.carta .idioma {
+  text-decoration: none;
+}
+.carta .idioma:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.carta .idioma[aria-current="page"] {
+  background: color-mix(in srgb, var(--sobre-marca) 20%, transparent);
+  font-weight: 700;
 }
 
 /* Navegación de secciones: fija arriba, chips con desplazamiento horizontal */
