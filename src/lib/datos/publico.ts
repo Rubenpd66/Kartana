@@ -2,6 +2,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { convertirACartaPublica } from "@/lib/dominio/carta";
 import { urlPublicaImagen } from "@/lib/dominio/imagenes";
+import { idiomasIndexables, PLATOS_PARA_INDEXAR } from "@/lib/dominio/indexacion";
 import { LIMITES } from "@/lib/dominio/limites";
 import { crearClientePublico } from "@/lib/supabase/servidor";
 import type { CartaIndexable, CartaPublica } from "@/lib/tipos/carta";
@@ -20,9 +21,6 @@ import { filaALocal, filaAMenu, filaAPlato, filaASeccion } from "./mapeos";
 
 // Lecturas públicas (rol anon, sin cookies), cacheadas con 'use cache'. La RLS decide qué se ve:
 // solo locales publicados con acceso activo y, dentro, solo lo visible.
-
-/** Mínimo de platos visibles para que una carta se indexe (docs/arquitectura.md §4.1). */
-const PLATOS_PARA_INDEXAR = 5;
 
 /** Formato de slug sin pasar por la base de datos (evita consultas con basura en la URL). */
 const formatoSlug = (slug: string) =>
@@ -86,7 +84,11 @@ export async function buscarSlugActual(slugAnterior: string): Promise<string | n
   return actual && actual !== slugAnterior ? actual : null;
 }
 
-/** Cartas para el sitemap: visibles, con permitir_indexar y al menos 5 platos visibles. v0.1: solo "es". */
+/**
+ * Cartas para el sitemap: visibles, con permitir_indexar y al menos 5 platos visibles. Cada una con sus idiomas
+ * indexables: «es» y los activos con >= 90 % de los nombres de plato visibles traducidos (la RLS solo deja ver
+ * los platos visibles de secciones visibles).
+ */
 export async function listarCartasIndexables(): Promise<CartaIndexable[]> {
   "use cache";
   cacheTag(ETIQUETA_LISTA_CARTAS);
@@ -95,18 +97,23 @@ export async function listarCartasIndexables(): Promise<CartaIndexable[]> {
   const supabase = crearClientePublico();
   const { data, error } = await supabase
     .from("locales")
-    .select("slug, actualizado_en, platos(id, actualizado_en)")
+    .select("slug, actualizado_en, idiomas_activos, platos(id, actualizado_en, traducciones)")
     .eq("publicado", true)
     .eq("permitir_indexar", true)
     .order("slug");
   if (error) throw new Error(`listarCartasIndexables: ${error.message}`);
 
-  const filas = (data ?? []) as unknown as Array<{ slug: string; actualizado_en: string; platos: Array<{ actualizado_en: string }> | null }>;
+  const filas = (data ?? []) as unknown as Array<{
+    slug: string;
+    actualizado_en: string;
+    idiomas_activos?: string[] | null;
+    platos: Array<{ actualizado_en: string; traducciones?: unknown }> | null;
+  }>;
   return filas
     .filter((f) => (f.platos ?? []).length >= PLATOS_PARA_INDEXAR)
     .map((f) => ({
       slug: f.slug,
-      idiomas: ["es"],
+      idiomas: idiomasIndexables(f.idiomas_activos ?? [], f.platos ?? []),
       actualizadoEn: [f.actualizado_en, ...(f.platos ?? []).map((p) => p.actualizado_en)].reduce((a, b) =>
         new Date(b).getTime() > new Date(a).getTime() ? b : a,
       ),

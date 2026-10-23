@@ -5,6 +5,7 @@ import type { ObtenerResumenEstadisticas, RegistrarEvento } from "@/lib/tipos/co
 import type { DiaEstadistica, PlatoMasVisto } from "@/lib/tipos/estadisticas";
 import { esquemaId } from "@/lib/validacion/comun";
 import { esquemaEventoEstadistica } from "@/lib/validacion/idiomas";
+import type { FilaEstadisticaDia, FilaPlatoMasVisto } from "./filas";
 
 // Estadísticas anónimas (v0.2, docs/arquitectura.md §5.4). Sin cookies, sin IP, sin identificadores:
 // solo contadores por día. Se escriben con la función SQL registrar_estadisticas (que comprueba todo).
@@ -63,8 +64,6 @@ function porIdioma(valor: unknown): Partial<Record<IdiomaCarta, number>> {
   return resultado;
 }
 
-type FilaEstadisticaDia = { dia: string; visitas: number; visitas_por_idioma: unknown; clics_resena: number };
-type FilaPlatoMasVisto = { plato_id: string; nombre: string; vistas: number | string };
 
 /**
  * Resumen de los últimos `dias` días (hoy incluido, hora de Madrid): un elemento por día (también los días a
@@ -76,7 +75,7 @@ export const obtenerResumenEstadisticas: ObtenerResumenEstadisticas = async (loc
   const desde = sumarDias(hasta, -(dias - 1));
   const rango = Array.from({ length: dias }, (_, i) => sumarDias(desde, i));
 
-  let filas: FilaEstadisticaDia[] = [];
+  let filas: Array<Omit<FilaEstadisticaDia, "local_id">> = [];
   let top: FilaPlatoMasVisto[] = [];
   if (esquemaId.safeParse(localId).success) {
     const supabase = await crearClienteServidor();
@@ -91,7 +90,7 @@ export const obtenerResumenEstadisticas: ObtenerResumenEstadisticas = async (loc
     ]);
     if (estadisticas.error) throw new Error(`obtenerResumenEstadisticas: ${estadisticas.error.message}`);
     if (platos.error) throw new Error(`obtenerResumenEstadisticas: ${platos.error.message}`);
-    filas = (estadisticas.data ?? []) as unknown as FilaEstadisticaDia[];
+    filas = (estadisticas.data ?? []) as unknown as Array<Omit<FilaEstadisticaDia, "local_id">>;
     top = (platos.data ?? []) as unknown as FilaPlatoMasVisto[];
   }
 

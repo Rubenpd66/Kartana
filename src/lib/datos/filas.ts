@@ -110,6 +110,24 @@ export type FilaMenu = {
   actualizado_en: string;
 };
 
+// v0.2 · estadísticas y cuota (supabase/migrations/*_idiomas_estadisticas_v02.sql). Solo lectura para el dueño.
+export type FilaEstadisticaDia = {
+  local_id: string;
+  /** "AAAA-MM-DD" en hora de Madrid. */
+  dia: string;
+  visitas: number;
+  /** {"es": 10, "en": 3} */
+  visitas_por_idioma: Json;
+  clics_resena: number;
+};
+
+export type FilaVistaPlatoDia = { plato_id: string; local_id: string; dia: string; vistas: number };
+
+export type FilaUsoTraduccion = { local_id: string; dia: string; caracteres: number };
+
+/** Fila de la función platos_mas_vistos (bigint puede llegar como texto). */
+export type FilaPlatoMasVisto = { plato_id: string; nombre: string; vistas: number | string };
+
 // ---------------------------------------------------------------------------
 // Columnas que se piden en cada consulta (las públicas son exactamente las que tiene concedidas anon).
 // ---------------------------------------------------------------------------

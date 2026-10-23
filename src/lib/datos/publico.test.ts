@@ -141,4 +141,29 @@ describe("listarCartasIndexables", () => {
     const metodos = falso.metodosDe("locales")[0];
     expect(metodos).toContainEqual({ metodo: "eq", args: ["permitir_indexar", true] });
   });
+
+  it("añade los idiomas activos con >= 90 % de nombres de plato traducidos", async () => {
+    const tr = (texto: string) => ({ texto, origen: "auto", huella: "0123456789abcdef", fecha: "2026-11-02T10:00:00Z" });
+    const platos = Array.from({ length: 10 }, (_, i) => ({
+      id: `p${i}`,
+      actualizado_en: "2026-10-05T00:00:00+00:00",
+      traducciones: {
+        ...(i < 9 ? { en: { nombre: tr(`Dish ${i}`) } } : {}),
+        ...(i < 8 ? { fr: { nombre: tr(`Plat ${i}`) } } : {}),
+        gl: { nombre: tr(`Prato ${i}`) },
+      },
+    }));
+    const falso = crearSupabaseFalso({
+      tablas: {
+        locales: { data: [{ slug: "la-guagua", actualizado_en: "2026-10-01T00:00:00+00:00", idiomas_activos: ["es", "en", "fr"], platos }] },
+      },
+    });
+    servidor.crearClientePublico.mockReturnValue(falso.cliente);
+    const [carta] = await listarCartasIndexables();
+    // en: 9/10 (sí); fr: 8/10 (no); gl: traducido pero no activo (no)
+    expect(carta.idiomas).toEqual(["es", "en"]);
+    const select = falso.metodosDe("locales")[0].find((m) => m.metodo === "select")!.args[0] as string;
+    expect(select).toContain("idiomas_activos");
+    expect(select).toContain("traducciones");
+  });
 });
