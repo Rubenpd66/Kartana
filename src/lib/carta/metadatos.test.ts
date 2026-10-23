@@ -1,6 +1,53 @@
 import { describe, expect, it } from "vitest";
 import { metadatosCarta, metadatosCartaNoEncontrada } from "./metadatos";
-import { cartaConPlatos, cartaPublicaEjemplo } from "./pruebas/carta-ejemplo";
+import { cartaConPlatos, cartaConTraducidos, cartaPublicaEjemplo, traduccion } from "./pruebas/carta-ejemplo";
+
+describe("metadatosCarta por idioma", () => {
+  it("canónica a sí misma en cada idioma", () => {
+    const carta = cartaConTraducidos(10, 10);
+    expect(metadatosCarta(carta, "en").alternates?.canonical).toBe("/c/la-guagua/en");
+    expect(metadatosCarta(carta, "es").alternates?.canonical).toBe("/c/la-guagua");
+  });
+
+  it("hreflang: solo idiomas activos e indexables, más x-default a la española", () => {
+    const carta = cartaConTraducidos(10, 10);
+    carta.local.idiomasActivos = ["es", "en", "fr"];
+    carta.secciones[0].platos = carta.secciones[0].platos.map((p) => ({
+      ...p,
+      traducciones: { ...p.traducciones, de: { nombre: traduccion("Gericht") } },
+    }));
+    // de está traducido pero no activo; fr está activo pero sin traducir: ninguno sale.
+    expect(metadatosCarta(carta, "en").alternates?.languages).toEqual({
+      es: "/c/la-guagua",
+      en: "/c/la-guagua/en",
+      "x-default": "/c/la-guagua",
+    });
+  });
+
+  it("89 % traducido -> noindex, follow y fuera del hreflang", () => {
+    const m = metadatosCarta(cartaConTraducidos(100, 89), "en");
+    expect(m.robots).toEqual({ index: false, follow: true });
+    expect(m.alternates?.languages).toEqual({ es: "/c/la-guagua", "x-default": "/c/la-guagua" });
+  });
+
+  it("90 % traducido -> index", () => {
+    expect(metadatosCarta(cartaConTraducidos(10, 9), "en").robots).toEqual({ index: true, follow: true });
+  });
+
+  it("carta no indexable: solo x-default", () => {
+    expect(metadatosCarta(cartaConTraducidos(10, 10, false), "en").alternates?.languages).toEqual({
+      "x-default": "/c/la-guagua",
+    });
+  });
+
+  it("descripción traducida y locale de Open Graph del idioma", () => {
+    const carta = cartaConTraducidos(10, 10);
+    carta.local.traducciones = { en: { descripcion: traduccion("Seafood and tapas") } };
+    const m = metadatosCarta(carta, "en");
+    expect(m.description).toBe("Seafood and tapas");
+    expect(m.openGraph).toMatchObject({ locale: "en_GB", url: "/c/la-guagua/en" });
+  });
+});
 
 describe("metadatosCarta", () => {
   it("título «Carta de {nombre}» sin la marca de Kartana", () => {

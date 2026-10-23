@@ -91,6 +91,24 @@ export function cartaConPlatos(n: number, permitirIndexar = true): CartaPublica 
   });
 }
 
+/** Traducción de prueba de un campo (origen automático salvo que se diga). */
+export function traduccion(texto: string, origen: "auto" | "manual" = "auto") {
+  return { texto, origen, huella: "0000000000000000", fecha: "2026-10-20T10:00:00+00:00" };
+}
+
+/**
+ * Carta con `n` platos, todos los idiomas activos y `traducidos` de ellos con el nombre en inglés.
+ * Sirve para probar el umbral del 90 % por idioma.
+ */
+export function cartaConTraducidos(n: number, traducidos: number, permitirIndexar = true): CartaPublica {
+  const carta = cartaConPlatos(n, permitirIndexar);
+  carta.local.idiomasActivos = ["es", "en", "fr", "de", "ca", "eu", "gl"];
+  carta.secciones[0].platos = carta.secciones[0].platos.map((p, i) =>
+    i < traducidos ? { ...p, traducciones: { en: { nombre: traduccion(`Dish ${i + 1}`) } } } : p,
+  );
+  return carta;
+}
+
 /** La carta de demostración completa como CartaPublica (para probar la vista entera sin base de datos). */
 export function cartaDemoPublica(): CartaPublica {
   const { local, secciones, menu } = CARTA_DEMO;

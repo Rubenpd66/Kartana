@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { contarPlatos, esIndexable, PLATOS_PARA_INDEXAR } from "./indexable";
-import { cartaConPlatos } from "./pruebas/carta-ejemplo";
+import { contarPlatos, esIdiomaIndexable, esIndexable, idiomasIndexablesCarta, PLATOS_PARA_INDEXAR } from "./indexable";
+import { cartaConPlatos, cartaConTraducidos } from "./pruebas/carta-ejemplo";
 
 describe("esIndexable", () => {
   it("pide al menos 5 platos visibles", () => {
@@ -24,5 +24,32 @@ describe("esIndexable", () => {
     carta.secciones.push({ ...carta.secciones[0], id: "s2" });
     expect(contarPlatos(carta)).toBe(6);
     expect(esIndexable(carta)).toBe(true);
+  });
+});
+
+describe("idiomas indexables de una carta", () => {
+  it("89 % de los nombres traducidos -> ese idioma no se indexa", () => {
+    const carta = cartaConTraducidos(100, 89);
+    expect(esIdiomaIndexable(carta, "en")).toBe(false);
+    expect(idiomasIndexablesCarta(carta)).toEqual(["es"]);
+  });
+
+  it("90 % -> se indexa", () => {
+    const carta = cartaConTraducidos(10, 9);
+    expect(esIdiomaIndexable(carta, "en")).toBe(true);
+    expect(idiomasIndexablesCarta(carta)).toEqual(["es", "en"]);
+  });
+
+  it("idioma no activo -> no se indexa aunque esté traducido", () => {
+    const carta = cartaConTraducidos(10, 10);
+    carta.local.idiomasActivos = ["es", "fr"];
+    expect(esIdiomaIndexable(carta, "en")).toBe(false);
+    expect(idiomasIndexablesCarta(carta)).toEqual(["es"]);
+  });
+
+  it("si la carta no se indexa, ningún idioma se indexa", () => {
+    const carta = cartaConTraducidos(10, 10, false);
+    expect(idiomasIndexablesCarta(carta)).toEqual([]);
+    expect(esIdiomaIndexable(carta, "es")).toBe(false);
   });
 });
