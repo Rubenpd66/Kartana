@@ -7,7 +7,13 @@
 - Lint, tipos, 666 tests unitarios y build en verde; e2e 56/56 (dos pasadas seguidas).
 - Integración 2: `sitemap.ts` con `listarCartasIndexables()`; la vista previa vacía enseña también la cabecera del local; Playwright con **un solo worker** (varias pruebas cambian `e2e-prueba` y en paralelo se pisaban); pruebas que esperan a la página por partes (Suspense) antes de leer su estado.
 - Pendiente de revisar: aviso del servidor «unstable value Date.now() while prerendering» en las páginas con sesión (viene de la lectura de sesión de Supabase; no rompe nada). `/admin` a un no admin responde 200 con la página «no encontrada» (no 404), por Cache Components.
-- Sin subir a GitHub todavía (cada push a `main` publica en Vercel).
+- **Publicado el 23/10/2026** (commit `10a563b`) en https://kartana-six.vercel.app. Comprobado en producción: `/c/demo` 200 sin `Set-Cookie` y con CSP; `/c/no-existe` 404; `/entrar` 200; `/api/health` → `{estado: ok, bd: ok}`; sitemap 200. El CI de ese commit (con los usuarios de prueba por primera vez) estaba en marcha al guardar: revisarlo al volver (`gh run list`).
+
+### Siguiente sesión
+1. Revisar el CI del commit `10a563b`; si falla, mirar los e2e con sesión en GitHub Actions (secretos E2E_*, `E2E_ACCESO=true`).
+2. El usuario prueba en su móvil el panel y `/c/demo`. Al entrar por primera vez con su correo, ponerle el rol admin por SQL (`docs/arquitectura.md` §5.2).
+3. Lanzar la ola 3: `qr-pdf` (sonnet/high) y `qa-v01` (sonnet/medium), cada uno con su puerto `PUERTO_E2E` y en su worktree.
+4. Cierre de la v0.1 (ver `docs/plan.md`).
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
