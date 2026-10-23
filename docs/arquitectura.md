@@ -385,6 +385,8 @@ src/app/
 - Errores al usuario con códigos (`CodigoError`) traducidos por el diccionario; nunca el mensaje técnico.
 - Textos del dueño: React escapa siempre; prohibido `dangerouslySetInnerHTML` salvo el JSON-LD (con `<` escapado).
 
+> Añadido en la v0.2: función `public.platos_mas_vistos(p_local, p_desde, p_hasta, p_limite)` (invoker, solo `authenticated`) para el top de platos; las traducciones automáticas van en lotes de 500 elementos como máximo y cada texto traducido mide de 1 a 1.000 caracteres.
+
 ### 5.4 Estadísticas anónimas: vía de escritura segura (v0.2)
 1. La carta (isla de cliente muy pequeña) envía con `navigator.sendBeacon("/api/e", json)` un evento `EventoEstadistica`: una «visita» al cargar y un lote de «vistas» de platos al ocultar la página. **Sin cookies, sin localStorage, sin identificadores.**
 2. `POST /api/e` (route handler): rechaza cuerpos > 4 KB, valida con Zod, ignora agentes de bots conocidos, **no registra IP ni cabeceras**, y llama a `rpc("registrar_estadisticas", …)` con `crearClientePublico()`. Responde 204 siempre (no da pistas).

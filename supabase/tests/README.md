@@ -6,6 +6,8 @@ No hay base de datos local (sin Docker): estos tests se ejecutan contra el proye
 |---|---|---|
 | `01_rls_v01.sql` | RLS, permisos por columna, triggers, CHECK y funciones (`activar_piloto`, prueba gratis, límites, borrado de cuenta) | `*_modelo_v01.sql` |
 | `02_storage_v01.sql` | Políticas del bucket `imagenes` (carpeta propia sí, carpeta ajena no, `svg` no) | `*_modelo_v01.sql` y `*_imagenes_v01.sql` |
+| `03_traducciones_v02.sql` | Traducciones: manual nunca pisada, lista blanca, campos, dueño ajeno, anónimo | `*_idiomas_estadisticas_v02.sql` |
+| `04_estadisticas_v02.sql` | Estadísticas sin escritura directa, `registrar_estadisticas`, cuota día/mes, limpieza, `platos_mas_vistos` | `*_idiomas_estadisticas_v02.sql` |
 
 ## Cómo ejecutarlos (director)
 

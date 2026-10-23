@@ -5,9 +5,8 @@
 **Fase 4 (v0.2 · idiomas y estadísticas): empezando la ola 1** (`datos-v02`, `traduccion`, `contenido-v02`). `pg_cron` y `pg_net` están disponibles en el proyecto. Falta `GOOGLE_CLOUD_API_KEY` (ver TU-TURNO); `TRADUCCION_ACTIVA` sigue en `false`.
 - Pendiente heredado del QA: aviso `Date.now() while prerendering` en las páginas con sesión; JS de hidratación (TBT 360–560 ms); `@axe-core/playwright` sin instalar; el PDF con fuentes en Vercel (verlo con sesión).
 
-### Siguiente sesión
-1. Integración 1 de la v0.2 (ver `docs/plan.md`): migración, tests SQL, tipos, semilla de traducciones de la demo, «Idiomas» y «Estadísticas» en `navegacion.ts`.
-2. Lanzar la ola 2: `carta-publica-v02`, `estadisticas`, `panel-idiomas`.
+### v0.2 · ola 1 integrada en `main` (sin publicar)
+`datos-v02`, `traduccion` y `contenido-v02` fusionados; lint, tipos, 826 tests y build en verde. **Falta aplicar la migración al proyecto remoto** (lleva `delete` → hay que hacerlo en una sesión normal de `claude`, ver memoria `sql-con-borrado-sesion-interactiva`): `20261023120000_idiomas_estadisticas_v02.sql`, luego tests `03` y `04` (con rollback), luego `supabase/semillas/demo-traducciones.sql`, advisors, renombrar la migración a la versión de `list_migrations`, regenerar `database.types.ts`. Después: `navegacion.ts` («Idiomas», «Estadísticas»), probar `traducirLocal` con la clave de Google y lanzar la ola 2.
 
 ## Fase 2 — Contratos y plan por carriles · ✅ 22/10/2026
 - kit-arquitecto (Opus, alto): `docs/arquitectura.md`, `src/lib/tipos/` (8 archivos), `docs/propiedad.md`, `docs/plan.md` (v0.1: 9 carriles en 3 olas; v0.2: 7 en 3; v0.3–v0.6 esbozadas) y 16 encargos en `docs/carriles/`.
