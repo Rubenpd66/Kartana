@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import {
   asegurarPublicado,
@@ -294,5 +294,112 @@ test.describe("6 · consola limpia en las páginas públicas", () => {
       expect(errores).toEqual([]);
       expect(fallidas.filter((f) => !f.includes("/qr"))).toEqual([]);
     });
+  });
+});
+
+// ---------------------------------------------------------------- 7. Accesibilidad con teclado
+// axe-core llega como dependencia de eslint-config-next (no hay @axe-core/playwright instalado): se inyecta a mano.
+const axeFuente = () => readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
+
+async function pasarAxe(page: Page) {
+  await page.evaluate(axeFuente());
+  return page.evaluate(async () => {
+    // @ts-expect-error axe lo añade al ámbito global de la página
+    const res = await window.axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] } });
+    return res.violations.map((v: { id: string; nodes: { target: unknown[] }[] }) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).slice(0, 3).join(" | ")}`);
+  });
+}
+
+/** Pulsa Tab hasta que el foco cae en un elemento que cumple `llegada` (máx. `max` pasos); comprueba nombre y foco visible en el camino. */
+async function tabularHasta(page: Page, llegada: (nombre: string, tag: string) => boolean, max = 60) {
+  for (let i = 0; i < max; i++) {
+    await page.keyboard.press("Tab");
+    const info = await page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      if (!el || el === document.body) return null;
+      const cs = getComputedStyle(el);
+      const nombre = (el.getAttribute("aria-label") || el.innerText || el.getAttribute("placeholder") || (el as HTMLInputElement).labels?.[0]?.innerText || "").trim().replace(/\s+/g, " ");
+      return { nombre, tag: el.tagName.toLowerCase(), foco: (cs.outlineStyle !== "none" && parseFloat(cs.outlineWidth) > 0) || cs.boxShadow !== "none" };
+    });
+    expect(info, `el foco se perdió en el paso ${i + 1}`).not.toBeNull();
+    expect(info!.nombre, `elemento <${info!.tag}> sin nombre accesible`).not.toBe("");
+    expect(info!.foco, `«${info!.nombre}» sin foco visible`).toBe(true);
+    if (llegada(info!.nombre, info!.tag)) return info!.nombre;
+  }
+  throw new Error("El foco no llegó al elemento esperado con el teclado");
+}
+
+test.describe("7 · accesibilidad", () => {
+  test("/entrar: todo se alcanza con Tab, con foco visible y nombre", async ({ page }) => {
+    await page.goto("/entrar");
+    await tabularHasta(page, (n) => /Enviarme el código/.test(n));
+    await tabularHasta(page, (n) => /Continuar con Google/.test(n));
+    expect(await pasarAxe(page)).toEqual([]);
+  });
+
+  test.describe("panel", () => {
+    test.skip(() => !hayDueno, "Sin sesión guardada");
+    test.use({ storageState: async ({}, usar) => usar(existsSync(SESION_DUENO) ? SESION_DUENO : undefined) });
+    let localId = "";
+    test.beforeAll(async () => {
+      localId = await idLocalDePruebas();
+    });
+    test.afterAll(async () => {
+      if (localId) await limpiarPorPrefijo(localId, `${PREFIJO} A11Y`);
+    });
+
+    test("lista de la carta y editor de plato con teclado; botones con nombre y axe", async ({ page }) => {
+      const seccion = `${PREFIJO} A11Y`;
+      const plato = `${PREFIJO} A11Y plato`;
+      await page.goto(`/panel/${localId}/carta`);
+      await page.getByRole("button", { name: /^(\+ Nueva sección|Crear la primera sección)$/ }).click();
+      const dialogo = page.getByRole("dialog", { name: "Nueva sección" });
+      await dialogo.getByLabel("Nombre de la sección").fill(seccion);
+      await dialogo.getByRole("button", { name: "Guardar" }).click();
+      await expect(page.getByRole("heading", { level: 2, name: seccion })).toBeVisible();
+
+      // Editor de plato: se llega desde el enlace «+ Añadir plato».
+      await page.getByRole("link", { name: `+ Añadir plato a «${seccion}»` }).click();
+      await expect(page.getByRole("heading", { level: 1, name: "Nuevo plato" })).toBeVisible();
+      await page.getByLabel("Nombre del plato").fill(plato);
+      await page.getByLabel("Precio", { exact: true }).fill("4");
+      await page.getByLabel("Nombre del plato").focus();
+      await tabularHasta(page, (n) => n === "Cereales con gluten");
+      await expect(page.locator(":focus")).toHaveAttribute("aria-pressed", "false");
+      await page.keyboard.press("Space");
+      await expect(page.locator(":focus")).toHaveAttribute("aria-pressed", "true");
+      expect(await pasarAxe(page), "editor de plato").toEqual([]);
+      // Se guarda con el teclado.
+      await page.getByLabel(/He revisado los alérgenos/).check();
+      await page.getByRole("button", { name: "Guardar" }).focus();
+      await page.keyboard.press("Enter");
+      await expect(page.getByText(`«${plato}» guardado.`)).toBeVisible();
+
+      // Lista de la carta: botón de agotado con nombre accesible y estado; axe sin fallos.
+      const agotado = page.getByRole("button", { name: `Agotado: ${plato}` });
+      await expect(agotado).toHaveAttribute("aria-pressed", "false");
+      await agotado.focus();
+      await page.keyboard.press("Enter");
+      await expect(agotado).toHaveAttribute("aria-pressed", "true");
+      await page.waitForLoadState("networkidle");
+      expect(await pasarAxe(page), "lista de la carta").toEqual([]);
+
+      await page.getByRole("button", { name: `Editar sección «${seccion}»` }).click();
+      await page.getByRole("dialog", { name: "Editar sección" }).getByRole("button", { name: "Borrar sección" }).click();
+      await page.getByRole("dialog", { name: `¿Borrar la sección «${seccion}»?` }).getByRole("button", { name: "Sí, borrar" }).click();
+      await expect(page.getByRole("heading", { level: 2, name: seccion })).toHaveCount(0);
+    });
+  });
+
+  test("filtro de la carta con teclado: se abre con Intro, se marca con Espacio y oculta platos @movil", async ({ page, request }) => {
+    test.skip((await request.get(DEMO, { maxRedirects: 0 })).status() === 404, "La carta demo no está cargada");
+    await page.goto(DEMO);
+    await page.locator("summary", { hasText: "Filtrar por alérgenos" }).focus();
+    await page.keyboard.press("Enter");
+    await tabularHasta(page, (n) => n === "Crustáceos");
+    await page.keyboard.press("Space");
+    await expect(page.getByRole("checkbox", { name: "Crustáceos" })).toBeChecked();
+    await expect(page.getByRole("heading", { level: 3, name: "Gamba roja a la plancha" })).toBeHidden();
+    expect(await pasarAxe(page), "carta de ejemplo con el filtro abierto").toEqual([]);
   });
 });
