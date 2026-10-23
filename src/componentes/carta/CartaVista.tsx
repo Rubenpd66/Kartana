@@ -7,6 +7,7 @@ import { AvisoAlergenos } from "./AvisoAlergenos";
 import { BandaDemo } from "./BandaDemo";
 import { CabeceraCarta } from "./CabeceraCarta";
 import { FiltroAlergenos } from "./FiltroAlergenos";
+import { SpriteAlergenos } from "./IconosCarta";
 import { anclaMenu, MenuDelDia } from "./MenuDelDia";
 import { NavSecciones } from "./NavSecciones";
 import { PieCarta } from "./PieCarta";
@@ -27,6 +28,7 @@ export function CartaVista({ carta, idioma, diccionario, modo }: PropsCartaVista
 
   return (
     <div className="carta" style={colores} lang={idioma} data-modo={modo}>
+      <SpriteAlergenos />
       {local.slug === SLUG_DEMO ? <BandaDemo>{diccionario.textos.avisoDemo}</BandaDemo> : null}
       <CabeceraCarta local={local} diccionario={diccionario} />
       <NavSecciones entradas={entradas} diccionario={diccionario} />

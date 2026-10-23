@@ -1,7 +1,7 @@
-import { IconoAlergeno } from "@/componentes/alergenos/IconoAlergeno";
 import { ID_TRAZAS, idCasilla, NOMBRE_CASILLA } from "@/lib/carta/reglas-filtro";
 import { ALERGENOS } from "@/lib/dominio/alergenos";
 import type { DiccionarioCarta } from "@/lib/tipos/i18n";
+import { IconoCarta } from "./IconosCarta";
 
 const OPCION =
   "opcion-al flex min-h-12 cursor-pointer items-center gap-2 rounded-xl border border-borde bg-superficie px-2.5 py-1 text-[0.9375rem]";
@@ -26,7 +26,7 @@ export function FiltroAlergenos({ diccionario }: { diccionario: DiccionarioCarta
               {ALERGENOS.map((codigo) => (
                 <label key={codigo} className={OPCION}>
                   <input type="checkbox" name={NOMBRE_CASILLA} value={codigo} id={idCasilla(codigo)} className="size-5 flex-none" />
-                  <IconoAlergeno codigo={codigo} tamano={22} className="flex-none" />
+                  <IconoCarta codigo={codigo} tamano={22} />
                   <span>{diccionario.alergenos[codigo]}</span>
                 </label>
               ))}
