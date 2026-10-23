@@ -1,0 +1,207 @@
+/*
+ * Estilos de la carta pública (y de su vista previa en el panel).
+ * Todo va dentro de .carta: la hoja no se descarga al navegar a otra página, así que no puede chocar con nada.
+ * El color de cada bar llega en línea: style="--marca: …; --sobre-marca: …" en el contenedor .carta.
+ */
+
+.carta {
+  --sobre-marca: var(--sobre-primario);
+  --marca-suave: color-mix(in srgb, var(--marca) 10%, var(--superficie));
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: var(--fondo);
+}
+
+/* Banda de la carta de ejemplo y de la vista previa (esta va fuera de .carta: prefijo propio) */
+.carta-banda {
+  background: var(--texto);
+  color: var(--superficie);
+  text-align: center;
+  font-size: 0.9375rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Cabecera con el color del bar */
+.carta .carta-cabecera {
+  background: var(--marca);
+  color: var(--sobre-marca);
+}
+.carta .carta-cabecera a,
+.carta .carta-cabecera summary {
+  color: inherit;
+}
+.carta .pastilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 3rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sobre-marca) 16%, transparent);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+.carta .horario > summary {
+  list-style: none;
+}
+.carta .horario > summary::-webkit-details-marker {
+  display: none;
+}
+.carta .horario > summary::after {
+  content: "▾";
+  transition: transform 0.15s ease;
+}
+.carta .horario[open] > summary::after {
+  transform: rotate(180deg);
+}
+.carta .lista-horario {
+  background: color-mix(in srgb, var(--sobre-marca) 12%, transparent);
+}
+
+/* Navegación de secciones: fija arriba, chips con desplazamiento horizontal */
+.carta .carta-nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--fondo);
+  border-bottom: 1px solid var(--borde);
+}
+.carta .chips {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.carta .chips::-webkit-scrollbar {
+  display: none;
+}
+.carta .chip:hover {
+  border-color: var(--marca);
+}
+.carta .seccion {
+  scroll-margin-top: 5rem;
+}
+.carta .seccion > h2 {
+  border-bottom: 2px solid var(--marca);
+}
+
+/* Filtro de alérgenos (sin JavaScript) */
+.carta .filtro > details > summary {
+  list-style: none;
+}
+.carta .filtro > details > summary::-webkit-details-marker {
+  display: none;
+}
+.carta .opcion-al:has(input:checked) {
+  border-color: var(--marca);
+  background: var(--marca-suave);
+  font-weight: 600;
+}
+.carta .opcion-al input {
+  accent-color: var(--marca);
+}
+/* Marca ✓ junto a «Filtrar por alérgenos» cuando hay alguna casilla marcada (la muestra la regla generada) */
+.carta .filtro-activo {
+  display: none;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--marca);
+  color: var(--sobre-marca);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.carta .filtro-activo::after {
+  content: "✓";
+}
+
+/* Platos */
+.carta .sin-info {
+  display: none;
+}
+.carta .plato.agotado :is(h3, .precios, .descripcion, img) {
+  opacity: 0.55;
+}
+.carta .plato.agotado h3 {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* Menú del día */
+.carta .menu-dia {
+  border: 2px solid var(--marca);
+}
+
+/* Aviso fijo abajo, siempre visible */
+.carta .aviso-fijo {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin-top: auto;
+  background: var(--texto);
+  color: var(--superficie);
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+}
+
+/* Vista previa dentro del panel: debajo de la barra superior (3,5 rem) y encima de la navegación inferior (4 rem). */
+.carta[data-modo="vista_previa"] .carta-nav {
+  top: 3.5rem;
+}
+.carta[data-modo="vista_previa"] .seccion {
+  scroll-margin-top: 8.5rem;
+}
+@media (max-width: 63.999rem) {
+  .carta[data-modo="vista_previa"] .aviso-fijo {
+    bottom: calc(4rem + env(safe-area-inset-bottom));
+    padding-bottom: 0.75rem;
+  }
+}
+
+/* === INICIO reglas del filtro (generadas por src/lib/carta/reglas-filtro.ts) === */
+.carta:has(#f-gluten:checked) .plato[data-alergenos~="gluten"],
+.carta:has(#f-crustaceos:checked) .plato[data-alergenos~="crustaceos"],
+.carta:has(#f-huevos:checked) .plato[data-alergenos~="huevos"],
+.carta:has(#f-pescado:checked) .plato[data-alergenos~="pescado"],
+.carta:has(#f-cacahuetes:checked) .plato[data-alergenos~="cacahuetes"],
+.carta:has(#f-soja:checked) .plato[data-alergenos~="soja"],
+.carta:has(#f-lacteos:checked) .plato[data-alergenos~="lacteos"],
+.carta:has(#f-frutos_cascara:checked) .plato[data-alergenos~="frutos_cascara"],
+.carta:has(#f-apio:checked) .plato[data-alergenos~="apio"],
+.carta:has(#f-mostaza:checked) .plato[data-alergenos~="mostaza"],
+.carta:has(#f-sesamo:checked) .plato[data-alergenos~="sesamo"],
+.carta:has(#f-sulfitos:checked) .plato[data-alergenos~="sulfitos"],
+.carta:has(#f-altramuces:checked) .plato[data-alergenos~="altramuces"],
+.carta:has(#f-moluscos:checked) .plato[data-alergenos~="moluscos"] {
+  display: none;
+}
+.carta:has(#f-trazas:checked):has(#f-gluten:checked) .plato[data-trazas~="gluten"],
+.carta:has(#f-trazas:checked):has(#f-crustaceos:checked) .plato[data-trazas~="crustaceos"],
+.carta:has(#f-trazas:checked):has(#f-huevos:checked) .plato[data-trazas~="huevos"],
+.carta:has(#f-trazas:checked):has(#f-pescado:checked) .plato[data-trazas~="pescado"],
+.carta:has(#f-trazas:checked):has(#f-cacahuetes:checked) .plato[data-trazas~="cacahuetes"],
+.carta:has(#f-trazas:checked):has(#f-soja:checked) .plato[data-trazas~="soja"],
+.carta:has(#f-trazas:checked):has(#f-lacteos:checked) .plato[data-trazas~="lacteos"],
+.carta:has(#f-trazas:checked):has(#f-frutos_cascara:checked) .plato[data-trazas~="frutos_cascara"],
+.carta:has(#f-trazas:checked):has(#f-apio:checked) .plato[data-trazas~="apio"],
+.carta:has(#f-trazas:checked):has(#f-mostaza:checked) .plato[data-trazas~="mostaza"],
+.carta:has(#f-trazas:checked):has(#f-sesamo:checked) .plato[data-trazas~="sesamo"],
+.carta:has(#f-trazas:checked):has(#f-sulfitos:checked) .plato[data-trazas~="sulfitos"],
+.carta:has(#f-trazas:checked):has(#f-altramuces:checked) .plato[data-trazas~="altramuces"],
+.carta:has(#f-trazas:checked):has(#f-moluscos:checked) .plato[data-trazas~="moluscos"] {
+  display: none;
+}
+.carta:has(.filtro input[name="al"]:checked) .plato[data-confirmado="no"] .sin-info {
+  display: block;
+}
+.carta:has(.filtro input[name="al"]:checked) .filtro-activo {
+  display: inline-flex;
+}
+/* === FIN reglas del filtro === */
