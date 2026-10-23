@@ -160,12 +160,11 @@ describe("CartaVista en inglés", () => {
 });
 
 describe("sin JavaScript propio", () => {
-  it("ningún componente de la carta es de cliente", () => {
+  it("ningún componente de la carta es de cliente salvo la isla de estadísticas (Medidor)", () => {
     const carpeta = __dirname;
     const archivos = readdirSync(carpeta).filter((a) => a.endsWith(".tsx") && !a.endsWith(".test.tsx"));
     expect(archivos.length).toBeGreaterThan(5);
-    for (const a of archivos) {
-      expect(readFileSync(path.join(carpeta, a), "utf8"), a).not.toMatch(/["']use client["']/);
-    }
+    const deCliente = archivos.filter((a) => /["']use client["']/.test(readFileSync(path.join(carpeta, a), "utf8")));
+    expect(deCliente).toEqual(["Medidor.tsx"]);
   });
 });

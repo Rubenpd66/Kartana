@@ -10,6 +10,7 @@ import { BandaDemo } from "./BandaDemo";
 import { CabeceraCarta } from "./CabeceraCarta";
 import { FiltroAlergenos } from "./FiltroAlergenos";
 import { SpriteAlergenos } from "./IconosCarta";
+import { Medidor } from "./Medidor";
 import { anclaMenu, MenuDelDia } from "./MenuDelDia";
 import { NavSecciones, type EntradaNav } from "./NavSecciones";
 import { PieCarta } from "./PieCarta";
@@ -17,8 +18,9 @@ import { anclaSeccion, SeccionCarta } from "./SeccionCarta";
 import { SelectorIdioma } from "./SelectorIdioma";
 
 /**
- * La carta tal como la ve el cliente del bar. Componente de servidor, sin datos propios ni JavaScript:
- * la usan /c/[slug] (modo "publica") y la vista previa del panel (modo "vista_previa").
+ * La carta tal como la ve el cliente del bar, en `idioma`. Componente de servidor, sin datos propios; el único
+ * JavaScript es la isla <Medidor> de estadísticas (y no hace nada en la vista previa).
+ * La usan /c/[slug], /c/[slug]/[idioma] (modo "publica") y la vista previa del panel (modo "vista_previa").
  */
 export function CartaVista({ carta, idioma, diccionario, modo }: PropsCartaVista) {
   const { local, secciones, menus } = carta;
@@ -64,6 +66,7 @@ export function CartaVista({ carta, idioma, diccionario, modo }: PropsCartaVista
         <PieCarta diccionario={diccionario} />
       </Contenedor>
       <AvisoAlergenos diccionario={diccionario} />
+      <Medidor localId={local.id} idioma={idioma} modo={modo} />
     </div>
   );
 }
