@@ -5,7 +5,7 @@ import { CABECERAS_DESCARGA, localDelDuenoOError, respuestaError, urlDeLaCarta }
 import { FORMATOS_QR, generarPdf, nombreArchivoPdf } from "@/lib/qr/generar";
 import { descargarLogo } from "@/lib/qr/logo";
 
-export const runtime = "nodejs";
+// Sin `export const runtime`: es incompatible con Cache Components y el runtime por defecto ya es Node.js.
 
 const Formato = z.enum(FORMATOS_QR);
 
