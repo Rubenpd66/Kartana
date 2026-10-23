@@ -112,6 +112,8 @@ test.describe("panel-local", () => {
       if (hayCartaPublica) {
         const r = await page.goto(`${inicio}/vista-previa`);
         expect(r?.status()).toBe(200);
+        // En la carta el horario va plegado («Horario ▾»): se abre antes de mirarlo.
+        await page.getByText("Horario", { exact: true }).click();
         await expect(page.getByText(/11:30–15:45/).first()).toBeVisible();
       }
     } finally {

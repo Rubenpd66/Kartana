@@ -45,6 +45,7 @@ async function CartaDelDueno({ params }: Pick<PageProps<"/panel/[local]/vista-pr
   return (
     <>
       <BandaDemo>{cartaPanel.local.publicado ? t.bandaPublicada : t.bandaSinPublicar}</BandaDemo>
+      {/* Vacía: aviso con enlace a «Carta», pero también la cabecera (nombre, horario…) que ya ha rellenado. */}
       {vacia ? (
         <Contenedor ancho="estrecho" className="py-10 text-center">
           <p className="text-texto-suave">{t.vacia}</p>
@@ -55,9 +56,8 @@ async function CartaDelDueno({ params }: Pick<PageProps<"/panel/[local]/vista-pr
             {t.irACarta}
           </Link>
         </Contenedor>
-      ) : (
-        <CartaVista carta={carta} idioma="es" diccionario={diccionarioCarta("es")} modo="vista_previa" />
-      )}
+      ) : null}
+      <CartaVista carta={carta} idioma="es" diccionario={diccionarioCarta("es")} modo="vista_previa" />
     </>
   );
 }

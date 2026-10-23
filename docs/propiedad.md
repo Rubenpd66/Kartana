@@ -27,7 +27,7 @@
 | **acceso** | `src/app/(web)/entrar/**` · `src/app/auth/**` · `src/lib/auth/**` · `src/lib/panel/local-actual.ts` · `src/lib/panel/navegacion.ts` (solo en la v0.1) · `src/lib/imagenes/**` · `src/componentes/ui/**` · `src/componentes/panel/**` (barra y navegación del panel) · `src/app/(panel)/layout.tsx` · `src/app/(panel)/panel/[local]/layout.tsx` · `src/app/(panel)/panel/cuenta/**` · `src/lib/i18n/acceso.es.ts`, `panel.es.ts`, `ui.es.ts` · `e2e/sesion.setup.ts` · `e2e/acceso.spec.ts` |
 | **panel-local** | `src/app/(panel)/panel/page.tsx` · `src/app/(panel)/panel/bienvenida/**` · `src/app/(panel)/panel/[local]/page.tsx` · `src/app/(panel)/panel/[local]/local/**` · `src/componentes/panel-local/**` · `src/lib/i18n/panel-local.es.ts` · `e2e/panel-local.spec.ts` |
 | **panel-carta** | `src/app/(panel)/panel/[local]/carta/**` · `src/app/(panel)/panel/[local]/menu/**` · `src/componentes/panel-carta/**` · `src/lib/i18n/panel-carta.es.ts` · `e2e/panel-carta.spec.ts` |
-| **carta-publica** | `src/app/(carta)/**` · `src/app/(panel)/panel/[local]/vista-previa/**` · `src/componentes/carta/**` · `src/lib/carta/**` · `e2e/carta-publica.spec.ts` |
+| **carta-publica** | `src/app/(carta)/**` · `src/app/(panel)/panel/[local]/vista-previa/**` · `src/componentes/carta/**` · `src/lib/carta/**` · `src/lib/i18n/carta-publica.es.ts` · `e2e/carta-publica.spec.ts` |
 | **qr-pdf** | `src/app/(panel)/panel/[local]/qr/**` · `src/lib/qr/**` (incluye `src/lib/qr/fuentes/*.ttf`) · `src/componentes/qr/**` · `src/lib/i18n/qr.es.ts` · `e2e/qr.spec.ts` |
 | **admin** | `src/app/(admin)/**` · `src/componentes/admin/**` · `src/lib/i18n/admin.es.ts` · `e2e/admin.spec.ts` |
 | **qa-v01** | `e2e/flujos-v01.spec.ts` · `e2e/ayudas/**` · `docs/qa/v0.1.md` |
